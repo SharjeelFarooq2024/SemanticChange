@@ -1,0 +1,60 @@
+seed: 42
+
+data:
+  root: data/raw/dev/SV
+  usages: usages.jsonl
+  subtask1: subtask1.jsonl
+  subtask2: subtask2.jsonl
+  definitions: definitions.jsonl
+
+evaluation:
+  test_size: 0.2
+  random_state: 42
+  stratify: true
+
+classical:
+  word_ngram_range: [1, 2]
+  char_ngram_range: [3, 5]
+  min_df: 1
+  max_features: 50000
+  max_iter: 2000
+  class_weight: balanced
+  random_forest_n_estimators: 100
+  random_forest_max_depth: 15
+  numeric_features:
+    - text_length_chars
+    - token_count
+    - unique_token_count
+    - type_token_ratio
+    - avg_token_length
+    - punctuation_ratio
+    - digit_ratio
+    - stopword_ratio
+    - target_position
+  categorical_features:
+    - word
+    - pos
+    - period_label
+  ablated_categorical_features:
+    - pos
+    - period_label
+  subtask1:
+    clustering_method: kmeans
+    n_clusters: 3
+    use_lexical_features: true
+
+pretrained:
+  model_name: FacebookAI/xlm-roberta-base
+  device: auto
+  batch_size: 32
+  max_length: 512
+  pooling: mean
+  frozen: true
+  cache_dir: data/processed/eda/embeddings
+
+outputs:
+  root: outputs/baselines
+  classical: outputs/baselines/classical
+  pretrained: outputs/baselines/pretrained
+  figures: outputs/baselines/figures
+  tables: outputs/baselines/tables
