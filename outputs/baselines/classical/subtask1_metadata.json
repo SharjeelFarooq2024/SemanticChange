@@ -1,0 +1,80 @@
+{
+  "seed": 42,
+  "task": "diachronic word sense induction",
+  "representation": "per-word word-level TF-IDF with optional standardized lexical features",
+  "clustering_method": "kmeans",
+  "requested_clusters": 3,
+  "multi_label_policy": "Multi-valued labels are preserved in sense_labels and excluded from ARI, NMI, and purity; singleton labels are used only for valid evaluation.",
+  "interpretation_warning": "Clusters are exploratory and may reflect target identity, time period, genre, corpus source, or lexical context rather than pure senses.",
+  "data_diagnostics": {
+    "usage_records": 1983,
+    "label_records": 1983,
+    "malformed_or_missing_labels": 0,
+    "multi_label_records": 262,
+    "duplicate_label_keys": 0,
+    "unmatched_usage_records": 0,
+    "matched_records": 1983
+  },
+  "per_word_model_details": {
+    "dumpa": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 4433,
+      "lexical_features_used": true
+    },
+    "exportera": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 4224,
+      "lexical_features_used": true
+    },
+    "fru": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 8746,
+      "lexical_features_used": true
+    },
+    "fröken": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 6927,
+      "lexical_features_used": true
+    },
+    "förort": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 4617,
+      "lexical_features_used": true
+    },
+    "herre": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 9587,
+      "lexical_features_used": true
+    },
+    "kvinna": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 9467,
+      "lexical_features_used": true
+    },
+    "motiv": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 10685,
+      "lexical_features_used": true
+    },
+    "skär": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 4449,
+      "lexical_features_used": true
+    },
+    "suga": {
+      "requested_clusters": 3,
+      "actual_clusters": 3,
+      "tfidf_features": 4025,
+      "lexical_features_used": true
+    }
+  }
+}
