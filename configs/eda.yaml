@@ -1,0 +1,22 @@
+project_root: .
+paths:
+  data_dir: data
+  raw_data_dir: data/raw/dev/SV
+  processed_dir: data/processed/eda
+  outputs_dir: outputs/eda
+  figures_dir: outputs/eda/figures
+  tables_dir: outputs/eda/tables
+  pdf_path: outputs/eda/eda_report.pdf
+  findings_path: outputs/eda/eda_findings.md
+  embedding_cache_dir: data/processed/eda/embeddings
+model:
+  name: FacebookAI/xlm-roberta-base
+  device: auto
+  batch_size: 32
+  seed: 42
+  pca_components: 2
+plots:
+  style: seaborn-v0_8-whitegrid
+  dpi: 150
+  figsize: [12, 8]
+  font_scale: 1.1
