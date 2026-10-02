@@ -8,16 +8,16 @@ from typing import Any, Dict, List, Tuple
 
 import numpy as np
 import pandas as pd
-import torch
 from sklearn.decomposition import PCA
 from sklearn.metrics.pairwise import cosine_similarity
-from transformers import AutoModel, AutoTokenizer
 
 
 SEED = 42
 
 
 def set_seed(seed: int = SEED) -> None:
+    import torch
+
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -26,18 +26,24 @@ def set_seed(seed: int = SEED) -> None:
 
 
 def resolve_device(device_name: str = "auto") -> torch.device:
+    import torch
+
     if device_name == "auto":
         return torch.device("cuda" if torch.cuda.is_available() else "cpu")
     return torch.device(device_name)
 
 
 def _mean_pool(last_hidden_state: torch.Tensor, attention_mask: torch.Tensor) -> torch.Tensor:
+    import torch
+
     mask = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
     pooled = torch.sum(last_hidden_state * mask, dim=1) / torch.clamp(mask.sum(dim=1), min=1e-9)
     return pooled
 
 
 def load_model(model_name: str, cache_dir: str | Path, device: torch.device) -> Tuple[AutoTokenizer, AutoModel, torch.device]:
+    from transformers import AutoModel, AutoTokenizer
+
     tokenizer = AutoTokenizer.from_pretrained(model_name, cache_dir=str(cache_dir))
     model = AutoModel.from_pretrained(model_name, cache_dir=str(cache_dir))
     model.to(device)
@@ -61,13 +67,15 @@ def build_usage_context(row: pd.Series) -> str:
     return text
 
 
-def encode_texts(tokenizer: AutoTokenizer, model: AutoModel, texts: List[str], device: torch.device, batch_size: int = 32) -> np.ndarray:
+def encode_texts(tokenizer: AutoTokenizer, model: AutoModel, texts: List[str], device: torch.device, batch_size: int = 32, max_length: int = 512) -> np.ndarray:
+    import torch
+
     if not texts:
         return np.empty((0, 0), dtype=np.float32)
     all_embeddings: List[np.ndarray] = []
     for start in range(0, len(texts), batch_size):
         batch = texts[start:start + batch_size]
-        encoded = tokenizer(batch, return_tensors="pt", padding=True, truncation=True, max_length=512)
+        encoded = tokenizer(batch, return_tensors="pt", padding=True, truncation=True, max_length=max_length)
         encoded = {k: v.to(device) for k, v in encoded.items()}
         with torch.no_grad():
             outputs = model(**encoded)
