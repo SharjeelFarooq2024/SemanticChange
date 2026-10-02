@@ -121,11 +121,18 @@ Embeddings are SHA-256 fingerprinted and cached at
 python -m src.baselines.evaluate
 ```
 
-Outputs (to `outputs/baselines/`):
-- `tables/baseline_findings.md` — structured Read–Reason–Interpret–Verify findings
-- `tables/subtask2_comparison.csv` — macro-F1 ranked model table
-- `tables/subtask1_comparison.csv` — per-word ARI / NMI / purity
-- `figures/confusion_matrix_*.png` — one per model
+Consolidates outputs across Classical (Baseline A) and Pretrained (Baseline B) pipelines, validates data integrity and leakage prevention, computes disaggregated group metrics, generates confusion matrices, and writes an academic findings report:
+
+- `outputs/baselines/tables/baseline_findings.md` — structured Read–Reason–Interpret–Verify findings connecting baseline results back to EDA
+- `outputs/baselines/tables/subtask2_comparison.csv` — macro-F1 ranked model comparison table across all configurations
+- `outputs/baselines/tables/subtask2_per_group.csv` — disaggregated performance by target word and historical time period
+- `outputs/baselines/tables/subtask1_comparison.csv` — per-word clustering concordance (ARI, NMI, purity)
+- `outputs/baselines/tables/subtask1_cluster_period_distributions.csv` — cluster count and proportion trajectories across periods
+- `outputs/baselines/tables/subtask1_cluster_assignments.csv` — sentence-level cluster membership assignments
+- `outputs/baselines/tables/subtask1_temporal_interpretation.md` — temporal dominant-cluster shifts and transition diagnostics
+- `outputs/baselines/figures/confusion_matrix_*.png` — per-model confusion matrix visualizations (150 DPI)
+
+The evaluation script also outputs a structured JSON summary to stdout detailing active models, missing baseline suites (handled gracefully), class balance, and join diagnostics.
 
 ### 5 — Test Suite
 
@@ -134,6 +141,36 @@ python -m pytest tests/ -v
 ```
 
 Expected: **13 passed** in ~6 s.
+
+---
+
+## Baseline Evaluation Framework
+
+The baseline evaluation module ([`evaluate.py`](file:///c:/Users/DAR/Desktop/SemanticChange/src/baselines/evaluate.py)) adheres to a strict evaluation protocol designed to avoid common evaluation fallacies in lexical semantic change:
+
+### 1. Subtask 2 Evaluation (Binary Usage Classification)
+- **Primary Metric — Macro-F1**: The Swedish development set exhibits severe class imbalance (64.5 % label 0 vs. 35.5 % label 1). Standard accuracy is misleading: a naive majority baseline achieves 64.5 % accuracy with zero minority-class recall (Macro-F1 = 0.3920). Macro-F1 gives equal weight to both sense classes.
+- **Secondary Metrics**: Balanced Accuracy, Macro-Precision, Macro-Recall, and Overall Accuracy.
+- **Disaggregated Group Evaluation (`subtask2_per_group.csv`)**: Evaluates performance broken down by:
+  - **Target word**: Exposes base-rate memorization shortcuts (e.g. models exploiting that `fru` has an 82.5 % target-sense rate while `fröken` has only 12.6 %).
+  - **Time period**: Validates temporal stability and detects performance degradation across historical epochs.
+- **Visual Diagnostics**: Produces confusion matrices for each candidate model (`outputs/baselines/figures/confusion_matrix_*.png`).
+
+### 2. Subtask 1 Evaluation (Word Sense Induction)
+- **Clustering Concordance**: Evaluated against gold sense partitions using **Adjusted Rand Index (ARI)** (chance-corrected), **Normalized Mutual Information (NMI)** (information-theoretic overlap), and **Purity** (cluster homogeneity).
+- **Multi-Label Policy**: In SemEval-2027 Task 3 Subtask 1, 219 usages (11.0 % of Swedish dev records) have multi-valued sense annotations. Per task protocol:
+  - Multi-label usages are strictly tracked and preserved in data artifacts.
+  - They are excluded from single-partition clustering metric calculations (ARI, NMI, purity) to avoid ground-truth distortion without modifying raw data.
+- **Temporal Trajectory Tracking (`subtask1_temporal_interpretation.md`)**:
+  - Tracks cluster distribution shifts across periods (`subtask1_cluster_period_distributions.csv`).
+  - Explicitly distinguishes genuine semantic drift from non-semantic confounders (genre shift, source corpus distribution, annotator conventions).
+
+### 3. Automated Data Quality & Leakage Audits
+On every evaluation run, `evaluate.py` verifies:
+- **Leakage Prevention**: Confirms all transformers (TF-IDF vectorizers, scalers, one-hot encoders) are encapsulated inside `sklearn.Pipeline` objects fitted strictly on training folds.
+- **Join Integrity**: Audits label-to-usage joins for unmatched records or malformed IDs.
+- **Missing Baseline Handlers**: Detects whether Baseline A and Baseline B outputs are present, gracefully reporting missing pipelines without pipeline failure.
+- **Synthesis Report**: Automatically compiles `baseline_findings.md` adhering to the **Read–Reason–Interpret–Verify** scientific framework.
 
 ---
 
