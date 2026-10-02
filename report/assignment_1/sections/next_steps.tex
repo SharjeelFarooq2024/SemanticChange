@@ -1,3 +1,43 @@
-\subsection{Next steps}
-The next phase compares transparent classical baselines (Logistic Regression, Linear SVM, Complement Naive Bayes, Random Forest, and word-identity ablation) with frozen pretrained representations while keeping all preprocessing modular and reusable. For classical models, both linear coefficients and tree-based Gini feature importances are analyzed to connect feature utility directly back to exploratory data analysis findings. For Baseline B, XLM-R is used as a frozen feature extractor without fine-tuning, evaluating whether contextual embeddings improve discriminability on lexically difficult words.
+\subsection{Completed: Baseline Phase}
 
+Baseline~A (Classical ML) and Baseline~B (Frozen Pretrained Encoder) have been implemented
+and validated.  Seven classical models were trained for Subtask~2, and per-word TF-IDF
+KMeans clustering was performed for Subtask~1 across all 10~target words.  All preprocessing
+is modular, config-driven (\ texttt{configs/baselines.yaml}), and reused from the EDA pipeline
+without any raw-data modification.  Feature importances (LR coefficients, RF Gini scores)
+were inspected and connected back to EDA findings as required.
+
+Frozen XLM-R (mean-pooled, $\pm80$-character context window) is implemented under
+\texttt{src/baselines/pretrained\_subtask2.py} and \texttt{pretrained\_subtask1.py}
+and will be evaluated once model weights are fully cached locally.
+
+\subsection{Next Steps}
+
+The following phases are planned in order of dependency:
+
+\begin{enumerate}
+  \item \textbf{Baseline~B evaluation.}
+    Run \texttt{python -m src.baselines.pretrained\_subtask2} and
+    \texttt{python -m src.baselines.pretrained\_subtask1} once the XLM-R weights
+    cache is complete.  Run \texttt{python -m src.baselines.evaluate} to regenerate
+    the comparison table with Baseline~B rows populated.
+
+  \item \textbf{Automatic cluster-count selection.}
+    Replace the fixed $k=3$ in Subtask~1 with silhouette-score-based
+    $k$-selection per target word, and report sensitivity to $k$.
+
+  \item \textbf{Fine-tuned encoder baseline.}
+    Fine-tune \texttt{xlm-roberta-base} on the training split for Subtask~2
+    using a standard sequence classification head.  Compare to frozen
+    Baseline~B to isolate the gain from parameter adaptation.
+
+  \item \textbf{Cross-lingual generalisation.}
+    Once additional language tracks are released, apply the same pipeline
+    to non-Swedish languages to assess cross-lingual transferability of
+    the feature design and model configurations.
+
+  \item \textbf{Threshold calibration and probability estimation.}
+    Calibrate classification thresholds using the development-set validation
+    split (Platt scaling or isotonic regression) to improve minority-class
+    recall for Subtask~2.
+\end{enumerate}
