@@ -149,6 +149,47 @@ def plot_definition_usage_similarity(sim_df: pd.DataFrame, output_path: str | Pa
     return save_figure(fig, output_path)
 
 
+def plot_period_word_heatmap(usage_df: pd.DataFrame, output_path: str | Path):
+    set_style()
+    pivot = (
+        usage_df.groupby(["word", "period_label"])
+        .size()
+        .unstack(fill_value=0)
+    )
+    fig, ax = plt.subplots(figsize=(12, 8))
+    sns.heatmap(pivot, cmap="YlGnBu", annot=True, fmt="d", linewidths=0.3, ax=ax)
+    ax.set_title("Usage counts by target word and period")
+    ax.set_xlabel("Period")
+    ax.set_ylabel("Target word")
+    return save_figure(fig, output_path)
+
+
+def plot_period_lexical_diversity(usage_df: pd.DataFrame, output_path: str | Path):
+    set_style()
+    period_stats = (
+        usage_df.groupby("period_label")
+        .agg(
+            avg_ttr=("type_token_ratio", "mean"),
+            avg_char_len=("text_length_chars", "mean"),
+            avg_token_len=("avg_token_length", "mean"),
+        )
+        .reset_index()
+    )
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    sns.lineplot(data=period_stats, x="period_label", y="avg_ttr", marker="o", ax=axes[0])
+    axes[0].set_title("Mean type-token ratio by period")
+    axes[0].set_xlabel("Period")
+    axes[0].set_ylabel("Mean TTR")
+    axes[0].tick_params(axis="x", rotation=45)
+
+    sns.lineplot(data=period_stats, x="period_label", y="avg_char_len", marker="o", color="darkorange", ax=axes[1])
+    axes[1].set_title("Mean context length by period")
+    axes[1].set_xlabel("Period")
+    axes[1].set_ylabel("Mean characters")
+    axes[1].tick_params(axis="x", rotation=45)
+    return save_figure(fig, output_path)
+
+
 def build_eda_pdf(fig_paths: list[str | Path], pdf_path: str | Path):
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.utils import ImageReader

@@ -17,6 +17,8 @@ from .plots import (
     plot_definition_usage_similarity,
     plot_embedding_structure,
     plot_lexical_characteristics,
+    plot_period_lexical_diversity,
+    plot_period_word_heatmap,
     plot_temporal_distribution,
     plot_temporal_embedding_similarity,
     plot_word_usage_distribution,
@@ -93,6 +95,33 @@ def build_findings(stats: Dict[str, Any], sim_df: pd.DataFrame, def_sim_df: pd.D
     return "\n".join(text) + "\n"
 
 
+def write_task_summary(root: Path) -> Path:
+    summary = """# Task understanding summary
+
+## Black-box task view
+This project targets semantic change across multiple time periods in Swedish texts. The raw data contains usage examples for target words, their period labels, and context sentences. The task is to understand whether a target word changes meaning or usage patterns across time periods, and to support classification-style downstream modeling such as sense labeling or binary usage detection.
+
+## White-box signals
+The likely cues are lexical context, target-word frequency, POS patterns, temporal distribution, and contextual embedding structure. Reliable EDA therefore focuses on what is observable in the text rather than assuming a final model architecture.
+
+## Output and label space
+- Input: contextual text snippets with a target word, period label, and sentence metadata
+- Output: a semantic change signal or sense-related classification label, depending on subtask
+- Subtask 1 is sense-related and label-bearing; Subtask 2 is binary usage labeling at the sentence/usage level
+- The dataset already contains both word-level and usage-level labels, which suggests a supervised or weakly supervised modeling pipeline downstream
+
+## What makes the task difficult
+The main challenges are: period imbalance, word imbalance, annotation noise in target offsets, and the fact that apparent semantic drift can be confused with corpus composition or source effects. This is why selective EDA is important before moving to any baseline.
+
+## Evaluation intuition
+The task is classification-like rather than pure unsupervised clustering. In a downstream pipeline, macro-F1 is a reasonable default target because the word and period distributions are imbalanced. The exact official metric should still be confirmed from the task description when the final reporting step is performed.
+"""
+    path = root / "outputs" / "eda" / "task_understanding_summary.md"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(summary, encoding="utf-8")
+    return path
+
+
 def run_eda() -> Dict[str, Any]:
     root = Path(__file__).resolve().parents[2]
     config_path = root / "configs" / "eda.yaml"
@@ -102,6 +131,7 @@ def run_eda() -> Dict[str, Any]:
     tables_dir = root / config["paths"]["tables_dir"]
     figures_dir.mkdir(parents=True, exist_ok=True)
     tables_dir.mkdir(parents=True, exist_ok=True)
+    task_summary_path = write_task_summary(root)
 
     bundle = build_dataset_bundle(root)
     usage_df = bundle["usage"]
@@ -120,6 +150,8 @@ def run_eda() -> Dict[str, Any]:
         "03_usages_per_target_word": plot_word_usage_distribution(feature_df, figures_dir / "03_usages_per_target_word.png"),
         "04_context_length": plot_context_length(feature_df, figures_dir / "04_context_length.png"),
         "05_lexical_characteristics": plot_lexical_characteristics(feature_df, figures_dir / "05_lexical_characteristics.png"),
+        "06_period_word_heatmap": plot_period_word_heatmap(feature_df, figures_dir / "06_period_word_heatmap.png"),
+        "07_period_lexical_diversity": plot_period_lexical_diversity(feature_df, figures_dir / "07_period_lexical_diversity.png"),
     }
 
     embedding_analysis = analyze_embeddings(feature_df, config, definitions_df, subtask2_df)
@@ -132,9 +164,9 @@ def run_eda() -> Dict[str, Any]:
     if not definition_similarity.empty:
         definition_similarity.to_csv(tables_dir / "definition_usage_similarity.csv", index=False)
 
-    fig_paths["06_embedding_structure"] = plot_embedding_structure(pca_df, figures_dir / "06_embedding_structure.png")
-    fig_paths["07_temporal_embedding_similarity"] = plot_temporal_embedding_similarity(temporal_similarity, figures_dir / "07_temporal_embedding_similarity.png")
-    fig_paths["08_definition_usage_similarity"] = plot_definition_usage_similarity(definition_similarity, figures_dir / "08_definition_usage_similarity.png")
+    fig_paths["08_embedding_structure"] = plot_embedding_structure(pca_df, figures_dir / "08_embedding_structure.png")
+    fig_paths["09_temporal_embedding_similarity"] = plot_temporal_embedding_similarity(temporal_similarity, figures_dir / "09_temporal_embedding_similarity.png")
+    fig_paths["10_definition_usage_similarity"] = plot_definition_usage_similarity(definition_similarity, figures_dir / "10_definition_usage_similarity.png")
 
     findings_md = build_findings(stats, temporal_similarity, definition_similarity)
     findings_path = root / config["paths"]["findings_path"]
@@ -148,9 +180,11 @@ def run_eda() -> Dict[str, Any]:
         fig_paths["03_usages_per_target_word"],
         fig_paths["04_context_length"],
         fig_paths["05_lexical_characteristics"],
-        fig_paths["06_embedding_structure"],
-        fig_paths["07_temporal_embedding_similarity"],
-        fig_paths["08_definition_usage_similarity"],
+        fig_paths["06_period_word_heatmap"],
+        fig_paths["07_period_lexical_diversity"],
+        fig_paths["08_embedding_structure"],
+        fig_paths["09_temporal_embedding_similarity"],
+        fig_paths["10_definition_usage_similarity"],
     ]
     build_eda_pdf(ordered_figures, pdf_path)
 
@@ -163,6 +197,7 @@ def run_eda() -> Dict[str, Any]:
         "tables": list(tables.values()),
         "pdf": str(pdf_path),
         "findings": str(findings_path),
+        "task_summary": str(task_summary_path),
         "stats": stats,
     }
 
