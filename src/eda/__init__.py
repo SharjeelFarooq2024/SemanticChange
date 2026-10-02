@@ -3,7 +3,13 @@
 from .load_data import build_dataset_bundle, load_usage_data
 from .dataset_stats import compute_dataset_statistics
 from .text_features import add_text_features
-from .embedding_analysis import analyze_embeddings
+
+
+def analyze_embeddings(*args, **kwargs):
+    """Load the optional embedding stack only when embedding analysis is used."""
+    from .embedding_analysis import analyze_embeddings as _analyze_embeddings
+
+    return _analyze_embeddings(*args, **kwargs)
 
 __all__ = [
     "build_dataset_bundle",
