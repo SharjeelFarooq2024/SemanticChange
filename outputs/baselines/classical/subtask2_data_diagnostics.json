@@ -1,0 +1,10 @@
+[
+  {
+    "usage_records":1983,
+    "label_records":1983,
+    "matched_records":1983,
+    "unmatched_usage_records":0,
+    "malformed_labels":0,
+    "duplicate_label_records":0
+  }
+]

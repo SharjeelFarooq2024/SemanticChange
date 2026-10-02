@@ -1,0 +1,57 @@
+{
+  "seed": 42,
+  "split": {
+    "test_size": 0.2,
+    "random_state": 42,
+    "stratify": true
+  },
+  "split_sizes": {
+    "train": 1586,
+    "test": 397
+  },
+  "stratified_label_counts": {
+    "train": {
+      "0": 1022,
+      "1": 564
+    },
+    "test": {
+      "0": 256,
+      "1": 141
+    }
+  },
+  "models": [
+    "majority",
+    "tfidf_logistic_regression",
+    "word_char_tfidf_linear_svm",
+    "tfidf_complement_nb",
+    "eda_features_logistic_regression",
+    "eda_features_random_forest",
+    "ablated_no_word_id_logistic_regression"
+  ],
+  "coefficient_count": 100,
+  "rf_importance_count": 45189,
+  "eda_numeric_features": [
+    "text_length_chars",
+    "token_count",
+    "unique_token_count",
+    "type_token_ratio",
+    "avg_token_length",
+    "punctuation_ratio",
+    "digit_ratio",
+    "stopword_ratio",
+    "target_position"
+  ],
+  "eda_categorical_features": [
+    "word",
+    "pos",
+    "period_label"
+  ],
+  "data_diagnostics": {
+    "usage_records": 1983,
+    "label_records": 1983,
+    "matched_records": 1983,
+    "unmatched_usage_records": 0,
+    "malformed_labels": 0,
+    "duplicate_label_records": 0
+  }
+}

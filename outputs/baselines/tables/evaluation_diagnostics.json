@@ -1,0 +1,50 @@
+{
+  "usage_records": 1983,
+  "class_distribution": {
+    "0": 1278,
+    "1": 705
+  },
+  "target_word_counts": {
+    "motiv": 291,
+    "kvinna": 290,
+    "herre": 283,
+    "fru": 274,
+    "fröken": 174,
+    "förort": 150,
+    "exportera": 149,
+    "dumpa": 145,
+    "suga": 129,
+    "skär": 98
+  },
+  "period_counts": {
+    "2014-2015": 252,
+    "2010-2011": 243,
+    "2022-2023": 242,
+    "2006-2007": 239,
+    "2018-2019": 239,
+    "1880-1883": 163,
+    "1912-1915": 163,
+    "1896-1899": 162,
+    "1904-1907": 141,
+    "1888-1891": 139
+  },
+  "duplicate_text_records": 10,
+  "unsupported_period_labels": [],
+  "missing_join_diagnostics": {
+    "usage_records": 1983,
+    "label_records": 1983,
+    "matched_records": 1983,
+    "unmatched_usage_records": 0,
+    "malformed_labels": 0,
+    "duplicate_label_records": 0
+  },
+  "prediction_sentence_ids": 397,
+  "leakage_check": {
+    "classical_preprocessing": "Passed by implementation: vectorizers and ColumnTransformer are inside fitted training pipelines.",
+    "frozen_embeddings": "Passed by design: XLM-R is frozen and embeddings are generated without labels; downstream classifiers fit only on training embeddings."
+  },
+  "missing_baseline_outputs": [
+    "pretrained"
+  ],
+  "comparison_rule": "Subtask 2 models are ranked by macro-F1; balanced accuracy is reported as a secondary imbalance-aware metric. Subtask 1 uses ARI, NMI, purity, and temporal cluster distributions."
+}

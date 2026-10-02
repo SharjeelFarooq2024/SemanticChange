@@ -1,0 +1,11 @@
+word,records,evaluation_records,multi_label_records_excluded,ari,nmi,purity,evaluation_note
+dumpa,145,103,42,0.04159824849480022,0.10746927740978728,0.8155339805825242,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+exportera,149,149,0,0.004495084195151112,0.04238410540243461,0.9463087248322147,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+fru,274,195,79,0.2550013514745952,0.09602688480364462,0.8666666666666667,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+fröken,174,167,7,-0.10405644457640188,0.06513689182045763,0.8383233532934131,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+förort,150,71,79,-0.01479363540909458,0.017652420090516513,0.5774647887323944,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+herre,283,241,42,0.039688500281134666,0.06574283974310664,0.8381742738589212,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+kvinna,290,284,6,0.0600423242786583,0.0385989328018899,0.7746478873239436,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+motiv,291,289,2,0.14420666440851124,0.051106397492390376,0.7854671280276817,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+skär,98,95,3,-0.0027684861661252187,0.05199624478304702,0.5473684210526316,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+suga,129,127,2,0.038328073640359,0.08160977706612718,0.3228346456692913,Metrics use singleton-label records only; multi-label records are preserved but excluded.
