@@ -3,6 +3,8 @@ rank_by_macro_f1,model,representation,macro_f1,balanced_accuracy
 2,word_char_tfidf_linear_svm,word_and_character_tfidf,0.8155204460966543,0.8033161569148937
 3,tfidf_logistic_regression,word_tfidf,0.7916729565173636,0.7825520833333333
 4,eda_features_random_forest,tfidf_plus_eda_features_rf,0.7909897713598075,0.774074689716312
-5,ablated_no_word_id_logistic_regression,context_and_eda_without_word_identity,0.7129154614419035,0.7165059840425532
-6,tfidf_complement_nb,word_tfidf,0.6171441961911801,0.6253462987588653
-7,majority,majority,0.3920367534456355,0.5
+5,frozen_xlmr_logistic_regression,frozen_xlm_roberta_mean_pooled_embedding,0.7211873532697028,0.7312029033687943
+6,frozen_xlmr_linear_svm,frozen_xlm_roberta_mean_pooled_embedding,0.7144710397720015,0.7225177304964538
+7,ablated_no_word_id_logistic_regression,context_and_eda_without_word_identity,0.7129154614419035,0.7165059840425532
+8,tfidf_complement_nb,word_tfidf,0.6171441961911801,0.6253462987588653
+9,majority,majority,0.3920367534456355,0.5

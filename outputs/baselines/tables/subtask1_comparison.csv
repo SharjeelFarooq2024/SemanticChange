@@ -9,3 +9,13 @@ classical,kvinna,290,284,6,0.0600423242786583,0.0385989328018899,0.7746478873239
 classical,motiv,291,289,2,0.1442066644085112,0.0511063974923903,0.7854671280276817,Metrics use singleton-label records only; multi-label records are preserved but excluded.
 classical,skär,98,95,3,-0.0027684861661252,0.051996244783047,0.5473684210526316,Metrics use singleton-label records only; multi-label records are preserved but excluded.
 classical,suga,129,127,2,0.038328073640359,0.0816097770661271,0.3228346456692913,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,dumpa,145,103,42,0.0348614080301794,0.1139724769724035,0.8155339805825242,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,exportera,149,149,0,-0.0065012403382725,0.0268050836592229,0.9463087248322148,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,fru,274,195,79,0.3395836319617293,0.2019088017723208,0.8666666666666667,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,fröken,174,167,7,0.0858400765231139,0.1818256681782679,0.8383233532934131,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,förort,150,71,79,0.1130804822312481,0.1547451723112624,0.7323943661971831,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,herre,283,241,42,0.2568324191563994,0.2239997010243667,0.8381742738589212,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,kvinna,290,284,6,0.0456663545302146,0.0502907585990661,0.7746478873239436,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,motiv,291,289,2,0.2516310830615688,0.2546791881239881,0.8754325259515571,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,skär,98,95,3,0.157488100547965,0.1440547942329009,0.5578947368421052,Metrics use singleton-label records only; multi-label records are preserved but excluded.
+frozen_xlmr,suga,129,127,2,0.0915340404167509,0.2061585958771427,0.3779527559055118,Metrics use singleton-label records only; multi-label records are preserved but excluded.

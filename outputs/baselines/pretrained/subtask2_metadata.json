@@ -1,0 +1,31 @@
+{
+  "model_name": "FacebookAI/xlm-roberta-base",
+  "tokenizer_name": "FacebookAI/xlm-roberta-base",
+  "seed": 42,
+  "device": "cpu",
+  "max_length": 512,
+  "pooling": "mean",
+  "frozen": true,
+  "fingerprint": "9a5e82e660abadc0bd1ab72cb5e7ec0d86a04f620ae08ee9d76ea088d223d448",
+  "embedding_dimension": 768,
+  "cache_used": false,
+  "cache_reason": "cache_file_or_metadata_missing",
+  "cache_dir": "data/processed/eda/embeddings",
+  "classifier_models": [
+    "frozen_xlmr_logistic_regression",
+    "frozen_xlmr_linear_svm"
+  ],
+  "data_diagnostics": {
+    "usage_records": 1983,
+    "label_records": 1983,
+    "matched_records": 1983,
+    "unmatched_usage_records": 0,
+    "malformed_labels": 0,
+    "duplicate_label_records": 0
+  },
+  "split": {
+    "test_size": 0.2,
+    "random_state": 42,
+    "stratify": true
+  }
+}

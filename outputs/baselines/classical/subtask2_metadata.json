@@ -29,7 +29,7 @@
     "ablated_no_word_id_logistic_regression"
   ],
   "coefficient_count": 100,
-  "rf_importance_count": 45189,
+  "rf_importance_count": 100,
   "eda_numeric_features": [
     "text_length_chars",
     "token_count",

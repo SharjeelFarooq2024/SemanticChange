@@ -1,0 +1,3 @@
+model,representation,train_size,test_size,accuracy,macro_f1,weighted_f1,precision,recall,balanced_accuracy
+frozen_xlmr_logistic_regression,frozen_xlm_roberta_mean_pooled_embedding,1586,397,0.7355163727959698,0.7211873532697028,0.7394966559977106,0.717636780889793,0.7312029033687943,0.7312029033687943
+frozen_xlmr_linear_svm,frozen_xlm_roberta_mean_pooled_embedding,1586,397,0.7304785894206549,0.7144710397720015,0.7340547441293966,0.7109797741003414,0.7225177304964538,0.7225177304964538

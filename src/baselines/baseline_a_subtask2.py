@@ -1,7 +1,6 @@
 import re
 from pathlib import Path
 
-import joblib
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -114,14 +113,6 @@ def _split(df: pd.DataFrame, config: dict):
     return train_test_split(df, test_size=config["evaluation"]["test_size"], random_state=config["evaluation"]["random_state"], stratify=stratify)
 
 
-def _save_group_metrics(frames: list[pd.DataFrame], path: Path) -> None:
-    rows = []
-    for frame in frames:
-        for group_name in ("word", "period_label"):
-            for value, group in frame.groupby(group_name):
-                rows.append({"model": frame["model"].iloc[0], "group_type": group_name, "group": value, **_metrics(group["label_value"], group["prediction"])})
-    pd.DataFrame(rows).to_csv(path, index=False)
-
 
 def run(project_root: Path | None = None) -> dict:
     root = project_root or Path(__file__).resolve().parents[2]
@@ -134,8 +125,6 @@ def run(project_root: Path | None = None) -> dict:
         raise ValueError("Subtask 2 needs both binary classes after joining labels")
     train, test = _split(data, config)
     output = root / config["outputs"]["classical"]
-    models_dir = output / "models"
-    models_dir.mkdir(parents=True, exist_ok=True)
     runs = []
     predictions = []
 
@@ -159,7 +148,6 @@ def run(project_root: Path | None = None) -> dict:
     }
     for name, (model, representation) in text_models.items():
         model.fit(train["text"], train["label_value"])
-        joblib.dump(model, models_dir / f"{name}.joblib")
         prediction = model.predict(test["text"])
         frame = test[["sentence_id", "word", "period_label", "label_value"]].copy()
         frame["model"] = name
@@ -176,7 +164,6 @@ def run(project_root: Path | None = None) -> dict:
         ("model", LogisticRegression(max_iter=config["classical"]["max_iter"], class_weight=config["classical"]["class_weight"], random_state=config["seed"])),
     ])
     interpretable_lr.fit(feature_train, train["label_value"])
-    joblib.dump(interpretable_lr, models_dir / "eda_features_logistic_regression.joblib")
     lr_pred = interpretable_lr.predict(feature_test)
     frame_lr = test[["sentence_id", "word", "period_label", "label_value"]].copy()
     frame_lr["model"] = "eda_features_logistic_regression"
@@ -191,7 +178,6 @@ def run(project_root: Path | None = None) -> dict:
         ("model", RandomForestClassifier(n_estimators=rf_n_est, max_depth=rf_max_d, class_weight=config["classical"]["class_weight"], random_state=config["seed"], n_jobs=-1)),
     ])
     interpretable_rf.fit(feature_train, train["label_value"])
-    joblib.dump(interpretable_rf, models_dir / "eda_features_random_forest.joblib")
     rf_pred = interpretable_rf.predict(feature_test)
     frame_rf = test[["sentence_id", "word", "period_label", "label_value"]].copy()
     frame_rf["model"] = "eda_features_random_forest"
@@ -217,7 +203,6 @@ def run(project_root: Path | None = None) -> dict:
         ("model", LogisticRegression(max_iter=config["classical"]["max_iter"], class_weight=config["classical"]["class_weight"], random_state=config["seed"])),
     ])
     ablated_lr.fit(feature_train_ablated, train["label_value"])
-    joblib.dump(ablated_lr, models_dir / "ablated_no_word_id_logistic_regression.joblib")
     ablated_pred = ablated_lr.predict(feature_test_ablated)
     frame_ablated = test[["sentence_id", "word", "period_label", "label_value"]].copy()
     frame_ablated["model"] = "ablated_no_word_id_logistic_regression"
@@ -236,23 +221,17 @@ def run(project_root: Path | None = None) -> dict:
     coefficient_output = pd.concat(coefficient_frames, ignore_index=True).drop_duplicates(["model", "feature"])
     coefficient_output.to_csv(output / "subtask2_coefficients.csv", index=False)
 
-    # Tree-based Gini feature importance (Random Forest)
+    # Tree-based Gini feature importance (Random Forest) - keep top 100 features for interpretability & EDA link
     rf_feature_names = feature_names(interpretable_rf.named_steps["features"])
     rf_importances = pd.DataFrame({
         "model": "eda_features_random_forest",
         "feature": rf_feature_names,
         "importance": interpretable_rf.named_steps["model"].feature_importances_,
     }).sort_values("importance", ascending=False)
-    rf_importances.to_csv(output / "subtask2_rf_feature_importances.csv", index=False)
+    rf_importances.head(100).to_csv(output / "subtask2_rf_feature_importances.csv", index=False)
 
     pd.DataFrame(runs).to_csv(output / "subtask2_metrics.csv", index=False)
     pd.concat(predictions, ignore_index=True).to_csv(output / "subtask2_predictions.csv", index=False)
-    pd.DataFrame([diagnostics]).to_json(output / "subtask2_data_diagnostics.json", orient="records", indent=2)
-
-    confusion = ConfusionMatrixDisplay.from_predictions(test["label_value"], lr_pred, display_labels=[0, 1])
-    confusion.ax_.set_title("Subtask 2 confusion matrix: EDA-feature Logistic Regression")
-    confusion.figure_.savefig(output / "subtask2_confusion_matrix.png", dpi=150, bbox_inches="tight")
-    plt.close(confusion.figure_)
 
     # Save feature visualizations
     plot_top_coefficients(coefficient_output, "tfidf_logistic_regression", output / "subtask2_tfidf_lr_coefficients.png", top_n=20)
@@ -267,12 +246,11 @@ def run(project_root: Path | None = None) -> dict:
         "stratified_label_counts": {"train": train["label_value"].value_counts().to_dict(), "test": test["label_value"].value_counts().to_dict()},
         "models": all_models,
         "coefficient_count": len(coefficient_output),
-        "rf_importance_count": len(rf_importances),
+        "rf_importance_count": min(len(rf_importances), 100),
         "eda_numeric_features": get_numeric_features(config),
         "eda_categorical_features": get_categorical_features(config),
         "data_diagnostics": diagnostics,
     })
-    _save_group_metrics(predictions, output / "subtask2_group_metrics.csv")
     return {"metrics": runs, "diagnostics": diagnostics}
 
 

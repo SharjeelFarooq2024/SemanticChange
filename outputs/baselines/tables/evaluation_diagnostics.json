@@ -43,8 +43,6 @@
     "classical_preprocessing": "Passed by implementation: vectorizers and ColumnTransformer are inside fitted training pipelines.",
     "frozen_embeddings": "Passed by design: XLM-R is frozen and embeddings are generated without labels; downstream classifiers fit only on training embeddings."
   },
-  "missing_baseline_outputs": [
-    "pretrained"
-  ],
+  "missing_baseline_outputs": [],
   "comparison_rule": "Subtask 2 models are ranked by macro-F1; balanced accuracy is reported as a secondary imbalance-aware metric. Subtask 1 uses ARI, NMI, purity, and temporal cluster distributions."
 }
