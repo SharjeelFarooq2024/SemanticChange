@@ -12,7 +12,6 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 
-from .baseline_a_subtask2 import _save_group_metrics
 from .common import (
     join_subtask2_labels,
     load_baseline_bundle,
@@ -67,11 +66,7 @@ def run(project_root: Path | None = None) -> dict:
     metrics = pd.DataFrame(runs)
     metrics.to_csv(output / "subtask2_metrics.csv", index=False)
     pd.concat(predictions, ignore_index=True).to_csv(output / "subtask2_predictions.csv", index=False)
-    _save_group_metrics(predictions, output / "subtask2_group_metrics.csv")
-    write_json(output / "embedding_metadata.json", {**embedding_metadata, "tokenizer_name": config["pretrained"]["model_name"], "cache_dir": config["pretrained"]["cache_dir"], "frozen": True, "classifier_models": list(models), "data_diagnostics": diagnostics, "split": config["evaluation"]})
-    classical_path = root / config["outputs"]["classical"] / "subtask2_metrics.csv"
-    comparison = pd.concat([pd.read_csv(classical_path), metrics], ignore_index=True, sort=False) if classical_path.exists() else metrics
-    comparison.to_csv(output / "comparison_table.csv", index=False)
+    write_json(output / "subtask2_metadata.json", {**embedding_metadata, "tokenizer_name": config["pretrained"]["model_name"], "cache_dir": config["pretrained"]["cache_dir"], "frozen": True, "classifier_models": list(models), "data_diagnostics": diagnostics, "split": config["evaluation"]})
     return {"metrics": runs, "embedding_metadata": embedding_metadata, "diagnostics": diagnostics}
 
 

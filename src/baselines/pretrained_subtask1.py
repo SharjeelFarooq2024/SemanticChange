@@ -47,7 +47,7 @@ def run(project_root: Path | None = None) -> dict:
     saved.to_csv(output / "subtask1_cluster_assignments.csv", index=False)
     _period_distributions(result).to_csv(output / "subtask1_period_distributions.csv", index=False)
     pd.DataFrame(metrics).to_csv(output / "subtask1_metrics.csv", index=False)
-    write_json(output / "embedding_metadata.json", {**embedding_metadata, "tokenizer_name": config["pretrained"]["model_name"], "cache_dir": config["pretrained"]["cache_dir"], "frozen": True, "clustering_method": "kmeans on mean-pooled embeddings", "requested_clusters": settings["n_clusters"], "multi_label_policy": "Multi-valued labels are preserved and excluded from ARI, NMI, and purity.", "data_diagnostics": diagnostics})
+    write_json(output / "subtask1_metadata.json", {**embedding_metadata, "tokenizer_name": config["pretrained"]["model_name"], "cache_dir": config["pretrained"]["cache_dir"], "frozen": True, "clustering_method": "kmeans on mean-pooled embeddings", "requested_clusters": settings["n_clusters"], "multi_label_policy": "Multi-valued labels are preserved and excluded from ARI, NMI, and purity.", "data_diagnostics": diagnostics})
     return {"metrics": metrics, "embedding_metadata": embedding_metadata, "diagnostics": diagnostics}
 
 
