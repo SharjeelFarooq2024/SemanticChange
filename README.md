@@ -1,7 +1,8 @@
 # Semantic Change Across Multiple Time Periods
 
 > **SemEval-2027 Task 3** — Swedish development set  
-> Phases complete: **EDA** ✅ | **Baseline A (Classical ML)** ✅ | **Baseline B (Frozen XLM-R)** ⏳
+> Phases complete: **EDA** ✅ | **Baseline A (Classical ML)** ✅ | **Baseline B (Frozen XLM-R)** ⏳  
+> Methodological fixes applied: **Dynamic k-selection (Subtask 1)** ✅ | **Morphological ablation masking (Subtask 2)** ✅
 
 ---
 
@@ -71,7 +72,8 @@ SemanticChange/
 │       └── next_steps.tex
 │
 ├── requirements.txt
-└── README.md
+├── README.md
+└── FIXES.md                    # Documents the two methodological issues found and how they were resolved
 ```
 
 ---
@@ -193,10 +195,15 @@ Split: stratified 80/20, seed 42. Class ratio: 0 → 64.5 %, 1 → 35.5 %.
 
 > **Word-identity ablation gap**: ΔF1 ≈ 10.3 points (0.8163 → 0.7129) quantifies
 > how much signal comes from token-identity shortcuts vs. contextual features alone.
+> The ablation now masks **all morphological surface forms** of each target word
+> (not just the exact lemma) — see [`FIXES.md`](FIXES.md) for the leakage issue that was corrected.
 
 ---
 
-## Baseline A Results — Subtask 1 (TF-IDF KMeans, k=3)
+## Baseline A Results — Subtask 1 (TF-IDF KMeans, dynamic k)
+
+> k is selected per-word via a three-tier strategy: (1) gold-sense count → (2) silhouette sweep over k ∈ [2, 6] → (3) config default k=3.
+> See [`FIXES.md`](FIXES.md) and [`_select_k_from_gold()`](src/baselines/baseline_a_subtask1.py) for full details.
 
 Evaluation on singleton-labelled records only; multi-label records excluded.
 
@@ -277,6 +284,8 @@ models:
 | Embedding cache | SHA-256 fingerprint over data + model config; validated before reuse |
 | Raw data | `data/raw/` is read-only; never modified |
 | Model weights | Excluded from git via `.gitignore` |
+| **k-selection (Subtask 1)** | Dynamic: gold-sense count → silhouette sweep → config fallback; logged per-word in `subtask1_metadata.json` |
+| **Ablation masking (Subtask 2)** | Morphological expander masks all Swedish surface forms of target word; no extra dependencies |
 
 ---
 

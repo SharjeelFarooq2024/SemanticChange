@@ -14,7 +14,7 @@ from scipy.sparse import hstack
 from sklearn.cluster import KMeans
 from sklearn.decomposition import TruncatedSVD
 from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score
+from sklearn.metrics import adjusted_rand_score, normalized_mutual_info_score, silhouette_score
 from sklearn.preprocessing import StandardScaler
 
 from .classical_features import build_feature_frame, get_numeric_features
@@ -71,6 +71,49 @@ def _valid_clustering_metrics(group: pd.DataFrame) -> dict[str, Any]:
     return result
 
 
+def _select_k_from_gold(group: pd.DataFrame, k_fallback: int, k_max: int, matrix, seed: int) -> tuple[int, str]:
+    """Select k for KMeans using a three-tier strategy.
+
+    Tier 1 – Gold-sense count: if the group has singleton-labelled records with
+    at least 2 distinct senses, use that count directly.  This is the most
+    principled choice because it anchors the cluster count to annotated reality.
+
+    Tier 2 – Silhouette sweep: when gold labels are absent or give only one
+    unique sense (ambiguous signal), sweep k over [2, k_max] and pick the k
+    that maximises the mean silhouette score on the TF-IDF/lexical matrix.
+    Silhouette measures intra-cluster cohesion vs. inter-cluster separation, so
+    it is a data-driven proxy for the intrinsic number of usage clusters.
+
+    Tier 3 – Config fallback: if the sweep cannot run (e.g. fewer than 4
+    samples), fall back to the configured default k.
+    """
+    # --- Tier 1: count unique gold senses --------------------------------
+    if "singleton_sense" in group.columns:
+        gold_senses = group["singleton_sense"].dropna().unique()
+        if len(gold_senses) >= 2:
+            k_gold = min(int(len(gold_senses)), k_max, len(group))
+            return k_gold, "gold_sense_count"
+
+    # --- Tier 2: silhouette sweep ----------------------------------------
+    # Need at least 4 samples to evaluate k=2 with a silhouette score.
+    k_upper = min(k_max, len(group) - 1)
+    if len(group) >= 4 and k_upper >= 2:
+        best_k, best_score = 2, -1.0
+        for k_candidate in range(2, k_upper + 1):
+            labels = KMeans(
+                n_clusters=k_candidate, n_init=10, random_state=seed
+            ).fit_predict(matrix)
+            # silhouette_score requires >= 2 distinct predicted labels
+            if len(set(labels)) >= 2:
+                score = silhouette_score(matrix, labels, sample_size=min(500, len(group)), random_state=seed)
+                if score > best_score:
+                    best_k, best_score = k_candidate, score
+        return best_k, f"silhouette_sweep(best_score={best_score:.3f})"
+
+    # --- Tier 3: config default ------------------------------------------
+    return min(k_fallback, len(group)), "config_default"
+
+
 def cluster_target_word(group: pd.DataFrame, config: dict) -> tuple[pd.DataFrame, dict[str, Any]]:
     settings = config["classical"]["subtask1"]
     method = str(settings["clustering_method"]).lower()
@@ -90,8 +133,14 @@ def cluster_target_word(group: pd.DataFrame, config: dict) -> tuple[pd.DataFrame
         features = build_feature_frame(group, config)
         lexical = StandardScaler(with_mean=False).fit_transform(features[num_cols].astype(float))
         matrix = hstack([matrix, lexical], format="csr")
-    requested_clusters = int(settings["n_clusters"])
-    n_clusters = min(requested_clusters, len(group))
+
+    # Dynamic k selection — see _select_k_from_gold for the three-tier logic.
+    k_fallback = int(settings["n_clusters"])        # config default (e.g. 3)
+    k_max = int(settings.get("n_clusters_max", 6))  # configurable ceiling
+    n_clusters, k_strategy = _select_k_from_gold(
+        group, k_fallback=k_fallback, k_max=k_max, matrix=matrix, seed=int(config["seed"])
+    )
+
     if n_clusters < 1:
         raise ValueError("Subtask 1 requires at least one cluster")
     if n_clusters == 1:
@@ -100,7 +149,14 @@ def cluster_target_word(group: pd.DataFrame, config: dict) -> tuple[pd.DataFrame
         assignments = KMeans(n_clusters=n_clusters, n_init=10, random_state=config["seed"]).fit_predict(matrix)
     result = group.copy()
     result["cluster"] = assignments
-    return result, {"requested_clusters": requested_clusters, "actual_clusters": n_clusters, "tfidf_features": int(len(vectorizer.vocabulary_)), "lexical_features_used": used_lexical}
+    return result, {
+        "k_fallback": k_fallback,
+        "k_max": k_max,
+        "actual_clusters": n_clusters,
+        "k_selection_strategy": k_strategy,
+        "tfidf_features": int(len(vectorizer.vocabulary_)),
+        "lexical_features_used": used_lexical,
+    }
 
 
 def _join_subtask1(usage: pd.DataFrame, labels: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, int]]:
@@ -250,7 +306,27 @@ def run(project_root: Path | None = None) -> dict:
     metrics_frame.to_csv(output / "subtask1_metrics.csv", index=False)
     _save_cluster_plot(assignments, output / "subtask1_cluster_plot.png", config)
     _save_clustering_quality_plot(metrics_frame, output / "subtask1_clustering_quality.png")
-    write_json(output / "subtask1_metadata.json", {"seed": config["seed"], "task": "diachronic word sense induction", "representation": "per-word word-level TF-IDF with optional standardized lexical features", "clustering_method": config["classical"]["subtask1"]["clustering_method"], "requested_clusters": config["classical"]["subtask1"]["n_clusters"], "multi_label_policy": "Multi-valued labels are preserved in sense_labels and excluded from ARI, NMI, and purity; singleton labels are used only for valid evaluation.", "interpretation_warning": "Clusters are exploratory and may reflect target identity, time period, genre, corpus source, or lexical context rather than pure senses.", "data_diagnostics": diagnostics, "per_word_model_details": model_details})
+    write_json(output / "subtask1_metadata.json", {
+        "seed": config["seed"],
+        "task": "diachronic word sense induction",
+        "representation": "per-word word-level TF-IDF with optional standardized lexical features",
+        "clustering_method": config["classical"]["subtask1"]["clustering_method"],
+        "k_selection": {
+            "strategy": "three-tier: (1) gold-sense count, (2) silhouette sweep, (3) config default",
+            "k_fallback": config["classical"]["subtask1"]["n_clusters"],
+            "k_max": config["classical"]["subtask1"].get("n_clusters_max", 6),
+        },
+        "multi_label_policy": (
+            "Multi-valued labels are preserved in sense_labels and excluded from ARI, NMI, and "
+            "purity; singleton labels are used only for valid evaluation."
+        ),
+        "interpretation_warning": (
+            "Clusters are exploratory and may reflect target identity, time period, genre, "
+            "corpus source, or lexical context rather than pure senses."
+        ),
+        "data_diagnostics": diagnostics,
+        "per_word_model_details": model_details,
+    })
     return {"metrics": metric_rows, "diagnostics": diagnostics}
 
 

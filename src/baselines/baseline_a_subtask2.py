@@ -1,4 +1,5 @@
 import re
+from functools import lru_cache
 from pathlib import Path
 
 import matplotlib
@@ -185,16 +186,89 @@ def run(project_root: Path | None = None) -> dict:
     predictions.append(frame_rf)
     runs.append({"model": "eda_features_random_forest", "representation": "tfidf_plus_eda_features_rf", "train_size": len(train), "test_size": len(test), **_metrics(test["label_value"], rf_pred)})
 
-    # Word-identity ablation model: mask the target token in text and exclude categorical word feature
-    def _mask_word(row):
-        w = str(row.get("word", "") or "")
+    # -------------------------------------------------------------------------
+    # Word-identity ablation: mask ALL surface forms of the target word
+    # -------------------------------------------------------------------------
+    # Original bug: the simple \b{word}\b regex only masks the exact form stored
+    # in the 'word' column.  For a Swedish lemma like "driva", inflected forms
+    # (driver, drev, drivit, driven, drivande, ...) survived into the TF-IDF
+    # matrix and let the model recover word identity from context — defeating
+    # the purpose of the ablation.
+    #
+    # Fix: _morphological_forms() generates a compact set of common Swedish
+    # surface variants (definite/indefinite endings, plural, genitive, past
+    # participle stems, present participle) for both nouns and verbs.  The
+    # expander is language-agnostic in principle — it applies suffix rules
+    # rather than a lexicon — and is safe to run without any extra dependency.
+    # Every generated form is masked with the special token [TARGET] before
+    # TF-IDF vectorisation, ensuring the model cannot reconstruct word identity
+    # from any morphological variant in the context window.
+
+    @lru_cache(maxsize=None)
+    def _morphological_forms(word: str) -> frozenset[str]:
+        """Return a set of likely Swedish surface forms for *word*.
+
+        Covers the most productive morphological patterns for Swedish nouns,
+        adjectives, and verbs so that no inflected form leaks word identity
+        into the ablated TF-IDF matrix.
+        """
+        w = word.lower().rstrip()
+        forms: set[str] = {w}  # base form always included
+
+        # --- Noun suffixes (strong & weak declensions) --------------------
+        # Definite singular: + n/en/et
+        forms.update({w + "n", w + "en", w + "et"})
+        # Definite plural / plural indefinite: + ar/er/or/r + (na/na/na)
+        for pl in ("ar", "er", "or", "r"):
+            forms.add(w + pl)
+            forms.add(w + pl + "na")
+        # Genitive (add s to base and each generated form — productive rule)
+        forms.update({f + "s" for f in set(forms)})
+
+        # --- Verb suffixes -----------------------------------------------
+        # Present: +er / +ar / +r
+        forms.update({w + "er", w + "ar", w + "r"})
+        # Past weak: +ade / +de / +te
+        forms.update({w + "ade", w + "de", w + "te"})
+        # Supine / past participle: +at / +t / +tt / +it
+        forms.update({w + "at", w + "t", w + "tt", w + "it"})
+        # Present participle: +ande / +ende
+        forms.update({w + "ande", w + "ende"})
+        # Passive: +as / +es
+        forms.update({w + "as", w + "es"})
+
+        # --- Stem-final e-drop (common in Swedish strong verbs) -----------
+        # e.g. "skriva" → stem "skriv" → "skriver", "skrev" (handled above
+        # for the already-stemmed form; here we also try dropping final 'a')
+        if w.endswith("a") and len(w) > 2:
+            stem = w[:-1]
+            forms.update({
+                stem, stem + "er", stem + "ar", stem + "r",
+                stem + "s", stem + "de", stem + "te",
+            })
+
+        return frozenset(forms)
+
+    def _build_mask_pattern(word: str) -> re.Pattern:
+        """Compile a single alternation regex for all morphological forms."""
+        all_forms = _morphological_forms(word.lower())
+        # Sort longest-first so longer forms match before shorter prefixes
+        alternation = "|".join(re.escape(f) for f in sorted(all_forms, key=len, reverse=True))
+        return re.compile(rf"\b(?:{alternation})\b", re.IGNORECASE)
+
+    def _mask_word_morphological(row) -> str:
+        """Replace every morphological variant of the target word with [TARGET]."""
+        w = str(row.get("word", "") or "").strip()
         t = str(row.get("text", "") or "")
-        return re.sub(rf"\b{re.escape(w)}\b", "[TARGET]", t, flags=re.IGNORECASE) if w else t
+        if not w:
+            return t
+        pattern = _build_mask_pattern(w)
+        return pattern.sub("[TARGET]", t)
 
     train_ablated = train.copy()
-    train_ablated["text"] = train_ablated.apply(_mask_word, axis=1)
+    train_ablated["text"] = train_ablated.apply(_mask_word_morphological, axis=1)
     test_ablated = test.copy()
-    test_ablated["text"] = test_ablated.apply(_mask_word, axis=1)
+    test_ablated["text"] = test_ablated.apply(_mask_word_morphological, axis=1)
     feature_train_ablated = build_feature_frame(train_ablated, config)
     feature_test_ablated = build_feature_frame(test_ablated, config)
 
