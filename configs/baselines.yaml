@@ -40,7 +40,8 @@ classical:
     - period_label
   subtask1:
     clustering_method: kmeans
-    n_clusters: 3
+    n_clusters: 3         # fallback k used when gold labels and silhouette sweep are unavailable
+    n_clusters_max: 6     # ceiling for dynamic-k: gold-sense count and silhouette sweep are capped here
     use_lexical_features: true
 
 pretrained:
