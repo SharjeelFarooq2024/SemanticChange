@@ -1,0 +1,21 @@
+﻿# Hybrid retrieval configuration (BM25 + dense, fused with RRF).
+#
+# rrf_k uses the standard Reciprocal Rank Fusion smoothing constant
+# (Cormack et al., SIGIR 2009), NOT an official shared-task setting.
+
+fusion:
+  method: rrf
+  rrf_k: 60
+
+candidates:
+  # Number of candidates fetched from each system before fusion.
+  bm25: 100
+  dense: 100
+
+retrieval:
+  top_k: 100
+  scope: per_word        # per_word | global  (CLI --scope overrides)
+
+binary_export:
+  strategy: top_k        # naive baseline operating point; tune k on ranked.csv in evaluation
+  top_k: 50

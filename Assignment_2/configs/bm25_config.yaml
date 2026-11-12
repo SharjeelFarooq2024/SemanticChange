@@ -1,0 +1,25 @@
+﻿# BM25 retrieval configuration.
+#
+# k1 and b use the classical Okapi BM25 defaults (Robertson & Zaragoza).
+# These are standard library defaults, NOT official shared-task settings;
+# Assignment 1 contains no BM25 configuration to inherit from.
+
+k1: 1.5
+b: 0.75
+
+tokenizer:
+  # Unicode-aware word pattern: keeps Swedish letters (å ä ö) and digits.
+  # Digits are deliberately preserved (temporal information: years, periods).
+  pattern: "[\\w]+"
+  lowercase: true
+
+index:
+  path: artifacts/bm25_index/bm25_index.pkl   # relative to Assignment_2/
+
+retrieval:
+  top_k: 100
+  scope: per_word        # per_word | global  (CLI --scope overrides)
+
+binary_export:
+  strategy: top_k        # naive baseline operating point; tune k on ranked.csv in evaluation
+  top_k: 50

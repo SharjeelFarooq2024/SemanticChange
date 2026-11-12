@@ -1,0 +1,23 @@
+# Data configuration for Assignment 2 retrieval systems.
+# Paths are relative to the repository root (the parent of Assignment_2/).
+# The raw Assignment 1 dataset is referenced, never copied or modified.
+
+seed: 42
+
+data:
+  root: data/raw/dev/SV
+  usages: usages.jsonl
+  subtask1: subtask1.jsonl      # loaded for validation only (not required for retrieval)
+  subtask2: subtask2.jsonl      # relevance judgments (qrels) for definition -> usage retrieval
+  definitions: definitions.jsonl # target-sense definitions used as queries
+
+# Retrieval formulation (confirmed with group,2026-11):
+#   documents = usages        (doc_id = sentence_id)
+#   queries   = target-sense definitions (query_id = word)
+#   qrels     = subtask2 binary labels (word -> sentence_id, relevance in {0, 1})
+retrieval_formulation:
+  documents_from: usages
+  queries_from: definitions
+  qrels_from: subtask2
+  document_id_field: sentence_id
+  query_id_field: word

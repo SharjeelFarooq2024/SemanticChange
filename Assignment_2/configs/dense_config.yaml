@@ -1,0 +1,42 @@
+﻿# Dense (pretrained encoder) retrieval configuration.
+
+seed: 42
+
+encoder:
+  name: e5_small                 # active encoder: e5_small | xlmr_base (CLI --encoder overrides)
+  device: auto                   # auto -> CUDA if available, else CPU
+  models:
+    e5_small:
+      # Primary encoder. Contrastive query<->passage retrieval training,
+      # multilingual (incl. Swedish), 512-dim, CPU friendly.
+      model_name: intfloat/multilingual-e5-small
+      max_length: 512
+      batch_size: 64
+      pooling: mean
+      normalize: true
+      query_prefix: "query: "
+      passage_prefix: "passage: "
+    xlmr_base:
+      # Ablation encoder: the frozen Assignment 1 feature extractor.
+      # Not retrieval-trained; kept for controlled comparison.
+      model_name: FacebookAI/xlm-roberta-base
+      max_length: 512
+      batch_size: 32
+      pooling: mean
+      normalize: true
+      query_prefix: ""
+      passage_prefix: ""
+
+cache:
+  # All paths relative to Assignment_2/
+  model_cache_dir: artifacts/model_cache
+  embeddings_dir: artifacts/document_embeddings   # {encoder}.npz + {encoder}_meta.json
+  index_dir: artifacts/document_embeddings        # {encoder}.faiss
+
+retrieval:
+  top_k: 100
+  scope: per_word        # per_word | global  (CLI --scope overrides)
+
+binary_export:
+  strategy: top_k        # naive baseline operating point; tune k on ranked.csv in evaluation
+  top_k: 50

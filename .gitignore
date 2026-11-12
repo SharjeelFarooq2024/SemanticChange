@@ -9,3 +9,9 @@ data/processed/eda/embeddings/
 *.joblib
 *.bin
 
+# Assignment 2: large derived artifacts (indexes, embeddings, model cache, logs)
+Assignment_2/artifacts/
+Assignment_2/logs/
+*.npz
+*.faiss
+

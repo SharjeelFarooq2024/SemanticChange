@@ -1,0 +1,57 @@
+{
+  "generated_at": "2026-11-12T09:58:19.355586+00:00",
+  "system": "dense",
+  "scope": "per_word",
+  "top_k": 100,
+  "encoder": "e5_small",
+  "binary_top_k": 50,
+  "n_queries_run": 10,
+  "n_queries_total": 10,
+  "n_hits": 998,
+  "n_documents": 1983,
+  "outputs": {
+    "ranked": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\dense\\ranked.csv",
+    "binary": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\dense\\binary_predictions.csv",
+    "qrels": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\qrels.csv"
+  },
+  "config": {
+    "seed": 42,
+    "encoder": {
+      "name": "e5_small",
+      "device": "auto",
+      "models": {
+        "e5_small": {
+          "model_name": "intfloat/multilingual-e5-small",
+          "max_length": 512,
+          "batch_size": 64,
+          "pooling": "mean",
+          "normalize": true,
+          "query_prefix": "query: ",
+          "passage_prefix": "passage: "
+        },
+        "xlmr_base": {
+          "model_name": "FacebookAI/xlm-roberta-base",
+          "max_length": 512,
+          "batch_size": 32,
+          "pooling": "mean",
+          "normalize": true,
+          "query_prefix": "",
+          "passage_prefix": ""
+        }
+      }
+    },
+    "cache": {
+      "model_cache_dir": "artifacts/model_cache",
+      "embeddings_dir": "artifacts/document_embeddings",
+      "index_dir": "artifacts/document_embeddings"
+    },
+    "retrieval": {
+      "top_k": 100,
+      "scope": "per_word"
+    },
+    "binary_export": {
+      "strategy": "top_k",
+      "top_k": 50
+    }
+  }
+}
