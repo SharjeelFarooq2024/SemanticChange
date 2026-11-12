@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-11-12T09:58:39.696191+00:00",
+  "system": "bm25",
+  "scope": "per_word",
+  "top_k": 5,
+  "encoder": null,
+  "binary_top_k": 50,
+  "n_queries_run": 2,
+  "n_queries_total": 10,
+  "n_hits": 10,
+  "n_documents": 1983,
+  "outputs": {
+    "ranked": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\bm25_limit2\\ranked.csv",
+    "binary": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\bm25_limit2\\binary_predictions.csv",
+    "qrels": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\qrels.csv"
+  },
+  "config": {
+    "k1": 1.5,
+    "b": 0.75,
+    "tokenizer": {
+      "pattern": "[\\w]+",
+      "lowercase": true
+    },
+    "index": {
+      "path": "artifacts/bm25_index/bm25_index.pkl"
+    },
+    "retrieval": {
+      "top_k": 100,
+      "scope": "per_word"
+    },
+    "binary_export": {
+      "strategy": "top_k",
+      "top_k": 50
+    }
+  }
+}
