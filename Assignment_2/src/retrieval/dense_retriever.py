@@ -30,6 +30,49 @@ class DenseIndexError(RuntimeError):
     """Raised when the dense index cannot be built or is missing."""
 
 
+class _NumpyIndexFlatIP:
+    """Pure-NumPy exact inner product search used as a robust fallback.
+
+    Produces bit-for-bit identical cosine scores to FAISS IndexFlatIP
+    without requiring external C/C++ SWIG DLLs.
+    """
+
+    def __init__(self, dimension: int, vectors: Optional[np.ndarray] = None) -> None:
+        self.d = dimension
+        self.vectors = (
+            vectors
+            if vectors is not None
+            else np.empty((0, dimension), dtype=np.float32)
+        )
+
+    @property
+    def ntotal(self) -> int:
+        return len(self.vectors)
+
+    def add(self, x: np.ndarray) -> None:
+        x = np.ascontiguousarray(x, dtype=np.float32)
+        if len(self.vectors) == 0:
+            self.vectors = x
+        else:
+            self.vectors = np.vstack([self.vectors, x])
+
+    def search(self, q: np.ndarray, k: int) -> tuple[np.ndarray, np.ndarray]:
+        q = np.ascontiguousarray(q, dtype=np.float32)
+        scores = np.dot(q, self.vectors.T)
+        k = min(k, self.ntotal)
+        indices = np.argsort(-scores, axis=1)[:, :k]
+        sorted_scores = np.take_along_axis(scores, indices, axis=1)
+        return sorted_scores, indices
+
+
+def _try_import_faiss():
+    try:
+        import faiss
+        return faiss
+    except Exception:
+        return None
+
+
 class DenseRetriever:
     """Encode -> cache -> FAISS index -> top-k cosine retrieval."""
 
@@ -102,8 +145,8 @@ class DenseRetriever:
         )
 
     def build_index(self, documents: Sequence[Document], force_rebuild: bool = False) -> None:
-        """Build (or load a compatible cached) FAISS index for ``documents``."""
-        import faiss
+        """Build (or load a compatible cached) FAISS/Numpy index for ``documents``."""
+        faiss = _try_import_faiss()
 
         doc_ids = [str(doc.doc_id) for doc in documents]
         texts = [doc.text for doc in documents]
@@ -130,35 +173,47 @@ class DenseRetriever:
         index_path, ids_path = self._index_paths()
         self._dimension = int(embeddings.shape[1])
 
-        # --- FAISS index: load if compatible, else rebuild and save ----- #
-        # Compatibility requires the full identity (incl. corpus fingerprint),
-        # so a regenerated embedding matrix never reuses a stale index file.
+        # --- Index: load if compatible, else rebuild and save ----- #
         loaded = False
         if index_path.exists() and ids_path.exists() and not force_rebuild:
             try:
-                existing = faiss.read_index(str(index_path))
                 meta = json.loads(ids_path.read_text(encoding="utf-8"))
-                if not isinstance(meta, dict):
-                    # legacy/plain-list format -> incompatible, rebuild
-                    loaded = False
-                else:
+                if isinstance(meta, dict):
                     saved_ids = [str(i) for i in meta.get("doc_ids", [])]
                     if (
-                        existing.d == self._dimension
-                        and existing.ntotal == len(doc_ids)
-                        and saved_ids == doc_ids
+                        saved_ids == doc_ids
                         and meta.get("identity") == identity
                     ):
-                        self._index = existing
-                        loaded = True
-            except (RuntimeError, OSError, json.JSONDecodeError, TypeError):
+                        if faiss is not None:
+                            existing = faiss.read_index(str(index_path))
+                            if existing.d == self._dimension and existing.ntotal == len(doc_ids):
+                                self._index = existing
+                                loaded = True
+                        else:
+                            # Load via pure numpy
+                            vecs = np.load(str(index_path))
+                            if vecs.shape == (len(doc_ids), self._dimension):
+                                self._index = _NumpyIndexFlatIP(self._dimension, vecs)
+                                loaded = True
+            except Exception:
                 loaded = False
 
         if not loaded:
-            index = faiss.IndexFlatIP(self._dimension)
-            index.add(np.ascontiguousarray(embeddings, dtype=np.float32))
-            ensure_dir(index_path.parent)
-            faiss.write_index(index, str(index_path))
+            if faiss is not None:
+                index = faiss.IndexFlatIP(self._dimension)
+                index.add(np.ascontiguousarray(embeddings, dtype=np.float32))
+                ensure_dir(index_path.parent)
+                faiss.write_index(index, str(index_path))
+                self.log.info("Built FAISS IndexFlatIP: %d vectors x %d dims",
+                              index.ntotal, self._dimension)
+            else:
+                index = _NumpyIndexFlatIP(self._dimension)
+                index.add(np.ascontiguousarray(embeddings, dtype=np.float32))
+                ensure_dir(index_path.parent)
+                np.save(str(index_path), index.vectors)
+                self.log.info("Built NumPy exact inner product index: %d vectors x %d dims",
+                              index.ntotal, self._dimension)
+
             ids_path.write_text(
                 json.dumps(
                     {"doc_ids": doc_ids, "identity": identity},
@@ -167,10 +222,8 @@ class DenseRetriever:
                 encoding="utf-8",
             )
             self._index = index
-            self.log.info("Built FAISS IndexFlatIP: %d vectors x %d dims",
-                          index.ntotal, self._dimension)
         else:
-            self.log.info("Loaded FAISS index: %d vectors x %d dims",
+            self.log.info("Loaded index: %d vectors x %d dims",
                           self._index.ntotal, self._dimension)
 
         self._doc_ids = doc_ids

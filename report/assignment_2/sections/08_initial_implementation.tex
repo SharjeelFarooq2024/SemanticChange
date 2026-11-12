@@ -1,0 +1,34 @@
+\subsection{Operational Pipeline Architecture}
+The implementation is structured into modular, decoupled packages under \texttt{Assignment\_2/}:
+\begin{itemize}
+    \item \texttt{src/data/}: \texttt{data\_loader.py} and \texttt{data\_validator.py} strictly parse raw JSONL records, enforce foreign key integrity, and compile the \texttt{RetrievalBundle}.
+    \item \texttt{src/preprocessing/}: \texttt{tokenizer.py} and \texttt{text\_preprocessor.py} execute Unicode-compliant, diacritic-preserving tokenization.
+    \item \texttt{src/embeddings/}: \texttt{encoder.py} and \texttt{embedding\_manager.py} handle batched transformer encoding, pooling, and fingerprint-validated disk caching.
+    \item \texttt{src/retrieval/}: \texttt{bm25\_retriever.py}, \texttt{dense\_retriever.py}, \texttt{hybrid\_retriever.py}, and \texttt{fusion.py} execute single-system and fused retrieval.
+    \item \texttt{src/evaluation/}: \texttt{metrics.py}, \texttt{evaluator.py}, and \texttt{ablation.py} compute retrieval metrics, optimize operating points, and conduct subgroup analyses.
+\end{itemize}
+
+\subsection{Standardized Output Schema}
+Every run writes three standard artifacts to \texttt{Assignment\_2/predictions/<system>/}:
+\begin{enumerate}
+    \item \textbf{\texttt{ranked.csv}}: Primary ranked retrieval output containing columns:
+    \begin{center}
+    \texttt{query\_id, doc\_id, rank, score}
+    \end{center}
+    Preserves continuous similarity scores (BM25 score, cosine similarity, or RRF value) to allow post-hoc evaluation at any rank cutoff.
+    \item \textbf{\texttt{binary\_predictions.csv}}: Official-style binary submission format containing columns:
+    \begin{center}
+    \texttt{query\_id, sentence\_id, word, label, score, rank}
+    \end{center}
+    Covers the entire candidate pool with discrete binary sense predictions.
+    \item \textbf{\texttt{run\_metadata.json}}: Machine-readable provenance log containing runtime timestamps, software configuration, candidate counts, and system fingerprints.
+\end{enumerate}
+
+\subsection{Unit Verification and Regression Suite}
+The implementation is validated by an automated unit test suite comprising 89 tests across the repository:
+\begin{itemize}
+    \item \textbf{Assignment 2 Retrieval Suite}: 68 passed, 1 skipped. Unit tests verify data loading, candidate pool restriction, BM25 ranking, dense vector caching, and RRF fusion determinism using deterministic mock encoders without requiring external network downloads.
+    \item \textbf{Assignment 2 Evaluation Suite}: 7 passed. Tests verify exact mathematical edge cases for P@K, Recall@K, MRR, MAP, nDCG@K, Macro-$F_1$, and threshold tuning.
+    \item \textbf{Assignment 1 Regression Suite}: 13 passed. Confirms that baseline data loading, feature extraction, and TF-IDF models remain completely intact.
+\end{itemize}
+

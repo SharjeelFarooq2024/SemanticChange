@@ -1,0 +1,56 @@
+\subsection{5.1 Official Metric: Subtask 2 Macro-$F_1$}
+The official primary evaluation metric for SemEval-2027 Task 3 Subtask 2 is the unweighted \textbf{Macro-averaged $F_1$ score}:
+\begin{equation}
+    \text{Macro-}F_1 = \frac{F_1^{(1)} + F_1^{(0)}}{2}
+\end{equation}
+where for class $c \in \{0, 1\}$:
+\begin{equation}
+    F_1^{(c)} = \frac{2 \cdot P^{(c)} \cdot R^{(c)}}{P^{(c)} + R^{(c)}} = \frac{2 \cdot \text{TP}^{(c)}}{2 \cdot \text{TP}^{(c)} + \text{FP}^{(c)} + \text{FN}^{(c)}}
+\end{equation}
+\paragraph{Properties and Behavior Under Imbalance:}
+\begin{itemize}
+    \item \textbf{Equal Class Weighting}: Unlike Micro-$F_1$ or standard Accuracy (which are dominated by the majority class $c=0$), Macro-$F_1$ assigns equal $50\%$ weight to the minority target sense ($c=1$, $35.55\%$) and majority non-target senses ($c=0$, $64.45\%$).
+    \item \textbf{Severe Penalty for Trivial Baselines}: A model predicting exclusively the majority class achieves $64.48\%$ accuracy but suffers a catastrophic penalty on Macro-$F_1$ ($0.3920$) due to $F_1^{(1)} = 0.0$.
+    \item \textbf{Bounded Range}: $[0.0, 1.0]$, strictly higher is better.
+\end{itemize}
+
+\subsection{5.2 Secondary Evaluation Measures}
+To evaluate the quality of the continuous retrieval rankings before threshold discretization, we implement standard Information Retrieval (IR) metrics:
+
+\paragraph{Precision at Rank $K$ (P@K):}
+Measures the proportion of retrieved documents in the top-$K$ positions that are genuinely relevant:
+\begin{equation}
+    \text{P@K}(q) = \frac{|\text{Retrieved}_K(q) \cap \mathcal{R}(q)|}{K}
+\end{equation}
+
+\paragraph{Recall at Rank $K$ (Recall@K):}
+Measures the fraction of all gold relevant documents captured within the top-$K$ cutoff:
+\begin{equation}
+    \text{Recall@K}(q) = \frac{|\text{Retrieved}_K(q) \cap \mathcal{R}(q)|}{|\mathcal{R}(q)|}
+\end{equation}
+
+\paragraph{Mean Reciprocal Rank (MRR):}
+Evaluates how early the system returns the first relevant document across queries:
+\begin{equation}
+    \text{MRR} = \frac{1}{|Q|} \sum_{q \in Q} \frac{1}{\min \{r : d_r \in \mathcal{R}(q)\}}
+\end{equation}
+
+\paragraph{Mean Average Precision (MAP):}
+Calculates the mean of Average Precision across queries, rewarding systems that place relevant documents at the highest ordinal positions:
+\begin{equation}
+    \text{MAP} = \frac{1}{|Q|} \sum_{q \in Q} \left( \frac{1}{|\mathcal{R}(q)|} \sum_{k=1}^{|\mathcal{C}(q)|} \text{P@k}(q) \cdot \mathbb{I}(d_k \in \mathcal{R}(q)) \right)
+\end{equation}
+
+\paragraph{Normalized Discounted Cumulative Gain (nDCG@K):}
+Accounts for position decay using logarithmic discounting, normalized by the Ideal Discounted Cumulative Gain ($\text{IDCG}_K$):
+\begin{equation}
+    \text{DCG@K}(q) = \sum_{i=1}^K \frac{y_i}{\log_2(i + 1)}, \quad \text{nDCG@K}(q) = \frac{\text{DCG@K}(q)}{\text{IDCG@K}(q)}
+\end{equation}
+
+\subsection{5.3 Subgroup and Robustness Analysis}
+To ensure that aggregate performance does not conceal localized degradation, we conduct systematic subgroup evaluations across two metadata dimensions:
+\begin{enumerate}
+    \item \textbf{Per-Word Subgroup Analysis}: Evaluated across all 10 target lemmas (\textit{driva}, \textit{dumpa}, \textit{exportera}, \textit{fru}, \textit{fr\"oken}, \textit{f\"orort}, \textit{herre}, \textit{kvinna}, \textit{motiv}, \textit{suga}). This exposes whether systems degrade on high-polysemy words or words with extreme class skew.
+    \item \textbf{Diachronic Period Subgroup Analysis}: Evaluated across 10 temporal buckets spanning historical Swedish (1880--1883, 1888--1891, 1896--1899, 1904--1907, 1912--1915) and contemporary Swedish (2006--2007, 2010--2011, 2014--2015, 2018--2019, 2022--2023). This verifies whether modern pretrained encoders suffer historical degradation on 19th-century text.
+\end{enumerate}
+

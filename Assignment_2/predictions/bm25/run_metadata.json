@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-12T09:57:46.417105+00:00",
+  "generated_at": "2026-11-12T12:31:54.560256+00:00",
   "system": "bm25",
   "scope": "per_word",
   "top_k": 100,
@@ -10,9 +10,9 @@
   "n_hits": 998,
   "n_documents": 1983,
   "outputs": {
-    "ranked": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\bm25\\ranked.csv",
-    "binary": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\bm25\\binary_predictions.csv",
-    "qrels": "C:\\Users\\Sharj\\Downloads\\5th\\Projects\\RL_Project\\SemanticChange\\Assignment_2\\predictions\\qrels.csv"
+    "ranked": "C:\\Users\\DAR\\Desktop\\SemanticChange\\Assignment_2\\predictions\\bm25\\ranked.csv",
+    "binary": "C:\\Users\\DAR\\Desktop\\SemanticChange\\Assignment_2\\predictions\\bm25\\binary_predictions.csv",
+    "qrels": "C:\\Users\\DAR\\Desktop\\SemanticChange\\Assignment_2\\predictions\\qrels.csv"
   },
   "config": {
     "k1": 1.5,

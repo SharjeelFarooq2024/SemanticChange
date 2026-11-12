@@ -1,7 +1,7 @@
 # Semantic Change Across Multiple Time Periods
 
 > **SemEval-2027 Task 3** — Swedish development set  
-> Phases complete: **EDA** ✅ | **Baseline A (Classical ML)** ✅ | **Baseline B (Frozen XLM-R)** ⏳  
+> Phases complete: **EDA** ✅ | **Baseline A (Classical ML)** ✅ | **Baseline B (Frozen XLM-R)** ✅ | **Assignment 2 (Core Retrieval & Evaluation)** ✅  
 > Methodological fixes applied: **Dynamic k-selection (Subtask 1)** ✅ | **Morphological ablation masking (Subtask 2)** ✅
 
 ---
@@ -60,16 +60,18 @@ SemanticChange/
 │   ├── test_baseline_data.py   # 8 tests: bundle integrity, join, leakage, cache
 │   └── test_classical_features.py  # 5 tests: feature frame, TF-IDF determinism, ablation
 │
-├── report/assignment_1/        # LaTeX report scaffolding
-│   ├── main.tex
-│   ├── references.bib
-│   └── sections/
-│       ├── task.tex
-│       ├── dataset.tex
-│       ├── eda.tex
-│       ├── related_work.tex
-│       ├── baselines.tex       # Full Baseline A + B comparison section
-│       └── next_steps.tex
+├── Assignment_2/                # Core Information Retrieval System & Evaluation Suite
+│   ├── configs/                # BM25, dense, hybrid YAML configurations
+│   ├── src/                    # Data loaders, preprocessors, retrievers, evaluation engine
+│   ├── scripts/ & run.py       # Unified CLI execution entry point
+│   ├── evaluate.py             # Evaluation, threshold tuning, and ablation CLI
+│   ├── predictions/            # Ranked lists, binary predictions, and qrels
+│   ├── outputs/evaluation/     # Metric comparison CSVs, subgroup tables, and ablation results
+│   └── tests/                  # 76 unit tests for retrieval and evaluation
+│
+├── report/
+│   ├── assignment_1/           # LaTeX report for Assignment 1 (EDA and Baselines)
+│   └── assignment_2/           # LaTeX report for Assignment 2 (Proposed Method & Evaluation Design)
 │
 ├── requirements.txt
 ├── README.md
@@ -308,20 +310,41 @@ python -m src.baselines.evaluate
 
 ---
 
-## Report
+## Assignment 2 — Core Retrieval System & Experimental Evaluation
 
-The LaTeX report is under `report/assignment_1/`. The baseline comparison
-section (`sections/baselines.tex`) covers:
+Assignment 2 reformulates official **Subtask 2** (*Hypothesis-Driven Semantic Change Detection*) as an asymmetric Information Retrieval problem:
+- **Queries**: 10 target sense definitions (`definitions.jsonl`)
+- **Documents**: 1,983 usage sentences (`usages.jsonl`)
+- **Qrels**: 1,983 binary ground-truth relevance pairs (705 positive, base rate = 35.55%)
 
-1. Task formulation (Subtask 1 WSI vs. Subtask 2 classification)
-2. Data split and leakage prevention
-3. Classical feature design and EDA connections
-4. TF-IDF model configurations (7 models)
-5. LR coefficient and RF Gini interpretation
-6. Frozen XLM-R method (feature extraction vs. fine-tuning)
-7. Evaluation metrics rationale
-8. Full results tables (Subtask 2 and Subtask 1)
-9. Per-word and per-period error analysis
-10. Exploratory vs. predictive evidence distinction
-11. Alternative explanations for apparent cluster shifts
-12. Limitations (7 items)
+### Systems Implemented
+1. **Okapi BM25**: Non-parametric lexical retrieval preserving Swedish diacritics and temporal century numerals.
+2. **Dense Semantic Retrieval**: Frozen `intfloat/multilingual-e5-small` contrastive embeddings (384-dim) with exact cosine search and SHA-256 fingerprint caching.
+3. **Hybrid RRF**: Reciprocal Rank Fusion ($k=60$) combining BM25 and Dense ordinal rankings.
+4. **Evaluation Engine & Calibrated Thresholding**: Computes MRR, MAP, nDCG@K, P@K, sweeps operating points ($K^*$) for official Macro-$F_1$, and performs subgroup analysis across words and diachronic periods.
+
+### Running Assignment 2
+
+```bash
+# 1. Run all three retrieval systems
+python Assignment_2/run.py --system all
+
+# 2. Run full evaluation, threshold optimization, and ablation suite
+python Assignment_2/evaluate.py
+
+# 3. Run complete test suites
+python -m pytest tests/ Assignment_2/tests/ -v
+```
+
+### Retrieval Ranking Performance Summary (Swedish Dev Set)
+
+| System | MRR | MAP | nDCG@10 | P@5 | P@10 | Recall@10 | Recall@50 |
+|---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| **BM25** | 0.618 | 0.229 | 0.383 | 0.320 | 0.370 | 0.066 | 0.285 |
+| **Dense (E5-small)** | 0.612 | **0.323** | 0.427 | 0.480 | 0.410 | 0.082 | **0.389** |
+| **Hybrid (RRF, $k=60$)** | **0.692** | 0.293 | **0.490** | **0.540** | **0.480** | **0.103** | 0.381 |
+
+### Reports
+- **Assignment 1 Report**: `report/assignment_1/` (EDA and Baselines A & B)
+- **Assignment 2 Report**: `report/assignment_2/` (Proposed Approach and Experimental Design following Dr. Mehwish Fatima's 9-section specification)
+

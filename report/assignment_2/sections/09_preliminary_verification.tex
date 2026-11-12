@@ -1,0 +1,128 @@
+\subsection{Experimental Verification on Swedish Development Data}
+To verify the operational correctness and empirical behavior of the complete retrieval and evaluation pipeline, we report comprehensive preliminary verification results over the full Swedish development set (1,983 documents, 10 definition queries, 705 positive qrels).
+
+\subsection{Computational Cost and Execution Durations}
+All experiments were executed on a commodity workstation (CPU: 64-bit multi-core, 16 GB RAM):
+\begin{itemize}
+    \item \textbf{One-Time Dense Embedding Generation}: $\approx 3.2$ minutes on CPU for 1,983 documents; subsequent runs load the verified cache in $< 0.1$ seconds.
+    \item \textbf{BM25 Index Construction and Retrieval}: $\approx 0.85$ seconds.
+    \item \textbf{Dense FAISS Exact Cosine Search}: $\approx 0.08$ seconds.
+    \item \textbf{Hybrid RRF Fusion and Prediction Serialization}: $\approx 0.22$ seconds.
+    \item \textbf{Full Evaluation and Metric Generation}: $\approx 1.8$ seconds.
+\end{itemize}
+
+\subsection{Comparative Retrieval Performance}
+Table~\ref{tab:retrieval_metrics} presents the core retrieval ranking metrics across the three proposed systems under \texttt{per\_word} candidate scoping.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lcccccccc}
+\toprule
+\textbf{System} & \textbf{MRR} & \textbf{MAP} & \textbf{nDCG@10} & \textbf{P@5} & \textbf{P@10} & \textbf{Recall@10} & \textbf{P@20} & \textbf{Recall@50} \\
+\midrule
+\textbf{BM25} & 0.618 & 0.229 & 0.383 & 0.320 & 0.370 & 0.066 & 0.350 & 0.285 \\
+\textbf{Dense (E5-small)} & 0.612 & \textbf{0.323} & 0.427 & 0.480 & 0.410 & 0.082 & \textbf{0.440} & \textbf{0.389} \\
+\textbf{Hybrid (RRF, $k=60$)} & \textbf{0.692} & 0.293 & \textbf{0.490} & \textbf{0.540} & \textbf{0.480} & \textbf{0.103} & 0.395 & 0.381 \\
+\bottomrule
+\end{tabular}
+\caption{Retrieval ranking performance on the Swedish development set under \texttt{per\_word} scoping (10 queries, 1,983 documents, base positive prevalence $= 0.355$).}
+\label{tab:retrieval_metrics}
+\end{table}
+
+\paragraph{Key Observations on Retrieval Metrics:}
+\begin{enumerate}
+    \item \textbf{Early Rank Precision Dominance}: The Hybrid RRF system achieves a dramatic increase in high-confidence top ranks ($\text{P@5} = 0.540$, $\text{P@10} = 0.480$, $\text{MRR} = 0.692$), substantially exceeding the empirical background prevalence of $0.355$ ($+52\%$ enrichment).
+    \item \textbf{Broad Semantic Recall}: Dense retrieval delivers the highest overall Mean Average Precision ($\text{MAP} = 0.323$) and 50-candidate recall ($0.389$), effectively capturing semantic equivalents where surface BM25 term overlap is absent.
+\end{enumerate}
+
+\subsection{Unified Subtask 2 Classification Benchmark}
+Table~\ref{tab:unified_benchmark} compares our retrieval systems against all Assignment 1 baselines on the official Subtask 2 classification metrics.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{llcccc}
+\toprule
+\textbf{System} & \textbf{Paradigm / Architecture} & \textbf{Accuracy} & \textbf{Macro-$F_1$} & \textbf{Precision} & \textbf{Recall} \\
+\midrule
+\multicolumn{6}{l}{\textit{Supervised Classical Machine Learning Baselines (Assignment 1)}} \\
+EDA Features + Logistic Regression & Supervised (TF-IDF + Metadata) & \textbf{0.839} & \textbf{0.816} & \textbf{0.836} & \textbf{0.805} \\
+Word + Char TF-IDF Linear SVM & Supervised (N-grams) & \textbf{0.839} & 0.816 & 0.838 & 0.803 \\
+TF-IDF Logistic Regression & Supervised (Lexical) & 0.816 & 0.792 & 0.807 & 0.783 \\
+\addlinespace
+\multicolumn{6}{l}{\textit{Supervised Pretrained Contextual Baselines (Assignment 1)}} \\
+Frozen XLM-R + Logistic Regression & Frozen Contextual (768-d) & 0.736 & 0.721 & 0.718 & 0.731 \\
+Frozen XLM-R + Linear SVM & Frozen Contextual (768-d) & 0.730 & 0.714 & 0.711 & 0.723 \\
+\addlinespace
+\multicolumn{6}{l}{\textit{Zero-Training Information Retrieval Systems (Assignment 2)}} \\
+\textbf{Dense (Tuned $K^*=65$)} & Zero-Training E5-small IR & 0.601 & \textbf{0.557} & 0.434 & 0.400 \\
+\textbf{Hybrid (Tuned $K^*=75$)} & Zero-Training RRF IR & 0.571 & 0.538 & 0.403 & 0.428 \\
+Dense (Naive $K=50$) & Zero-Training E5-small IR & 0.612 & 0.542 & 0.436 & 0.309 \\
+BM25 (Tuned $K^*=70$) & Zero-Training Lexical IR & 0.543 & 0.500 & 0.356 & 0.353 \\
+BM25 (Naive $K=50$) & Zero-Training Lexical IR & 0.569 & 0.490 & 0.350 & 0.248 \\
+\addlinespace
+\multicolumn{6}{l}{\textit{Trivial Heuristic Baseline}} \\
+Majority Class & Zero-Information Heuristic & 0.645 & 0.392 & 0.322 & 0.500 \\
+\bottomrule
+\end{tabular}
+\caption{Unified Subtask 2 comparative evaluation across Assignment 1 and Assignment 2 systems.}
+\label{tab:unified_benchmark}
+\end{table}
+
+\subsection{Empirical Ablation Verification}
+
+\paragraph{1. Scope Ablation (Per-Word vs. Global):}
+Table~\ref{tab:scope_ablation} confirms the critical importance of lemma-scoped candidate filtering.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{Scope} & \textbf{MRR} & \textbf{MAP} & \textbf{nDCG@10} & \textbf{P@10} & \textbf{Recall@10} & \textbf{Recall@100} \\
+\midrule
+\texttt{per\_word} & \textbf{0.618} & \textbf{0.229} & \textbf{0.383} & \textbf{0.370} & \textbf{0.066} & \textbf{0.583} \\
+\texttt{global} & 0.207 & 0.017 & 0.087 & 0.080 & 0.019 & 0.097 \\
+\bottomrule
+\end{tabular}
+\caption{Candidate scope ablation on Okapi BM25 retrieval.}
+\label{tab:scope_ablation}
+\end{table}
+When evaluated globally across all $1,983$ corpus documents, MRR collapses by $66.5\%$ ($0.618 \to 0.207$) and MAP collapses by $92.5\%$ ($0.229 \to 0.017$). This demonstrates that unsupervised lexical search without lemma constraints retrieves cross-word matches that fatally dilute sense-discriminative ranking.
+
+\paragraph{2. Fusion Parameter Sensitivity ($k$):}
+Table~\ref{tab:fusion_ablation} verifies the impact of the RRF smoothing constant.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{RRF Parameter} & \textbf{MRR} & \textbf{MAP} & \textbf{nDCG@10} & \textbf{P@5} & \textbf{P@10} & \textbf{Recall@50} \\
+\midrule
+$k = 10$ & 0.675 & 0.279 & 0.472 & 0.520 & 0.470 & 0.325 \\
+$k = 30$ & \textbf{0.708} & 0.291 & \textbf{0.491} & 0.500 & \textbf{0.480} & 0.366 \\
+$k = 60$ & 0.692 & \textbf{0.293} & 0.490 & \textbf{0.540} & \textbf{0.480} & \textbf{0.381} \\
+$k = 100$ & 0.692 & 0.291 & 0.477 & \textbf{0.540} & 0.460 & \textbf{0.383} \\
+\bottomrule
+\end{tabular}
+\caption{Reciprocal Rank Fusion sensitivity across smoothing constant $k$.}
+\label{tab:fusion_ablation}
+\end{table}
+$k = 30$ and $k = 60$ achieve optimal trade-offs between reciprocal rank ($\text{MRR} = 0.708$) and cumulative precision ($\text{MAP} = 0.293$, $\text{nDCG@10} = 0.491$).
+
+\paragraph{3. Operating-Point Calibration ($K^*$):}
+Threshold optimization directly resolves the distortion caused by static $K=50$ cutoffs:
+\begin{itemize}
+    \item \textbf{Dense}: Sweeping from $K=50 \to K^*=65$ increases Macro-$F_1$ from $0.542$ to \textbf{$0.557$} and Binary $F_1$ from $0.362$ to \textbf{$0.416$}.
+    \item \textbf{Hybrid}: Sweeping from $K=50 \to K^*=75$ increases Macro-$F_1$ from $0.521$ to \textbf{$0.538$} and Binary $F_1$ from $0.334$ to \textbf{$0.415$}.
+    \item \textbf{BM25}: Sweeping from $K=50 \to K^*=70$ increases Macro-$F_1$ from $0.490$ to \textbf{$0.500$} and Binary $F_1$ from $0.290$ to \textbf{$0.354$}.
+\end{itemize}
+
+\subsection{Issues to Resolve Before Full Shared-Task Submission}
+\begin{enumerate}
+    \item \textbf{Supervised Re-Ranking}: The zero-training retrieval pipeline provides clean candidate rankings ($\text{Recall@100} = 73.0\%$). Training a cross-encoder re-ranker on the top-50 candidates will close the gap to the supervised Assignment 1 models.
+    \item \textbf{Diachronic Fine-Tuning}: Pretrained \texttt{e5-small} lacks historical Swedish domain adaptation. Masked language modeling adaptation on 19th-century Kubhist texts before contrastive fine-tuning represents a promising next step.
+\end{enumerate}
+

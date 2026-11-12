@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-11-12T12:31:57.250211+00:00",
+  "system": "bm25",
+  "scope": "global",
+  "top_k": 100,
+  "encoder": null,
+  "binary_top_k": 50,
+  "n_queries_run": 10,
+  "n_queries_total": 10,
+  "n_hits": 1000,
+  "n_documents": 1983,
+  "outputs": {
+    "ranked": "C:\\Users\\DAR\\Desktop\\SemanticChange\\Assignment_2\\predictions\\bm25_global\\ranked.csv",
+    "binary": "C:\\Users\\DAR\\Desktop\\SemanticChange\\Assignment_2\\predictions\\bm25_global\\binary_predictions.csv",
+    "qrels": "C:\\Users\\DAR\\Desktop\\SemanticChange\\Assignment_2\\predictions\\qrels.csv"
+  },
+  "config": {
+    "k1": 1.5,
+    "b": 0.75,
+    "tokenizer": {
+      "pattern": "[\\w]+",
+      "lowercase": true
+    },
+    "index": {
+      "path": "artifacts/bm25_index/bm25_index.pkl"
+    },
+    "retrieval": {
+      "top_k": 100,
+      "scope": "per_word"
+    },
+    "binary_export": {
+      "strategy": "top_k",
+      "top_k": 50
+    }
+  }
+}

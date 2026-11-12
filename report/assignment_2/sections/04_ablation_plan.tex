@@ -1,0 +1,46 @@
+\subsection{Ablation Framework and Research Hypotheses}
+To systematically isolate the individual contributions of representations, candidate pools, fusion algorithms, and operating points, we formulate four targeted ablation axes. Each ablation addresses a precise research question and tests an explicit hypothesis.
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{p{4.2cm}p{5.4cm}p{5.0cm}}
+\toprule
+\textbf{Ablation} & \textbf{Hypothesis} & \textbf{Expected Interpretation} \\
+\midrule
+\textbf{1. Candidate Scope Restriction} (\texttt{per\_word} vs \texttt{global}) & Restricting the candidate pool to the target word's instances ($\mathcal{C}(w)$) eliminates spurious cross-word lexical matches, forcing the system to isolate intra-lemma sense shifts. & A large performance collapse in \texttt{global} scope proves that unconstrained retrieval conflates word identification with sense disambiguation. \\
+\addlinespace
+\textbf{2. Encoder Backbone} (\texttt{e5-small} vs \texttt{xlmr-base}) & Contrastive query-passage pretraining produces significantly better representation geometry for definition-to-usage retrieval than generic masked-LM objectives. & Superior retrieval metrics (MAP, MRR, nDCG) for E5 validate contrastive pretraining over general masked LM feature extractors. \\
+\addlinespace
+\textbf{3. RRF Smoothing Constant} ($k \in \{10, 30, 60, 100\}$) & Intermediate smoothing ($k \in [30, 60]$) optimally balances high-confidence top-ranked hits without penalizing lower-ranked semantic consensus. & Extreme values will degrade performance: small $k$ ($10$) over-weights outlier top-1 ranks; large $k$ ($100$) flattens rank discrimination. \\
+\addlinespace
+\textbf{4. Operating-Point Calibration} (Naive $K=50$ vs Calibrated $K^*$) & Aligning the binary prediction volume with the true positive prevalence improves Macro-$F_1$ and mitigates class imbalance skew. & Calibrated $K^*$ improves Macro-$F_1$ and binary $F_1$ over naive $K=50$, especially on words with imbalanced positive base rates. \\
+\bottomrule
+\end{tabular}
+\caption{Structured ablation plan detailing research questions, hypotheses, and expected interpretations.}
+\label{tab:ablation_plan}
+\end{table}
+
+\subsection{Detailed Experimental Ablation Design}
+
+\paragraph{Ablation 1: Candidate Pool Scoping (\texttt{per\_word} vs \texttt{global})}
+In \texttt{per\_word} scope, for each query definition $q$ of target word $w$, only the documents $d \in \mathcal{C}(w)$ are ranked ($|\mathcal{C}(w)| \approx 100\text{--}290$). In \texttt{global} scope, all $1,983$ documents in the Swedish corpus are ranked simultaneously. This isolates whether lexical retrieval requires lemma boundaries to avoid retrieving sentences that merely share incidental context words.
+
+\paragraph{Ablation 2: Encoder Objective Architecture}
+We contrast:
+\begin{itemize}
+    \item \texttt{intfloat/multilingual-e5-small}: 384 dimensions, contrastively trained on asymmetric pairs with query/passage task prefixes.
+    \item \texttt{FacebookAI/xlm-roberta-base}: 768 dimensions, trained purely on masked language modeling across diverse multilingual corpora.
+\end{itemize}
+This ablation tests whether retrieval fine-tuning is required or whether generic cross-lingual contextual representations suffice for definition matching.
+
+\paragraph{Ablation 3: Fusion Smoothing Sensitivity ($k$)}
+Reciprocal Rank Fusion computes:
+\begin{equation}
+    RRF(d) = \sum_{m \in \{\text{BM25}, \text{Dense}\}} \frac{1}{k + r_m(d)}
+\end{equation}
+We sweep $k \in \{10, 30, 60, 100\}$ across all 10 target definitions to map the sensitivity curve of MRR, MAP, and nDCG@10.
+
+\paragraph{Ablation 4: Decision Threshold Optimization}
+Because the dataset is imbalanced (35.55\% positive), a fixed rank cutoff of $K=50$ predicts exactly 50 positive labels per word regardless of candidate pool size. We sweep $K \in [5, 100]$ in increments of 5 to determine the optimal global operating point $K^*$ that maximizes Subtask 2 Macro-$F_1$.
+

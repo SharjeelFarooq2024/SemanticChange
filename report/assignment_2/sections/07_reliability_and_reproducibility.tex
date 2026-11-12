@@ -1,0 +1,19 @@
+\subsection{Deterministic Ranking and Tie-Breaking}
+In information retrieval evaluation, arbitrary tie-breaking among equal-scoring documents introduces hidden variance. To eliminate non-determinism, all three retrieval pipelines implement a canonical multi-key sorting rule:
+\begin{equation}
+    \text{SortKey}(d) = (-\text{Score}(d), \, \text{DocID}(d))
+\end{equation}
+Ties in BM25 or RRF scores are resolved lexicographically by document identifier, ensuring bit-for-bit identical ranked lists across repeated runs and differing execution environments.
+
+\subsection{Cache Integrity and Hardware Invariance}
+\begin{itemize}
+    \item \textbf{Identity Verification}: All cached embeddings (\texttt{.npz}) and indices are guarded by a composite SHA-256 fingerprint encompassing:
+    \begin{itemize}
+        \item The exact sequence of all document IDs and passage texts.
+        \item The model identifier, pooling strategy, maximum length, and prefix configuration.
+    \end{itemize}
+    Any alteration in corpus text or model parameters immediately invalidates the cache, preventing stale artifact contamination.
+    \item \textbf{Hardware Acceleration and CPU Fallback}: The pipeline automatically binds to NVIDIA CUDA GPUs when available and gracefully defaults to multicore CPU inference. Because cosine similarity over $L_2$-normalized vectors is mathematically invariant to device architecture, GPU and CPU executions produce identical retrieval rankings.
+    \item \textbf{Statistical Reliability}: Given that the proposed retrieval systems are entirely deterministic during inference, across-seed variance for a fixed parameter set is zero ($\sigma^2 = 0.0$). We report exact metrics across the entire 1,983-instance development population.
+\end{itemize}
+
