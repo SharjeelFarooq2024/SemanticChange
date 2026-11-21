@@ -37,7 +37,7 @@ This ablation tests whether retrieval fine-tuning is required or whether generic
 \paragraph{Ablation 3: Fusion Smoothing Sensitivity ($k$)}
 Reciprocal Rank Fusion computes:
 \begin{equation}
-    RRF(d) = \sum_{m \in \{\text{BM25}, \text{Dense}\}} \frac{1}{k + r_m(d)}
+    \text{RRF}(d) = \sum_{m \in \{\text{BM25}, \text{Dense}\}} \frac{1}{k + r_m(d)}
 \end{equation}
 We sweep $k \in \{10, 30, 60, 100\}$ across all 10 target definitions to map the sensitivity curve of MRR, MAP, and nDCG@10.
 

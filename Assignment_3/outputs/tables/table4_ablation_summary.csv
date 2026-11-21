@@ -1,0 +1,15 @@
+ablation_axis,variant,official_f1,mrr,map,ndcg@10,description
+Candidate Scope,BM25 (per_word),,0.6183333333333334,0.2290967067715206,0.3826223416530364,Restricted per-word pool vs unconstrained global corpus pool
+Candidate Scope,BM25 (global),,0.2074315443011095,0.0171020744677442,0.0866947989864271,Restricted per-word pool vs unconstrained global corpus pool
+RRF Smoothing k,Hybrid (RRF k=10),,0.675,0.278788193351321,0.4717893303985196,Reciprocal Rank Fusion smoothing parameter k=10
+RRF Smoothing k,Hybrid (RRF k=30),,0.7083333333333333,0.2907879792230429,0.491429934236445,Reciprocal Rank Fusion smoothing parameter k=30
+RRF Smoothing k,Hybrid (RRF k=60),,0.6916666666666667,0.2926032078059867,0.4902129092269899,Reciprocal Rank Fusion smoothing parameter k=60
+RRF Smoothing k,Hybrid (RRF k=100),,0.6916666666666667,0.2913611012869316,0.4774209316185964,Reciprocal Rank Fusion smoothing parameter k=100
+Decision Cutoff,BM25 (Naive K=50),0.23584273990960983,,,,Fixed arbitrary top-50 rank cutoff
+Decision Cutoff,BM25 (Tuned K*),0.35811488629089183,,,,Leakage-free optimal K* tuned on train partition only
+Decision Cutoff,DENSE (Naive K=50),0.32735482815611716,,,,Fixed arbitrary top-50 rank cutoff
+Decision Cutoff,DENSE (Tuned K*),0.4483846469202737,,,,Leakage-free optimal K* tuned on train partition only
+Decision Cutoff,HYBRID (Naive K=50),0.31258585101170605,,,,Fixed arbitrary top-50 rank cutoff
+Decision Cutoff,HYBRID (Tuned K*),0.4181569706295961,,,,Leakage-free optimal K* tuned on train partition only
+Target Word Identity,Full Interpretable LR (with word ID),0.34086774881266535,,,,Full lexical and morphological surface identity available
+Target Word Identity,Ablated LR (morphologically masked),0.45984038837311136,,,,All target word inflections masked with [TARGET] token

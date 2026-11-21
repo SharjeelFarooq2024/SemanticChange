@@ -42,3 +42,9 @@ Every input JSONL file is verified for structural consistency: malformed records
     \item \textbf{Candidate Restriction}: Target sense definitions are matched only against candidate usages within the target word's lemma pool, strictly barring cross-word leakage.
 \end{itemize}
 
+\subsection{Local Development vs. Official Hidden-Test Evaluation}
+\begin{itemize}
+    \item \textbf{Local Development Protocol}: Evaluated locally on the released Swedish development partition ($1,983$ usages) where gold labels are available. This enables full ranking metric calculations (MAP, MRR, nDCG) and parameter sensitivity sweeps ($k$, $K^*$).
+    \item \textbf{Official Hidden-Test Protocol}: The unreleased official evaluation server partition contains unseen usage instances and undisclosed ground-truth labels. The pipeline exports the standardized \texttt{binary\_predictions.csv} format matching the official submission schema (\texttt{sentence\_id, word, label}), applying the calibrated decision cutoff $K^*$ established on development data without test-set label contamination.
+\end{itemize}
+

@@ -16,6 +16,14 @@ The pipeline executes in five sequential phases:
     \item \textbf{Operating-Point Calibration}: The fused continuous ranking is converted into binary predictions by sweeping rank thresholds $K^*$ to optimize downstream Macro-$F_1$ on the candidate pool.
 \end{enumerate}
 
+\subsection{Role of Features and Representations Identified in Assignment 1}
+The representations utilized in Assignment 2 directly build upon the findings of Assignment 1:
+\begin{itemize}
+    \item \textbf{Lexical and Morphological Features}: Assignment 1 demonstrated that word- and character $n$-gram TF-IDF models yielded strong classification baselines ($F_1 = 0.816$), but suffered from surface inflection sensitivity. In Assignment 2, this informs our BM25 lexical retriever, which employs a Swedish diacritic-guarding tokenizer preserving morphological stems and numerical temporal markers (e.g., historical years) that were proven to carry diachronic signal.
+    \item \textbf{Contextual Neural Representations}: Assignment 1's Baseline B evaluated frozen \texttt{FacebookAI/xlm-roberta-base} representations. We retain this exact 768-dimensional model as an official ablation benchmark, while upgrading our primary retriever to \texttt{intfloat/multilingual-e5-small} to exploit asymmetric contrastive query-passage training specifically designed for retrieval tasks.
+    \item \textbf{Temporal Metadata}: Analysis in Assignment 1 confirmed that semantic change correlates with diachronic period partitions. Rather than discarding temporal indicators, periods are preserved in document structures and utilized for post-retrieval subgroup robustness audits.
+\end{itemize}
+
 \subsection{Required Method Diagram}
 Figure~\ref{fig:method_pipeline} depicts the complete end-to-end flow, explicitly detailing inputs, representations, model components, and distinguishing frozen versus non-parametric modules.
 

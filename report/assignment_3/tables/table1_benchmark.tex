@@ -1,0 +1,28 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{llcccc}
+\toprule
+\textbf{Phase} & \textbf{Model / System} & \textbf{Official $F_1$} & \textbf{95\% CI} & \textbf{Pooled $F_1$} & \textbf{Accuracy} \\
+\midrule
+A1 & Pretrained Baseline & 0.489 $\pm$ 0.022 & [0.473, 0.507] & 0.715 & 0.737 \\
+A1 & Trivial Reference & 0.470 $\pm$ 0.018 & [0.455, 0.481] & 0.262 & 0.355 \\
+A1 & Ablation Baseline & 0.460 $\pm$ 0.047 & [0.422, 0.495] & 0.748 & 0.766 \\
+A1 & Pretrained Baseline & 0.459 $\pm$ 0.023 & [0.441, 0.476] & 0.695 & 0.718 \\
+A1 & Classical ML & 0.455 $\pm$ 0.045 & [0.420, 0.491] & 0.798 & 0.822 \\
+A1 & Classical ML & 0.450 $\pm$ 0.049 & [0.412, 0.489] & 0.811 & 0.836 \\
+A2 & DENSE (Tuned K*=100) & 0.448 $\pm$ 0.016 & [0.434, 0.459] & 0.554 & 0.565 \\
+A1 & Classical ML & 0.446 $\pm$ 0.039 & [0.419, 0.478] & 0.801 & 0.823 \\
+A2 & HYBRID (Tuned K*=100) & 0.418 $\pm$ 0.029 & [0.395, 0.440] & 0.525 & 0.536 \\
+A2 & BM25 (Tuned K*=100) & 0.358 $\pm$ 0.016 & [0.343, 0.367] & 0.481 & 0.491 \\
+A1 & Classical ML & 0.341 $\pm$ 0.026 & [0.321, 0.362] & 0.811 & 0.834 \\
+A2 & DENSE (Naive K=50) & 0.327 $\pm$ 0.030 & [0.304, 0.350] & 0.537 & 0.612 \\
+A2 & HYBRID (Naive K=50) & 0.313 $\pm$ 0.036 & [0.284, 0.341] & 0.521 & 0.598 \\
+A2 & BM25 (Naive K=50) & 0.236 $\pm$ 0.027 & [0.214, 0.254] & 0.476 & 0.558 \\
+A1 & Classical ML & 0.228 $\pm$ 0.063 & [0.182, 0.277] & 0.600 & 0.723 \\
+A1 & Simple Baseline & 0.000 $\pm$ 0.000 & [0.000, 0.000] & 0.392 & 0.645 \\
+\bottomrule
+\end{tabular}
+\caption{Subtask 2 classification benchmark across 5 random seeds (80/20 stratified split, $n_{\text{test}}=397$). Official metric is per-word macro-averaged positive-class $F_1$. Secondary metrics include pooled macro-$F_1$ and accuracy.}
+\label{tab:subtask2_benchmark}
+\end{table}

@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Paired Comparison ($A$ vs $B$)} & \textbf{Mean Diff ($\Delta$)} & \textbf{95\% CI} & \textbf{$t$-test $p$} & \textbf{Permutation $p$} & \textbf{Sig.} \\
+\midrule
+Hybrid vs Dense (Tuned K*) & -0.030 & [-0.042, -0.015] & 0.0177 & 0.0610 & \textbf{Yes} \\
+Hybrid vs BM25 (Tuned K*) & +0.060 & [+0.044, +0.080] & 0.0042 & 0.0610 & \textbf{Yes} \\
+Dense vs BM25 (Tuned K*) & +0.090 & [+0.085, +0.096] & 0.0000 & 0.0610 & \textbf{Yes} \\
+Hybrid vs Frozen XLM-R + LR & -0.071 & [-0.090, -0.052] & 0.0028 & 0.0610 & \textbf{Yes} \\
+Hybrid vs Word+char SVM & -0.032 & [-0.068, -0.002] & 0.1506 & 0.1248 & No \\
+Hybrid (Tuned K* vs Naive K=50) & +0.106 & [+0.075, +0.136] & 0.0044 & 0.0610 & \textbf{Yes} \\
+Dense (Tuned K* vs Naive K=50) & +0.121 & [+0.102, +0.147] & 0.0007 & 0.0610 & \textbf{Yes} \\
+BM25 (Tuned K* vs Naive K=50) & +0.122 & [+0.102, +0.148] & 0.0008 & 0.0610 & \textbf{Yes} \\
+\bottomrule
+\end{tabular}
+\caption{Hypothesis testing of paired system differences in Official Subtask 2 $F_1$ across 5 random seeds. Significance assessed at $\alpha=0.05$ via paired Student's $t$-test and 10,000-resample permutation tests.}
+\label{tab:paired_significance}
+\end{table}

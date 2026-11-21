@@ -1,0 +1,51 @@
+\subsection{Experimental Protocol and Task Setup}
+All experimental evaluations are executed over the official benchmark dataset for Subtask 2 of the SemEval-2027 Diachronic Semantic Change in Swedish shared task. The dataset comprises $N = 1,983$ historical and contemporary Swedish usage sentences across 10 target lemmas (\textit{blockera}, \textit{driva}, \textit{dumpa}, \textit{f\"{o}rr\aa}d, \textit{handikapp}, \textit{kort}, \textit{kvinna}, \textit{ledning}, \textit{maskin}, and \textit{process}), spanning four distinct chronological periods from 1700 to the 2000s. Each usage is annotated with a binary label $y \in \{0, 1\}$, indicating whether the instance exemplifies the modern sense introduced in the contemporary period ($y=1$) or the archaic/historical sense ($y=0$). The label distribution is imbalanced, with 705 positive instances (35.55\%) and 1,278 negative instances (64.45\%).
+
+To guard against data partitioning artifacts and evaluate true model variance, all systems were evaluated across $S = 5$ independent random seeds:
+\begin{equation}
+\mathcal{S} = \{42, 100, 2023, 2026, 777\}.
+\end{equation}
+For each seed $s \in \mathcal{S}$, the dataset is partitioned using stratified sampling on label $y$ into an 80\% training split ($n_{\text{train}} = 1,586$; 564 positive, 1,022 negative) and a 20\% held-out test split ($n_{\text{test}} = 397$; 141 positive, 256 negative).
+
+\subsection{Leakage-Free Operating Cutoff ($K^*$) Selection}
+For information retrieval systems (BM25, Dense E5-small, and Hybrid RRF), retrieval produces an ordered ranking of candidate documents for each target word query. To map ranked retrieval outputs into binary sense predictions, we select an optimal rank cutoff threshold $K^*$. Crucially, to prevent data leakage and inflated test performance, the rank cutoff $K^* \in \{5, 10, 15, \dots, 100\}$ is optimized \textbf{strictly on the training split} by maximizing the Official Subtask 2 metric:
+\begin{equation}
+K^*(s) = \arg\max_{K \in \{5, 10, \dots, 100\}} F_{1,\text{official}}\left(\mathbf{y}_{\text{train}}, \hat{\mathbf{y}}_{\text{train}}(K)\right).
+\end{equation}
+The optimal cutoff $K^*(s)$ is then frozen and applied directly to the unseen held-out test rows $\mathbf{y}_{\text{test}}$.
+
+\subsection{Comparison Systems Evaluated}
+A comprehensive suite of 16 systems was evaluated under identical splits and scoring scripts:
+\begin{enumerate}
+    \item \textbf{Simple Baselines}:
+    \begin{itemize}
+        \item \textit{Majority Baseline}: Always predicts the majority class ($y=0$). Serves as a trivial non-learning floor.
+        \item \textit{Always 1 (Trivial)}: Predicts $y=1$ for all instances. Demonstrates the metric behavior of positive-class $F_1$ under class skew.
+    \end{itemize}
+    \item \textbf{Classical Machine Learning Baselines} (Assignment 1):
+    \begin{itemize}
+        \item \textit{TF-IDF + Logistic Regression}: Sublinear word n-grams (1--3) with class-weighted $\ell_2$-regularized Logistic Regression ($C=1.0$).
+        \item \textit{TF-IDF + Complement Naive Bayes}: Complement NB formulation adapted for skewed text classification.
+        \item \textit{Word+Char TF-IDF + Linear SVM}: Combined word n-grams (1--2) and character n-grams (3--5) with Linear Support Vector Classification.
+        \item \textit{EDA Features + Logistic Regression}: Interpretable feature union containing lexical statistics, punctuation counts, and categorical metadata with Logistic Regression.
+        \item \textit{EDA Features + Random Forest}: 100-tree Random Forest with balanced class weights.
+        \item \textit{Ablated LR (Morphological Masking)}: Controlled ablation where all inflectional surface forms of the target lemma are masked with \texttt{[TARGET]}.
+    \end{itemize}
+    \item \textbf{Pretrained Language Model Baselines} (Assignment 1):
+    \begin{itemize}
+        \item \textit{Frozen XLM-R + Logistic Regression}: Mean-pooled 768-dimensional sentence embeddings from \texttt{xlm-roberta-base} (278M parameters) with StandardScaler and Logistic Regression.
+        \item \textit{Frozen XLM-R + Linear SVM}: Frozen \texttt{xlm-roberta-base} embeddings with Linear Support Vector Classifier.
+    \end{itemize}
+    \item \textbf{Proposed Information Retrieval Systems} (Assignment 2):
+    \begin{itemize}
+        \item \textit{BM25 Retriever} (Naive $K=50$ and Tuned $K^*$): Sparse inverted index retrieval using Okapi BM25 ($k_1=1.5, b=0.75$) with restricted per-word candidate pools.
+        \item \textit{Dense Retriever} (Naive $K=50$ and Tuned $K^*$): Bi-encoder retrieval utilizing \texttt{multilingual-e5-small} (118M parameters) with cosine inner product search.
+        \item \textit{Hybrid Retriever} (Naive $K=50$ and Tuned $K^*$): Rank-level fusion via Reciprocal Rank Fusion (RRF, $k=60$) combining BM25 and E5-small rankings.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Documentation of Protocol Deviations}
+\begin{itemize}
+    \item \textbf{Exact Pure-NumPy Inner Product Engine}: In the local Windows execution environment, Windows Defender Application Control (WDAC) restricts third-party SWIG-compiled C/C++ binaries (\texttt{\_swigfaiss.pyd}). To ensure complete operational integrity, we implemented a vectorized NumPy inner product search engine (\texttt{\_NumpyIndexFlatIP}). Because dense embeddings are $L_2$-normalized during encoding, inner products are mathematically identical to FAISS \texttt{IndexFlatIP} cosine similarity.
+    \item \textbf{Leakage-Free Calibration}: Operating thresholds $K^*$ are calibrated solely on training partitions rather than the pooled corpus, preventing optimistic lookahead bias.
+\end{itemize}

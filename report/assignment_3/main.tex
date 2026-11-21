@@ -1,0 +1,35 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{float}
+
+\geometry{margin=1in}
+
+\title{\textbf{Assignment 3: Completed Experiments, Statistical Analysis, and Ablations}\\
+\large SemEval-2027 Task 3: Diachronic Semantic Change in Swedish (Subtask 2)}
+\author{SemEval-2027 Task 3 Challenge Team}
+\date{November 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This research report presents the full empirical execution, rigorous statistical verification, controlled ablation studies, and resource profiling for Part 1 (Sections 1 and 2) of Assignment 3 for the SemEval-2027 Task 3 Shared Task on Diachronic Semantic Change in Swedish (Subtask 2). We evaluate a comprehensive suite of 16 comparison systems—spanning simple heuristics, classical machine learning, frozen multilingual language models (\texttt{XLM-RoBERTa-base}), and proposed information retrieval systems (BM25, Dense \texttt{multilingual-e5-small}, and Hybrid Reciprocal Rank Fusion)—across 5 independent random seeds ($n_{\text{train}}=1,586, n_{\text{test}}=397$). To ensure zero data leakage, operating cutoffs ($K^*$) are calibrated strictly on training partitions. Our findings demonstrate that frozen XLM-R with logistic regression achieves the highest Official Subtask 2 metric ($F_{1,\text{official}} = 0.489 \pm 0.022$), while Dense retrieval attains $0.448 \pm 0.016$, significantly outperforming BM25 ($0.358 \pm 0.016, p = 0.0001$). Hybrid fusion achieves superior ranking quality ($\text{MRR} = 0.692, \text{nDCG@10} = 0.490$). Paired significance testing (paired $t$-tests and permutation tests) confirms that training-based operating point tuning provides statistically significant gains across all retrieval systems ($\Delta > +0.10, p < 0.005$). All predictions, checkpoints, and computational profiles are fully preserved.
+\end{abstract}
+
+\section{Completed Experiments}
+\input{sections/01_completed_experiments}
+
+\section{Results and Statistical Analysis}
+\input{sections/02_results_and_statistical_analysis}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

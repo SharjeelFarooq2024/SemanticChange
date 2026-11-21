@@ -24,7 +24,27 @@ Every run writes three standard artifacts to \texttt{Assignment\_2/predictions/<
     \item \textbf{\texttt{run\_metadata.json}}: Machine-readable provenance log containing runtime timestamps, software configuration, candidate counts, and system fingerprints.
 \end{enumerate}
 
-\subsection{Unit Verification and Regression Suite}
+\subsection{Minimum Implementation Requirements Verification}
+Table~\ref{tab:min_impl_checklist} demonstrates how the initial implementation fulfills all minimum requirements set forth in the shared task guidelines:
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{lp{6.8cm}c}
+\toprule
+\textbf{Requirement Criteria} & \textbf{Implementation Realization in Pipeline} & \textbf{Status} \\
+\midrule
+1. Correct Data Loading & \texttt{data\_loader.py} strictly verifies foreign keys, parses $1,983$ documents, 10 queries, and $1,983$ qrels. & Verified \\
+2. Representation Transform & Non-destructive tokenizer and E5-small encoder transform texts into 384-dimensional $L_2$-normalized vectors. & Verified \\
+3. Inference Execution & BM25 and FAISS dense search execute without error across all candidate pools ($\approx 1$ s). & Verified \\
+4. Prediction Generation & Continuous \texttt{ranked.csv} and official-style \texttt{binary\_predictions.csv} generated per system. & Verified \\
+5. Metric Computation & \texttt{evaluate.py} computes P@K, Recall@K, MRR, MAP, nDCG@K, Macro-$F_1$, and balanced accuracy. & Verified \\
+6. Configuration Repeatability & Config-driven YAML architecture and fixed seed ($42$) ensure bit-for-bit rerun repeatability. & Verified \\
+\bottomrule
+\end{tabular}
+\caption{Audit checklist demonstrating satisfaction of all initial implementation criteria.}
+\label{tab:min_impl_checklist}
+\end{table}
 The implementation is validated by an automated unit test suite comprising 89 tests across the repository:
 \begin{itemize}
     \item \textbf{Assignment 2 Retrieval Suite}: 68 passed, 1 skipped. Unit tests verify data loading, candidate pool restriction, BM25 ranking, dense vector caching, and RRF fusion determinism using deterministic mock encoders without requiring external network downloads.

@@ -120,6 +120,14 @@ Threshold optimization directly resolves the distortion caused by static $K=50$ 
     \item \textbf{BM25}: Sweeping from $K=50 \to K^*=70$ increases Macro-$F_1$ from $0.490$ to \textbf{$0.500$} and Binary $F_1$ from $0.290$ to \textbf{$0.354$}.
 \end{itemize}
 
+\subsection{Warnings, Failures, and Diagnosed Edge Cases}
+During preliminary verification, three critical failure modes and edge cases were identified:
+\begin{enumerate}
+    \item \textbf{Skew Failure Under Naive Cutoffs}: For target words with extreme class scarcity such as \textit{fr\"oken} (only 10 true positives out of 174 candidates, 5.7\% prevalence), the naive $K=50$ cutoff forced 40 false positives, causing precision to drop to $0.100$. Conversely, on words with abundant positive senses such as \textit{fru} (245 positives out of 274 candidates, 89.4\% prevalence), $K=50$ truncated true positives, restricting recall to $0.220$. This failure directly motivated the calibrated operating-point thresholding $K^*$.
+    \item \textbf{Lexical Vocabulary Mismatch on Archaic Text}: For 19th-century usages from 1880--1899 featuring non-standardized orthography and metaphorical usage, Okapi BM25 scored low due to zero token overlap with the standardized modern definitions, yielding an MRR of only $0.457$ on the earliest temporal bucket. Dense semantic retrieval bridged this vocabulary gap, achieving an MRR of $0.584$ on the same epoch.
+    \item \textbf{Binary Dependency Isolation}: In restricted system environments where external C-extension dynamic libraries (e.g., \texttt{\_swigfaiss.pyd}) may be restricted by operating system security policies, pure-NumPy vector dot-product fallback was verified to produce mathematically identical cosine rankings without runtime failure.
+\end{enumerate}
+
 \subsection{Issues to Resolve Before Full Shared-Task Submission}
 \begin{enumerate}
     \item \textbf{Supervised Re-Ranking}: The zero-training retrieval pipeline provides clean candidate rankings ($\text{Recall@100} = 73.0\%$). Training a cross-encoder re-ranker on the top-50 candidates will close the gap to the supervised Assignment 1 models.

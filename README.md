@@ -1,8 +1,8 @@
 # Semantic Change Across Multiple Time Periods
 
 > **SemEval-2027 Task 3** — Swedish development set  
-> Phases complete: **EDA** ✅ | **Baseline A (Classical ML)** ✅ | **Baseline B (Frozen XLM-R)** ✅ | **Assignment 2 (Core Retrieval & Evaluation)** ✅  
-> Methodological fixes applied: **Dynamic k-selection (Subtask 1)** ✅ | **Morphological ablation masking (Subtask 2)** ✅
+> Phases complete: **EDA** ✅ | **Baseline A (Classical ML)** ✅ | **Baseline B (Frozen XLM-R)** ✅ | **Assignment 2 (Core Retrieval & Evaluation)** ✅ | **Assignment 3 Part 1 (Experiments & Statistics)** ✅  
+> Methodological fixes applied: **Dynamic k-selection (Subtask 1)** ✅ | **Morphological ablation masking (Subtask 2)** ✅ | **Train-only threshold calibration** ✅
 
 ---
 
@@ -347,4 +347,74 @@ python -m pytest tests/ Assignment_2/tests/ -v
 ### Reports
 - **Assignment 1 Report**: `report/assignment_1/` (EDA and Baselines A & B)
 - **Assignment 2 Report**: `report/assignment_2/` (Proposed Approach and Experimental Design following Dr. Mehwish Fatima's 9-section specification)
+
+---
+
+## Assignment 3 — Part 1: Experiments and Statistics (Sections 1–2)
+
+> Course: Diachronic Semantic Change / Shared Task Challenge  
+> Supervisor: **Dr. Mehwish Fatima**  
+
+Assignment 3 brings the project to empirical completion. **Part 1 (Sections 1 and 2)** conducts the full multi-seed evaluation, statistical reliability testing, hypothesis testing, controlled ablations, and hardware compute profiling:
+
+### What Was Implemented and Executed
+1. **Multi-Seed Split Stability**: Evaluated across 5 random seeds (`[42, 100, 2023, 2026, 777]`) with 80/20 stratified partitions ($n_{\text{train}}=1,586$, $n_{\text{test}}=397$).
+2. **All 16 Comparison Systems**:
+   - Simple / Heuristic: Majority (always 0), Always 1 (all positive).
+   - Classical ML: TF-IDF + LR, TF-IDF + Complement NB, Word+Char SVM, EDA Features + LR, EDA Features + RF, Morphologically Ablated LR.
+   - Pretrained Embeddings: Frozen XLM-R + LR, Frozen XLM-R + Linear SVM.
+   - Retrieval Systems: BM25, Dense (E5-small), Hybrid (RRF) with both Naive $K=50$ and train-calibrated $K^*$ operating points.
+3. **Leakage-Free Calibration**: Cutoffs $K^*$ tuned strictly on training partitions to maximize Official $F_1$, then evaluated on unseen test sets.
+4. **Metrics Reported**:
+   - Official Metric: Positive-class $F_1$ per word, macro-averaged ($F_{1,\text{official}} = \frac{1}{|W|}\sum_w F_{1,w}$).
+   - Secondary Metrics: Pooled Macro-$F_1$, Accuracy, Precision, Recall, Balanced Accuracy.
+   - IR Ranking Metrics: MRR, MAP, nDCG@10, Recall@50.
+5. **Statistical Reliability & Hypothesis Testing**:
+   - Mean $\pm$ Standard Deviation across seeds, 95% bootstrap percentile confidence intervals ($N_{\text{boot}}=1,000$).
+   - Paired Student's $t$-tests, Wilcoxon signed-rank tests, and 10,000-resample paired permutation tests.
+6. **Controlled Ablations**:
+   - Candidate Scope: Per-word pool vs global unconstrained corpus.
+   - Decision Cutoff: Naive $K=50$ vs calibrated $K^*$.
+   - RRF Smoothing: Parameter sweep $k \in \{10, 30, 60, 100\}$.
+   - Target Word Masking: Full surface identity vs morphological ablation masking.
+7. **Saved Artifacts & Checkpoints**:
+   - 45 model checkpoints saved in `Assignment_3/checkpoints/` (`seed_{seed}_{model}.joblib`).
+   - 31,760 instance predictions preserved in `Assignment_3/predictions/all_predictions.csv`.
+   - Results tables in CSV (`Assignment_3/outputs/tables/`) and LaTeX (`report/assignment_3/tables/`).
+   - 5 publication-grade 300 DPI figures (`Assignment_3/outputs/figures/` and `report/assignment_3/figures/`).
+   - Hardware and compute cost profiles in `Assignment_3/logs/hardware_and_compute_cost_log.json`.
+
+### Multi-Seed Benchmark Summary Table (Subtask 2)
+
+| System | Official $F_1$ (Mean $\pm$ Std) | 95% Bootstrap CI | Pooled Macro-$F_1$ | Accuracy |
+| :--- | :---: | :---: | :---: | :---: |
+| **Frozen XLM-R + LR** | **0.489 $\pm$ 0.022** | **[0.473, 0.507]** | 0.715 | 0.737 |
+| **Always 1 (Trivial Reference)** | 0.470 $\pm$ 0.018 | [0.455, 0.481] | 0.262 | 0.355 |
+| **Ablated LR (Morphological Masking)** | 0.460 $\pm$ 0.047 | [0.422, 0.495] | 0.748 | 0.766 |
+| **Frozen XLM-R + Linear SVM** | 0.459 $\pm$ 0.023 | [0.441, 0.476] | 0.695 | 0.718 |
+| **TF-IDF + Logistic Regression** | 0.455 $\pm$ 0.045 | [0.420, 0.491] | 0.798 | 0.822 |
+| **Word+Char TF-IDF + Linear SVM** | 0.450 $\pm$ 0.049 | [0.412, 0.489] | 0.811 | 0.836 |
+| **Dense Retriever (Tuned $K^*$)** | **0.448 $\pm$ 0.016** | **[0.434, 0.459]** | 0.554 | 0.565 |
+| **EDA Features + Random Forest** | 0.446 $\pm$ 0.039 | [0.419, 0.478] | 0.801 | 0.823 |
+| **Hybrid Retriever (Tuned $K^*$)** | **0.418 $\pm$ 0.029** | **[0.395, 0.440]** | 0.525 | 0.536 |
+| **BM25 Retriever (Tuned $K^*$)** | 0.358 $\pm$ 0.016 | [0.343, 0.367] | 0.481 | 0.491 |
+
+### Reproducing Assignment 3 Part 1
+
+```bash
+# 1. Execute multi-seed experiment and statistical suite
+python Assignment_3/scripts/run_part1_experiments.py
+
+# 2. Render publication figures
+python Assignment_3/scripts/plot_figures.py
+
+# 3. Compile LaTeX tables
+python Assignment_3/scripts/make_latex_tables.py
+```
+
+### Reports
+- **Assignment 1 Report**: `report/assignment_1/`
+- **Assignment 2 Report**: `report/assignment_2/`
+- **Assignment 3 Report (Sections 1 & 2)**: `report/assignment_3/` and [EXPERIMENTS_AND_STATISTICS_REPORT.md](Assignment_3/EXPERIMENTS_AND_STATISTICS_REPORT.md)
+
 
