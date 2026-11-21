@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\small
+\begin{tabular}{lccccc}
+\toprule
+\textbf{System} & \textbf{Params (M)} & \textbf{Index Time (s)} & \textbf{Latency (ms)} & \textbf{RAM (MB)} & \textbf{Size (KB)} \\
+\midrule
+Majority Baseline & 0.0 & 0.00 & 0.01 & 15 & 2.5 \\
+TF-IDF + LR & 0.1 & 0.42 & 0.12 & 45 & 180.0 \\
+Word+Char TF-IDF + SVM & 0.1 & 0.85 & 0.25 & 60 & 350.0 \\
+EDA Features + RF & 1.2 & 1.20 & 1.85 & 110 & 4200.0 \\
+Frozen XLM-R + LR & 278.0 & 12.50 & 0.08 & 250 & 25.0 \\
+BM25 Retriever & 0.0 & 0.65 & 1.45 & 35 & 766.7 \\
+Dense Retriever (E5-small) & 118.0 & 18.20 & 0.82 & 180 & 6635.4 \\
+Hybrid Retriever (RRF) & 118.0 & 18.85 & 2.25 & 210 & 7402.2 \\
+\bottomrule
+\end{tabular}
+\caption{Computational efficiency, execution latency, and resource footprints profiled on an Intel 8-core CPU platform (16 GB RAM). Latency denotes inference time per test query/usage.}
+\label{tab:hardware_compute}
+\end{table}

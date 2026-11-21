@@ -1,0 +1,90 @@
+\subsection{System Overview and Architecture}
+Official Subtask 2 of SemEval-2027 Task 3 requires identifying which natural language usages of a target lemma express an annotated target sense definition across diverse diachronic epochs (1880--2023). We reformulate this binary classification problem into an asymmetric \textbf{Information Retrieval (IR)} ranking framework:
+\begin{itemize}
+    \item \textbf{Queries ($Q$)}: Target sense definition descriptions $q \in Q$ from \texttt{definitions.jsonl} ($|Q| = 10$).
+    \item \textbf{Documents ($D$)}: Diachronic usage sentences $d \in D$ from \texttt{usages.jsonl} ($|D| = 1,983$).
+    \item \textbf{Relevance Ground Truth ($\mathcal{R}$)}: Binary sense alignment labels $y \in \{0, 1\}$ from \texttt{subtask2.jsonl} ($|\mathcal{R}| = 1,983$, with 705 positive instances, establishing an empirical base rate of $35.55\%$).
+\end{itemize}
+
+\subsection{Component Flow from Input to Prediction}
+The pipeline executes in five sequential phases:
+\begin{enumerate}
+    \item \textbf{Data Loading and Join Validation}: Strict JSONL validation parses definitions, usage contexts, and gold qrels. A candidate mapping restricts eligible documents per query word ($\mathcal{C}(w) \subset D$).
+    \item \textbf{Lexical Retrieval Pipeline (BM25)}: Text is preprocessed with a Swedish diacritic-preserving and numeral-preserving tokenizer. An Okapi BM25 index scores corpus passages with configurable term-saturation ($k_1 = 1.5$) and document-length normalization ($b = 0.75$).
+    \item \textbf{Dense Semantic Retrieval Pipeline}: Usage passages are encoded with a frozen, multilingual contrastive representation model (\texttt{intfloat/multilingual-e5-small}, 384 dimensions). Queries are prepended with \texttt{"query: "} and documents with \texttt{"passage: "}. Embeddings are $L_2$-normalized, and cosine similarities are computed via exact inner-product search.
+    \item \textbf{Reciprocal Rank Fusion (RRF)}: Lexical and dense ranked lists are combined at the rank level using Reciprocal Rank Fusion ($k = 60$). RRF merges ordinal positions without calibrating raw score scales.
+    \item \textbf{Operating-Point Calibration}: The fused continuous ranking is converted into binary predictions by sweeping rank thresholds $K^*$ to optimize downstream Macro-$F_1$ on the candidate pool.
+\end{enumerate}
+
+\subsection{Role of Features and Representations Identified in Assignment 1}
+The representations utilized in Assignment 2 directly build upon the findings of Assignment 1:
+\begin{itemize}
+    \item \textbf{Lexical and Morphological Features}: Assignment 1 demonstrated that word- and character $n$-gram TF-IDF models yielded strong classification baselines ($F_1 = 0.816$), but suffered from surface inflection sensitivity. In Assignment 2, this informs our BM25 lexical retriever, which employs a Swedish diacritic-guarding tokenizer preserving morphological stems and numerical temporal markers (e.g., historical years) that were proven to carry diachronic signal.
+    \item \textbf{Contextual Neural Representations}: Assignment 1's Baseline B evaluated frozen \texttt{FacebookAI/xlm-roberta-base} representations. We retain this exact 768-dimensional model as an official ablation benchmark, while upgrading our primary retriever to \texttt{intfloat/multilingual-e5-small} to exploit asymmetric contrastive query-passage training specifically designed for retrieval tasks.
+    \item \textbf{Temporal Metadata}: Analysis in Assignment 1 confirmed that semantic change correlates with diachronic period partitions. Rather than discarding temporal indicators, periods are preserved in document structures and utilized for post-retrieval subgroup robustness audits.
+\end{itemize}
+
+\subsection{Required Method Diagram}
+Figure~\ref{fig:method_pipeline} depicts the complete end-to-end flow, explicitly detailing inputs, representations, model components, and distinguishing frozen versus non-parametric modules.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+    node distance=1.2cm and 0.8cm,
+    box/.style={rectangle, draw=black, thick, fill=blue!8, text width=2.8cm, align=center, rounded corners, minimum height=1cm},
+    frozen/.style={rectangle, draw=purple!80, thick, fill=purple!10, text width=2.8cm, align=center, rounded corners, minimum height=1cm},
+    nonparam/.style={rectangle, draw=teal!80, thick, fill=teal!10, text width=2.8cm, align=center, rounded corners, minimum height=1cm},
+    outbox/.style={rectangle, draw=orange!80, thick, fill=orange!10, text width=2.8cm, align=center, rounded corners, minimum height=1cm},
+    arrow/.style={-Latex, thick}
+]
+
+% Inputs
+\node[box] (def) {\textbf{Raw Query}\\Definition $q$\\(\texttt{definitions.jsonl})};
+\node[box, right=1.5cm of def] (usage) {\textbf{Raw Corpus}\\Usages $d \in D$\\(\texttt{usages.jsonl})};
+
+% Preprocessing
+\node[box, below=1.0cm of def] (qpre) {Unicode Normalization\\Diacritic \& Digit Guard};
+\node[box, below=1.0cm of usage] (dpre) {Candidate Pool $\mathcal{C}(w)$\\Temporal Preprocessor};
+
+% Encoders
+\node[nonparam, below=1.0cm of qpre] (bm25) {\textbf{Okapi BM25}\\$k_1=1.5, b=0.75$\\\textit{[Non-parametric]}};
+\node[frozen, below=1.0cm of dpre] (dense) {\textbf{Dense Encoder}\\E5-small (384-d)\\\textit{[Frozen Pretrained]}};
+
+% Fusion
+\node[nonparam, below=1.2cm of $(bm25)!0.5!(dense)$] (rrf) {\textbf{Reciprocal Rank Fusion}\\$RRF(d) = \sum \frac{1}{60 + r_m(d)}$\\\textit{[Rank-level Fusion]}};
+
+% Output
+\node[outbox, below=1.0cm of rrf] (ranked) {\textbf{Ranked Output}\\$\text{Score}(q, d)$, $\text{Rank}$\\(\texttt{ranked.csv})};
+\node[outbox, below=1.0cm of ranked] (binary) {\textbf{Calibrated Binary Output}\\$\hat{y} = \mathbb{I}(\text{Rank} \le K^*)$\\(\texttt{binary\_predictions.csv})};
+
+% Connections
+\draw[arrow] (def) -- (qpre);
+\draw[arrow] (usage) -- (dpre);
+\draw[arrow] (qpre) -- (bm25);
+\draw[arrow] (dpre) -- (dense);
+\draw[arrow] (qpre) -- (dense);
+\draw[arrow] (dpre) -- (bm25);
+\draw[arrow] (bm25) -- (rrf) node[midway, left] {\small Lexical Rank};
+\draw[arrow] (dense) -- (rrf) node[midway, right] {\small Semantic Rank};
+\draw[arrow] (rrf) -- (ranked);
+\draw[arrow] (ranked) -- (binary) node[midway, right] {\small Thresholding $K^*$};
+
+\end{tikzpicture}
+\caption{Architectural flow of the proposed hybrid diachronic retrieval system. Purple blocks designate frozen pretrained neural weights; teal blocks indicate non-parametric algorithmic modules; orange blocks represent evaluation artifacts.}
+\label{fig:method_pipeline}
+\end{figure}
+
+\subsection{Handling Imbalance, Domain Noise, and Data Variations}
+\begin{itemize}
+    \item \textbf{Class Imbalance}: The dataset exhibits strong class imbalance ($35.55\%$ positive, $64.45\%$ negative). Standard fixed cutoffs (e.g., top-50) artificially force false positives for words with scarce target senses. We resolve this by sweeping rank thresholds $K \in [5, 100]$ to balance precision and recall on the official Macro-$F_1$ metric.
+    \item \textbf{Historical and Orthographical Noise}: Texts span 140+ years of Swedish, featuring archaic spellings and evolving punctuation. Non-destructive tokenization preserves Swedish diacritics (\aa, \"a, \"o) and numerical century expressions (e.g., \textit{1880-talet}), retaining critical diachronic signals.
+    \item \textbf{Input Length Variations}: Sentence lengths range from single clauses to complex multi-clause periods. Mean pooling across subwords with a 512-token ceiling captures context without truncated semantic degradation.
+    \item \textbf{Word-Identity Confounding}: In Assignment 1, masking ablation revealed that naive models exploit surface word identity to inflate performance by 10.3 $F_1$ points. We enforce a \texttt{per\_word} candidate constraint: each query definition is only matched against usage sentences containing that specific target word, eliminating lemma leakage.
+\end{itemize}
+
+\subsection{Expected Limitations}
+\begin{itemize}
+    \item \textbf{Frozen Asymmetry}: Although \texttt{multilingual-e5-small} is trained contrastively for query-passage retrieval, it lacks diachronic adaptation to 19th-century Swedish semantics.
+    \item \textbf{Lexical Mismatch in Metaphorical Extensions}: Definitions use modern lexicographical metalanguage (e.g., \textit{"f\"orflytta n\aa{}got snabbt"}), whereas 1880 usages may contain zero direct lexical overlap with the definition, penalizing pure BM25.
+\end{itemize}
+

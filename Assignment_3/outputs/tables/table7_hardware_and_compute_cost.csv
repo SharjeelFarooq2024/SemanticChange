@@ -1,0 +1,9 @@
+system,representation,parameters_m,indexing_time_s,query_latency_ms,memory_mb,checkpoint_kb
+Majority Baseline,Trivial Constant,0.0,0.0,0.01,15.0,2.5
+TF-IDF + LR,Sparse n-gram TF-IDF,0.05,0.42,0.12,45.0,180.0
+Word+Char TF-IDF + SVM,Word+Char TF-IDF,0.12,0.85,0.25,60.0,350.0
+EDA Features + RF,Interpretable tabular + TF-IDF,1.2,1.2,1.85,110.0,4200.0
+Frozen XLM-R + LR,Frozen 768-dim embeddings,278.0,12.5,0.08,250.0,25.0
+BM25 Retriever,Inverted index (BM25Okapi),0.0,0.65,1.45,35.0,766.7
+Dense Retriever (E5-small),Exact cosine (NumPy IP engine),118.0,18.2,0.82,180.0,6635.4
+Hybrid Retriever (RRF),BM25 + Dense RRF Fusion,118.0,18.85,2.25,210.0,7402.2

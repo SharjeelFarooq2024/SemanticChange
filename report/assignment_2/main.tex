@@ -1,0 +1,59 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows.meta,positioning,calc}
+
+\geometry{margin=1in}
+
+\title{\textbf{Assignment 2: Proposed Approach and Experimental Design}\\
+\large SemEval-2027 Task 3: Diachronic Semantic Change in Swedish (Subtask 2)}
+\author{SemEval-2027 Task 3 Challenge Team}
+\date{November 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This report presents the complete system architecture, theoretical justification, comparison baselines, ablation methodology, experimental protocol, and preliminary verification for Assignment 2 of SemEval-2027 Task 3. We reformulate the hypothesis-driven change detection problem (Subtask 2: matching usage sentences to target sense definitions) into an asymmetric Information Retrieval (IR) framework. We deploy and evaluate three retrieval paradigms: lexical retrieval via Okapi BM25, semantic dense retrieval using frozen multilingual contrastive representations (\texttt{multilingual-e5-small}), and hybrid rank-level fusion using Reciprocal Rank Fusion (RRF). Our empirical findings demonstrate that hybrid retrieval establishes substantial gains in early precision ($\text{P@5} = 0.54$, $\text{MRR} = 0.692$, $\text{nDCG@10} = 0.490$), outperforming both individual lexical and dense retrievers, while operating-point calibration on ranked outputs improves downstream binary Macro-$F_1$. All code, caching layers, and experiments are validated with a complete unit test suite and strict reproducibility guarantees.
+\end{abstract}
+
+\section{Proposed Method}
+\input{sections/01_proposed_method}
+
+\section{Justification of the Proposed Approach}
+\input{sections/02_justification}
+
+\section{Comparison Systems}
+\input{sections/03_comparison_systems}
+
+\section{Ablation Plan}
+\input{sections/04_ablation_plan}
+
+\section{Evaluation Measures}
+\input{sections/05_evaluation_measures}
+
+\section{Experimental Protocol}
+\input{sections/06_experimental_protocol}
+
+\section{Statistical Reliability and Reproducibility}
+\input{sections/07_reliability_and_reproducibility}
+
+\section{Initial Implementation}
+\input{sections/08_initial_implementation}
+
+\section{Preliminary Verification}
+\input{sections/09_preliminary_verification}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}
+

@@ -1,8 +1,8 @@
-# Assignment 2 — Core Retrieval System (Member 1)
+# Assignment 2 — Core Retrieval System & Evaluation Framework
 
-> **SemEval-2027 Task 3** — Swedish development set
-> Systems: **BM25** ✅ | **Dense (frozen pretrained encoder)** ✅ | **Hybrid (RRF)** ✅
-> Assignment 1 is untouched: this directory is fully self-contained and only *reads*
+> **SemEval-2027 Task 3** — Swedish development set  
+> Systems: **BM25** ✅ | **Dense (frozen pretrained encoder)** ✅ | **Hybrid (RRF)** ✅  
+> Assignment 1 is untouched: this directory is fully self-contained and only *reads*  
 > the shared dataset under `data/raw/dev/SV/`.
 
 ---
@@ -335,64 +335,37 @@ No GPU required. If CUDA is present it is used automatically
 
 ---
 
-## 17. Handover to Member 2 (evaluation & experiments)
+## 17. Evaluation, Tuning, and Ablations (Fully Implemented)
 
-### Interface guarantees (identical across all three systems)
+The evaluation, threshold optimization, and ablation framework is fully operational:
 
-```python
-from Assignment_2.src.data.data_loader import load_bundle_validated
-from Assignment_2.src.retrieval.bm25_retriever import BM25Retriever
-from Assignment_2.src.retrieval.dense_retriever import DenseRetriever
-from Assignment_2.src.retrieval.hybrid_retriever import HybridRetriever
-from Assignment_2.src.pipeline import run_system
+### 1. Unified Evaluation CLI
 
-# 1) Load once — validated bundle with stable IDs
-bundle = load_bundle_validated()
-bundle.documents      # [Document(doc_id, text, word, period_label, year, pos), ...]
-bundle.queries        # [Query(query_id=word, text=definition, word), ...]
-bundle.qrels          # [Qrel(query_id, doc_id, relevance in {0,1}), ...]
-bundle.qrels_by_query()          # {query_id: {doc_id: relevance}}
-bundle.documents_by_query_word()  # {word: [doc_ids]}  <- candidate pools
-
-# 2) Run a system programmatically (writes predictions + returns a summary dict)
-summary = run_system("bm25", scope="per_word", top_k=100, limit=None)
-
-# 3) Or drive retrievers directly
-bm25 = BM25Retriever(...) ; bm25.load_or_build(bundle.documents, index_path)
-hits = bm25.retrieve("definition text", top_k=100, allowed_doc_ids=[...])
-# hits -> [Hit(doc_id: str, score: float, rank: int), ...]  (frozen dataclass)
+```bash
+python Assignment_2/evaluate.py
 ```
 
-### What you can rely on
+Runs comprehensive evaluation over BM25, Dense, and Hybrid predictions against `predictions/qrels.csv`:
+- Calculates all IR metrics: P@K, Recall@K, MRR, MAP, nDCG@K.
+- Sweeps rank cutoffs ($K^* \in [5, 100]$) to find optimal decision thresholds for official Subtask 2 Macro-$F_1$.
+- Exports calibrated binary predictions (`predictions/{system}/binary_predictions_tuned.csv`).
+- Conducts subgroup robustness audits across 10 target words and 10 diachronic periods.
+- Runs full ablation sweeps across Candidate Scope (`per_word` vs `global`), RRF smoothing ($k \in \{10, 30, 60, 100\}$), and decision cutoffs.
 
-- `Hit` is a frozen dataclass with `.doc_id`, `.score`, `.rank` (1-based) —
-  the same structure from every system; scores are **only comparable within a
-  system** (BM25 ≠ cosine ≠ RRF — fuse/compare ranks, not raw scores).
-- Predictions: `predictions/<system>/{ranked.csv, binary_predictions.csv, run_metadata.json}`
-  and `predictions/qrels.csv`.
-- Caches are safe to reuse across experiments: embeddings/FAISS/BM25 reload
-  automatically when compatible, rebuild with a logged reason when not.
-- Determinism: seed 42, stable tie-breaking (score desc → doc_id asc), fixed
-  query ordering (sorted by query_id) — reruns produce identical CSVs.
-- Config switches for your experiments: `scope` (per_word/global), `top_k`,
-  `encoder` (e5_small/xlmr_base), RRF `k`, per-system candidate counts,
-  `binary_export.top_k`.
+### 2. Generated Outputs (`outputs/evaluation/`)
 
-### What is intentionally NOT implemented here (your scope)
-
-Evaluation metrics (P@k, MAP, nDCG, official average F1, …), threshold/operating-point
-tuning, ablation studies (scope, encoder, fusion variants), experiment
-management/tables, and the preliminary experimental report. Basic sanity checks
-are included in this README and in `run_metadata.json`, but no evaluation
-framework was built so your work has a clean surface to integrate with.
-
-### Suggested experiment matrix (for your ablation plan)
-
-| Axis | Options |
+| Artifact | Contents |
 |---|---|
-| System | bm25 / dense / hybrid |
-| Encoder | e5_small / xlmr_base |
-| Scope | per_word / global |
-| Fusion k | 10 / 30 / 60 / 100 |
-| Candidates | (100,100), (200,100), (100,200) |
-| Cutoff | top_k ∈ {10, 20, 50, 100} for metrics; binary k sweep for F1 |
+| `retrieval_metrics_comparison.csv` | Cross-system ranking metrics (MRR, MAP, nDCG, P@K, Recall@K) |
+| `subtask2_classification_comparison.csv` | Naive vs tuned classification metrics per retrieval system |
+| `unified_subtask2_benchmark.csv` | Direct benchmark against Assignment 1 Majority, Classical ML, & XLM-R |
+| `subgroup_per_word.csv` | Performance broken down across all 10 target words |
+| `subgroup_per_period.csv` | Performance broken down across all 10 diachronic periods |
+| `ablation_scope.csv` | Empirical proof of `per_word` vs `global` candidate scoping |
+| `ablation_fusion_k.csv` | Sensitivity curve across RRF smoothing constant $k$ |
+| `ablation_operating_point.csv` | Gain quantification from naive $K=50$ to tuned $K^*$ |
+
+### 3. Report Scaffolding (`report/assignment_2/`)
+
+A publication-grade LaTeX report following Dr. Mehwish Fatima's 9-section specification is located under `report/assignment_2/main.tex`.
+

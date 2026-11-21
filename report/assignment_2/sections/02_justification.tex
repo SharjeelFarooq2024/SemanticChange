@@ -1,0 +1,40 @@
+\subsection{Empirical Grounding in Assignment 1 Findings}
+The design of our core retrieval architecture is directly derived from empirical phenomena identified during Assignment 1 exploratory data analysis and baseline benchmarking. Rather than adopting modern neural architectures on heuristic grounds, every component addresses an observed dataset property through a structured reasoning pattern:
+\begin{center}
+\textbf{Observation $\longrightarrow$ Interpretation $\longrightarrow$ Modeling Implication}
+\end{center}
+
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{p{4.2cm}p{4.6cm}p{5.8cm}}
+\toprule
+\textbf{Evidence from Assignment 1} & \textbf{Design Decision} & \textbf{Expected Effect} \\
+\midrule
+\textbf{1. Word-Identity Leakage}: Ablation removing target word identity caused a 10.3-point Drop in $F_1$ in A1 Subtask 2. & Enforce strict \texttt{per\_word} candidate pool constraint ($\mathcal{C}(w)$). & Disallows cross-word retrieval; forces systems to discriminate intra-lemma semantic sense variations. \\
+\addlinespace
+\textbf{2. Class Imbalance}: Positive instances constitute only $35.55\%$ of pairs, with severe per-word skew (5.7\% in \textit{fr\"oken} vs 94.6\% in \textit{exportera}). & Dynamic threshold tuning on continuous ranked outputs rather than fixed binary cutoffs. & Aligns positive prediction volume with empirical base rates, boosting Macro-$F_1$ and avoiding minority collapse. \\
+\addlinespace
+\textbf{3. Lexical vs. Semantic Drift}: Vocabulary shifts over 140 years weaken surface term overlap, but modern definitions retain conceptual ties. & Hybrid multi-system fusion combining BM25 lexical signals with E5 contrastive dense vectors via RRF ($k=60$). & BM25 anchors unambiguous literal matches; dense retrieval bridges diachronic vocabulary shifts without score calibration distortions. \\
+\addlinespace
+\textbf{4. Pretrained Generalization Gap}: Generic masked-LM XLM-R embeddings underperformed classical TF-IDF in A1 ($F_1 = 0.721$ vs $0.816$). & Adopt contrastively pretrained retrieval encoder (\texttt{multilingual-e5-small}) with prefix conditioning. & Explicit asymmetric query/passage pretraining produces structured vector representations suitable for definition-to-usage search. \\
+\addlinespace
+\textbf{5. Computational Latency}: Full transformer re-encoding across experimental sweeps induces substantial training cost. & Inference-only pipeline with SHA-256 fingerprint caching for embeddings and indices. & Enables zero-recomputation experimental iteration, deterministic execution, and reproducible ablation benchmarking. \\
+\bottomrule
+\end{tabular}
+\caption{Structured justification linking Assignment 1 empirical evidence to Assignment 2 modeling decisions.}
+\label{tab:justification_mapping}
+\end{table}
+
+\subsection{Detailed Reasoning Chains}
+
+\paragraph{Justification 1: Lexical-Semantic Hybridization via RRF}
+\textit{Observation:} Lexical diversity analysis in Assignment 1 demonstrated that 19th-century usage texts contain archaic morphological inflectional variants and domain-specific terms absent in 21st-century text, while target sense definitions are framed in modern standardized Swedish lexicography.\\
+\textit{Interpretation:} Pure lexical search (BM25) fails when the definition uses synonymic or paraphrastic expressions, producing zero keyword overlap. Conversely, dense encoders can exhibit hallucinated semantic proximity or loss of fine-grained keyword anchoring.\\
+\textit{Modeling Implication:} Reciprocal Rank Fusion ($\text{RRF}(d) = \sum_{m} \frac{1}{k + r_m(d)}$) integrates ordinal positions across lexical and semantic retrieval spaces. By fusing ranks rather than heterogeneous uncalibrated similarity scores, RRF ensures robustness against out-of-vocabulary shifts without inducing score distortion.
+
+\paragraph{Justification 2: Operating-Point Optimization on Ranked Lists}
+\textit{Observation:} Subtask 2 evaluation relies on Macro-$F_1$, which computes the unweighted mean of positive and negative class $F_1$. A fixed naive cutoff (such as declaring the top 50 candidates positive for every query) results in severe recall penalties on words with abundant positive senses (e.g., \textit{fru} with 245 positives) and severe false-positive penalties on words with sparse positive senses (e.g., \textit{fr\"oken} with only 10 positives).\\
+\textit{Interpretation:} Information retrieval generates continuous scores that allow flexible thresholding across the Precision-Recall curve.\\
+\textit{Modeling Implication:} Rather than relying on a static binary classifier, treating the task as ranked retrieval enables post-hoc operating-point selection ($K^* \in [5, 100]$) to maximize the official macro-averaged metric across the candidate pool.
+

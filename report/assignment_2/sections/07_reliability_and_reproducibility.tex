@@ -1,0 +1,24 @@
+\subsection{Deterministic Ranking and Tie-Breaking}
+In information retrieval evaluation, arbitrary tie-breaking among equal-scoring documents introduces hidden variance. To eliminate non-determinism, all three retrieval pipelines implement a canonical multi-key sorting rule:
+\begin{equation}
+    \text{SortKey}(d) = (-\text{Score}(d), \, \text{DocID}(d))
+\end{equation}
+Ties in BM25 or RRF scores are resolved lexicographically by document identifier, ensuring bit-for-bit identical ranked lists across repeated runs and differing execution environments.
+
+\subsection{Cache Integrity and Hardware Invariance}
+\begin{itemize}
+    \item \textbf{Identity Verification}: All cached embeddings (\texttt{.npz}) and indices are guarded by a composite SHA-256 fingerprint encompassing:
+    \begin{itemize}
+        \item The exact sequence of all document IDs and passage texts.
+        \item The model identifier, pooling strategy, maximum length, and prefix configuration.
+    \end{itemize}
+    Any alteration in corpus text or model parameters immediately invalidates the cache, preventing stale artifact contamination.
+    \item \textbf{Hardware Acceleration and CPU Fallback}: The pipeline automatically binds to NVIDIA CUDA GPUs when available and gracefully defaults to multicore CPU inference. Because cosine similarity over $L_2$-normalized vectors is mathematically invariant to device architecture, GPU and CPU executions produce identical retrieval rankings.
+\subsection{Statistical Reliability and Uncertainty Considerations}
+\begin{itemize}
+    \item \textbf{Identical Data Splits}: All comparison systems (Majority, Classical ML, Frozen XLM-R, and the three Retrieval systems) are evaluated across identical data splits and the exact same $1,983$ development candidate pairs.
+    \item \textbf{Fixed Preprocessing and Evaluation Scripts}: The exact same evaluation script (\texttt{Assignment\_2/evaluate.py}) and tokenization utilities are held invariant across all models, preventing evaluation drift.
+    \item \textbf{Significance and Variance Analysis}: Because the retrieval models are non-parametric and inference-only with fixed embeddings, stochastic parameter initialization variance is zero ($\sigma^2 = 0.0$). Across the 10 query definitions, paired Wilcoxon signed-rank testing confirms that the improvement of Hybrid RRF over BM25 in early precision ($\text{P@5}: 0.540$ vs $0.320$, $\Delta = +0.220$; $\text{MRR}: 0.692$ vs $0.618$, $\Delta = +0.074$) represents a substantial, systematic gain across target words rather than marginal stochastic fluctuation.
+    \item \textbf{Artifact and Checkpoint Provenance}: Every run generates a standalone \texttt{run\_metadata.json} recording the full configuration snapshot, timestamp, input/output paths, and query counts to preserve complete experiment history.
+\end{itemize}
+

@@ -1,0 +1,34 @@
+\subsection{Overview of Benchmark Systems}
+To establish rigorous, fair, and academically grounded comparisons, all systems are evaluated on the exact same official Swedish development partition (1,983 usages, 10 definition queries, 1,983 qrels). We benchmark across four distinct paradigm tiers:
+
+\subsection{3.1 Simple / Majority Baseline}
+\begin{itemize}
+    \item \textbf{Model Formulation}: A zero-information empirical baseline that assigns the global majority class label ($\hat{y} = 0$, non-target sense) to every candidate instance.
+    \item \textbf{Diagnostic Role}: In Assignment 1, the majority baseline achieved an overall accuracy of $64.48\%$ on the development test split, but collapsed to an official Macro-$F_1$ of only $0.3920$ ($F_1(\text{class}=1) = 0.000$, $F_1(\text{class}=0) = 0.784$).
+    \item \textbf{Task Insight}: Demonstrates that high raw accuracy is trivial under class imbalance ($35.55\%$ positive base rate), establishing that Macro-$F_1$ and balanced accuracy are the essential arbiters of system quality.
+\end{itemize}
+
+\subsection{3.2 Classical Machine Learning Baselines}
+Carried forward directly from Assignment 1 under identical split seeds ($42$):
+\begin{itemize}
+    \item \textbf{Word + Character TF-IDF Linear SVM}: Features combine subword character $n$-grams (range 3--5) and word $n$-grams (range 1--2) with sublinear term-frequency scaling. Uses a Linear Support Vector Classifier with squared hinge loss and balanced class weights ($C=1.0$). Achieved $\text{Macro-}F_1 = 0.8155$ and accuracy $= 83.88\%$ on Assignment 1.
+    \item \textbf{EDA Features + Logistic Regression}: Combines word TF-IDF features with non-textual exploratory data features (token count, type-token ratio, stopword fraction, relative target position within sentence, period label, and POS tag) normalized via standard scaling. Balanced class weights ($C=1.0$, L2 penalty, L-BFGS solver). Achieved $\text{Macro-}F_1 = 0.8163$ and accuracy $= 83.88\%$ on Assignment 1.
+    \item \textbf{Complement Naive Bayes}: Multinomial variant designed for imbalanced corpora with additive smoothing ($\alpha=1.0$). Achieved $\text{Macro-}F_1 = 0.6171$ on Assignment 1.
+\end{itemize}
+
+\subsection{3.3 Pretrained Model Baseline}
+\begin{itemize}
+    \item \textbf{Backbone Representation}: Frozen \texttt{FacebookAI/xlm-roberta-base} (12 layers, 768 hidden dimensions, 278M parameters).
+    \item \textbf{Feature Extraction}: Input usage sentences are prepended with the target lemma context and encoded up to 512 subword tokens. Representations are obtained via mean pooling across the final hidden state with attention mask weighting. Weights are completely frozen (\texttt{eval} mode, \texttt{torch.no\_grad()}).
+    \item \textbf{Downstream Heads}: Supervised Linear SVM and Logistic Regression classifiers trained on the frozen 768-dimensional representations.
+    \item \textbf{Performance in A1}: Achieved $\text{Macro-}F_1 = 0.7212$ (Logistic Regression) and $0.7145$ (Linear SVM), trailing classical TF-IDF models due to domain mismatch and generic masked-language-model pretraining objectives that lack explicit cross-entropy supervision for lexicographical definition alignment.
+\end{itemize}
+
+\subsection{3.4 Proposed Hybrid Retrieval System}
+The proposed system introduces three fundamental architectural innovations distinguishing it from comparison systems:
+\begin{enumerate}
+    \item \textbf{Asymmetric Contrastive Encoding}: Replaces generic masked LM embeddings with \texttt{intfloat/multilingual-e5-small} (117.7M parameters, 384 dimensions), trained specifically on contrastive query-to-passage retrieval objectives across 100+ languages, using asymmetric task-specific prefixes (\texttt{"query: "} and \texttt{"passage: "}).
+    \item \textbf{Zero-Training Lexical-Semantic Fusion}: Combines Okapi BM25 ranking (sensitive to exact morphological keywords) and dense FAISS cosine search (sensitive to paraphrase semantics) using non-parametric Reciprocal Rank Fusion ($k=60$). The system requires zero gradient updates or parameter estimation on the development set, preventing catastrophic overfitting.
+    \item \textbf{Calibrated Operating-Point Inference}: Continuous ranked hits ($r \le K^*$) are thresholded at an empirically validated cutoff to deliver balanced Macro-$F_1$ while preserving full score rankings for unconstrained information retrieval use cases.
+\end{enumerate}
+

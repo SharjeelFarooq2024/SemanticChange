@@ -1,4 +1,4 @@
-﻿"""End-to-end pipeline orchestration for the three retrieval systems.
+"""End-to-end pipeline orchestration for the three retrieval systems.
 
 One entry point per run:
 
@@ -192,10 +192,19 @@ def run_system(
     # ------------------------------------------------------------------ #
     # Write predictions
     # ------------------------------------------------------------------ #
-    # Subset runs get their own directory so they never overwrite full results.
-    out_dir = PREDICTIONS_DIR / (
-        system if limit is None else f"{system}_limit{len(queries)}"
-    )
+    # Non-default runs (limit, non-standard scope, or ablation encoder) get
+    # their own dedicated directory so they never clobber full canonical results.
+    default_encoder = system_config.get("encoder", {}).get("name")
+    if limit is not None:
+        dir_name = f"{system}_limit{len(queries)}"
+    elif scope != "per_word":
+        dir_name = f"{system}_{scope}"
+    elif encoder and encoder != default_encoder:
+        dir_name = f"{system}_{encoder}"
+    else:
+        dir_name = system
+
+    out_dir = PREDICTIONS_DIR / dir_name
     ranked_path = save_ranked_predictions(results, out_dir / "ranked.csv")
     binary_path = save_binary_predictions(
         results, bundle, out_dir / "binary_predictions.csv", binary_top_k=binary_top_k

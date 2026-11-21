@@ -1,0 +1,50 @@
+\subsection{Dataset Partitions and Integrity}
+Experiments are conducted on the official Swedish (\texttt{SV}) development partition of SemEval-2027 Task 3:
+\begin{itemize}
+    \item \textbf{Documents}: $1,983$ usage sentences across 10 target lemmas extracted from the Swedish Kubhist and contemporary news corpora.
+    \item \textbf{Queries}: 10 lexicographical definitions ($1$ query per lemma).
+    \item \textbf{Relevance Assessments}: $1,983$ binary qrel annotations ($705$ positive, $1,278$ negative).
+    \item \textbf{Candidate Scope}: $1,983$ total candidate pairs partitioned into 10 disjoint lemma pools ($\mathcal{C}(w)$).
+\end{itemize}
+Every input JSONL file is verified for structural consistency: malformed records, duplicate document IDs, missing fields, or broken cross-file foreign keys trigger immediate diagnostic errors rather than silent omissions.
+
+\subsection{Preprocessing and Feature Extraction Protocol}
+\begin{itemize}
+    \item \textbf{Normalization}: Strict NFKC Unicode normalization. Punctuation serves as standard token boundaries, but Swedish diacritics (\aa, \"a, \"o) and numerical digits (years/centuries) are explicitly preserved.
+    \item \textbf{BM25 Retrieval Configuration}:
+    \begin{itemize}
+        \item Term saturation parameter: $k_1 = 1.5$.
+        \item Document length normalization parameter: $b = 0.75$.
+        \item Vocabulary: Word tokens, lowercased, length $\ge 1$.
+        \item Index caching: Serialized to \texttt{artifacts/bm25\_index/bm25\_index.pkl}.
+    \end{itemize}
+    \item \textbf{Dense Retrieval Configuration}:
+    \begin{itemize}
+        \item Backbone Model: \texttt{intfloat/multilingual-e5-small} (117.7M parameters).
+        \item Task Prefix Conditioning: Queries receive \texttt{"query: "} prefix; passages receive \texttt{"passage: "} prefix.
+        \item Pooling \& Normalization: Mean pooling across active tokens, followed by $L_2$ vector normalization ($\|v\|_2 = 1.0$).
+        \item Token Truncation: Maximum subword sequence length of $512$ tokens.
+        \item Batch Size: 64 instances per inference batch.
+        \item Vector Index: Exact inner-product search (FAISS \texttt{IndexFlatIP} with NumPy fallback).
+    \end{itemize}
+    \item \textbf{Hybrid Reciprocal Rank Fusion}:
+    \begin{itemize}
+        \item Fusion constant: $k = 60$.
+        \item Per-system candidate depth: $100$ top hits.
+        \item Final retrieved list depth: $100$ hits.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Prevention of Data Leakage}
+\begin{itemize}
+    \item \textbf{Inference-Only Evaluation}: All neural representations are frozen in \texttt{eval} mode. No weights are updated on the development data, preventing parameter overfitting.
+    \item \textbf{Corpus Independence}: Document passage embeddings are generated strictly without knowledge of query definitions or ground-truth qrels.
+    \item \textbf{Candidate Restriction}: Target sense definitions are matched only against candidate usages within the target word's lemma pool, strictly barring cross-word leakage.
+\end{itemize}
+
+\subsection{Local Development vs. Official Hidden-Test Evaluation}
+\begin{itemize}
+    \item \textbf{Local Development Protocol}: Evaluated locally on the released Swedish development partition ($1,983$ usages) where gold labels are available. This enables full ranking metric calculations (MAP, MRR, nDCG) and parameter sensitivity sweeps ($k$, $K^*$).
+    \item \textbf{Official Hidden-Test Protocol}: The unreleased official evaluation server partition contains unseen usage instances and undisclosed ground-truth labels. The pipeline exports the standardized \texttt{binary\_predictions.csv} format matching the official submission schema (\texttt{sentence\_id, word, label}), applying the calibrated decision cutoff $K^*$ established on development data without test-set label contamination.
+\end{itemize}
+
