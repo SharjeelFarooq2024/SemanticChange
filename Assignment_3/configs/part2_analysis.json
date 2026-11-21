@@ -1,0 +1,23 @@
+{
+  "seeds": [42, 100, 2023, 2026, 777],
+  "bootstrap_seed": 314159,
+  "bootstrap_samples": 10000,
+  "example_seed": 42,
+  "examples_per_category": 2,
+  "historical_before_year": 1950,
+  "primary_system": "hybrid_train_tuned",
+  "reference_system": "dense_train_tuned",
+  "error_taxonomy": [
+    {"category": "FN fusion loss", "rule": "gold=1, hybrid=0, dense=1", "interpretation": "A positive selected by dense retrieval is excluded by hybrid fusion at the saved operating points."},
+    {"category": "FN shared miss", "rule": "gold=1, hybrid=0, dense=0", "interpretation": "Both systems reject a gold positive; ranks distinguish cutoff rejection from absence in the saved top-100 lists."},
+    {"category": "FP fusion addition", "rule": "gold=0, hybrid=1, dense=0", "interpretation": "Hybrid fusion introduces a false positive relative to the dense decision."},
+    {"category": "FP shared false match", "rule": "gold=0, hybrid=1, dense=1", "interpretation": "Both systems accept a usage outside the annotated target sense."}
+  ],
+  "taxonomy_scope": "Exhaustive, mutually exclusive operational categories for hybrid errors. These are observable outcomes, not manually validated linguistic causes.",
+  "example_selection": "Seed 42 fixed before analysis; within each category prefer different lemmas, then contexts nearest 180 characters, then sentence_id. Include the full unedited usage and definition.",
+  "context_diagnostics": {
+    "historical": "Integer year < 1950; descriptive slice, not a temporal holdout.",
+    "zero_definition_overlap": "No exact NFKC/lowercased alphabetic token shared with the definition after removing a fixed small Swedish function-word list and tokens shorter than 3 characters; no stemming.",
+    "noise_marker": "Replacement character, an angle bracket, or an alphanumeric token containing both letters and digits; a narrow surface proxy, not an OCR annotation."
+  }
+}

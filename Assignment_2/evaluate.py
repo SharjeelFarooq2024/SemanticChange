@@ -4,6 +4,10 @@ Evaluates retrieval rankings, computes official Subtask 2 classification metrics
 tunes operating thresholds, conducts subgroup robustness analysis (by word and period),
 benchmarks against Assignment 1 baselines, runs ablations, and generates summary tables.
 
+This entry point performs exploratory sweeps on all supplied development labels.
+Use Assignment_3/scripts/run_complete_experiments.py for the final held-out,
+training-only-calibrated experiments and the pinned official scorer.
+
 Usage:
     python Assignment_2/evaluate.py [--output-dir outputs/evaluation]
 """

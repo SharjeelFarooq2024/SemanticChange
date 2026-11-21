@@ -1,0 +1,26 @@
+2026-11-21 21:21:24,865 INFO Training-only selection seed=42 fold=1/3 finished
+2026-11-21 21:21:51,931 INFO Training-only selection seed=42 fold=2/3 finished
+2026-11-21 21:22:21,686 INFO Training-only selection seed=42 fold=3/3 finished
+2026-11-21 21:22:22,412 INFO FROZEN training selection seed=42 candidate=mixed_experts_C1 OOF selection F1=0.6555
+2026-11-21 21:22:49,419 INFO Training-only selection seed=100 fold=1/3 finished
+2026-11-21 21:23:17,229 INFO Training-only selection seed=100 fold=2/3 finished
+2026-11-21 21:23:44,910 INFO Training-only selection seed=100 fold=3/3 finished
+2026-11-21 21:23:45,593 INFO FROZEN training selection seed=100 candidate=ensemble_0 OOF selection F1=0.6612
+2026-11-21 21:24:15,224 INFO Training-only selection seed=2023 fold=1/3 finished
+2026-11-21 21:24:45,431 INFO Training-only selection seed=2023 fold=2/3 finished
+2026-11-21 21:25:15,891 INFO Training-only selection seed=2023 fold=3/3 finished
+2026-11-21 21:25:16,564 INFO FROZEN training selection seed=2023 candidate=nonlinear_rbf_C10 OOF selection F1=0.6652
+2026-11-21 21:25:46,216 INFO Training-only selection seed=2026 fold=1/3 finished
+2026-11-21 21:26:20,977 INFO Training-only selection seed=2026 fold=2/3 finished
+2026-11-21 21:27:11,442 INFO Training-only selection seed=2026 fold=3/3 finished
+2026-11-21 21:27:12,968 INFO FROZEN training selection seed=2026 candidate=nonlinear_rbf_C1 OOF selection F1=0.6839
+2026-11-21 21:28:00,441 INFO Training-only selection seed=777 fold=1/3 finished
+2026-11-21 21:28:50,975 INFO Training-only selection seed=777 fold=2/3 finished
+2026-11-21 21:29:42,181 INFO Training-only selection seed=777 fold=3/3 finished
+2026-11-21 21:29:43,646 INFO FROZEN training selection seed=777 candidate=boosted_views_leaf15 OOF selection F1=0.6604
+2026-11-21 21:30:00,235 INFO Held-out development seed=42 official=0.6986 accuracy=0.8388
+2026-11-21 21:30:23,232 INFO Held-out development seed=100 official=0.6636 accuracy=0.8539
+2026-11-21 21:30:45,901 INFO Held-out development seed=2023 official=0.6703 accuracy=0.8463
+2026-11-21 21:31:08,035 INFO Held-out development seed=2026 official=0.6600 accuracy=0.8460
+2026-11-21 21:31:45,139 INFO Held-out development seed=777 official=0.6392 accuracy=0.8363
+2026-11-21 21:31:45,312 INFO Advanced official F1 0.6663 +/- 0.0214; target 0.8 reached=False

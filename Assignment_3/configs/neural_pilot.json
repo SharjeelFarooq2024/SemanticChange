@@ -1,0 +1,24 @@
+{
+  "output_dir": "Assignment_3/runs/neural_pilot",
+  "reference_run": "Assignment_3/runs/completed",
+  "outer_seed": 42,
+  "validation_seed": 1033,
+  "validation_folds": 5,
+  "epochs": 3,
+  "batch_size": 4,
+  "gradient_accumulation": 4,
+  "max_length": 256,
+  "trainable_encoder_layers": 2,
+  "encoder_learning_rate": 0.00002,
+  "head_learning_rate": 0.001,
+  "weight_decay": 0.01,
+  "minimum_validation_gain_for_full_run": 0.02,
+  "notes": [
+    "Pilot uses only the seed-42 outer training partition, split again by exact-text group. Outer test rows are excluded from fine-tuning, validation scoring and epoch selection. Frozen, label-free retrieval statistics retain the full-corpus reference protocol.",
+    "Both the neural model and its classical control use clipped word-class sample weighting. The pilot is exploratory model selection, not final test performance.",
+    "The last two E5 encoder blocks and a new definition-usage classification head are trained on CPU. Earlier encoder parameters remain frozen and in eval mode.",
+    "Paired definition/usage input and max length 256 differ from frozen retrieval. Frozen BM25/E5/RRF signals are concatenated to the pooled pair representation.",
+    "Best epoch is selected by inner-validation official F1 with the fixed zero-logit decision threshold. No threshold is tuned on validation labels.",
+    "A full multi-seed neural evaluation is justified only if validation F1 exceeds the matched classical control by at least 0.02."
+  ]
+}

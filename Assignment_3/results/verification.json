@@ -1,0 +1,17 @@
+{
+  "test_scope": "tests, Assignment_2/tests, Assignment_3/tests",
+  "environment": {
+    "A2_RUN_SLOW": "1",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1"
+  },
+  "passed": 109,
+  "failed": 0,
+  "skipped": 2,
+  "skip_reason": "Retired neural pilot artifacts were removed; its source tests remain outside the final package.",
+  "warnings": 1,
+  "final_checkpoints_replayed": 5,
+  "predictions_unchanged": true,
+  "default_cli_smoke_rows": 4,
+  "discarded_run_directories_removed": true
+}

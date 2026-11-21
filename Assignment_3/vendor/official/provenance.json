@@ -1,0 +1,18 @@
+{
+  "repository": "https://github.com/ChangeIsKey/semeval2027-task3",
+  "commit": "0e69238bf8b69b4ea0933627ed14e6ca2769d670",
+  "files": {
+    "evaluation.py": {
+      "url": "https://raw.githubusercontent.com/ChangeIsKey/semeval2027-task3/0e69238bf8b69b4ea0933627ed14e6ca2769d670/evaluation.py",
+      "sha256": "d18547b57373bba0e1d22c8b2ceb40fb79e9ec5e4a799e177887591673962717"
+    },
+    "evaluation_utils.py": {
+      "url": "https://raw.githubusercontent.com/ChangeIsKey/semeval2027-task3/0e69238bf8b69b4ea0933627ed14e6ca2769d670/evaluation_utils.py",
+      "sha256": "645a42949bc3f2ff6b61a60d084b9ab7fb13280262acf2db69fb2d6a9519840b"
+    },
+    "README.md": {
+      "url": "https://raw.githubusercontent.com/ChangeIsKey/semeval2027-task3/0e69238bf8b69b4ea0933627ed14e6ca2769d670/README.md",
+      "sha256": "4070c925cade9f3ba3b99b387c3b0d160178cecfc22cda91e8815b3584dc3fe4"
+    }
+  }
+}

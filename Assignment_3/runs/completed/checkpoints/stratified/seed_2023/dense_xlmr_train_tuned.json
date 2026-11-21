@@ -1,0 +1,23 @@
+{
+  "system": "dense_xlmr_train_tuned",
+  "ranking": "rankings/dense_xlmr.csv",
+  "cutoff": 30,
+  "selected_on": "outer_train_labels_only",
+  "train_official_f1": 0.46698264512796933,
+  "config_sha256": "0a153940d88454d67e28065ae8943dbc97038c68f7a49542aeb3e2b88a3a8b2d",
+  "ranking_sha256": "7869565eecf942bdfab8bbbea3d3ae4e19a93ca46a172a855c794cf4e0b96802",
+  "frozen_encoder_profiles": {
+    "e5_small": {
+      "model_name": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: "
+    },
+    "xlmr_base": {
+      "model_name": "FacebookAI/xlm-roberta-base",
+      "revision": "e73636d4f797dec63c3081bb6ed5c7b0bb3f2089",
+      "query_prefix": "",
+      "passage_prefix": ""
+    }
+  }
+}

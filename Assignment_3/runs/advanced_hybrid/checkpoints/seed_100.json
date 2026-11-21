@@ -1,0 +1,38 @@
+{
+  "checkpoint_sha256": "a945cca4f5c6ca672161b5118fa27ce141e41032430b013b9fa520b1f35a8f42",
+  "checkpoint_replayed": true,
+  "selected": {
+    "seed": 100,
+    "candidate": "ensemble_0",
+    "shrinkage": 0.5,
+    "oof_selection_f1": 0.6611882959331046,
+    "recipe": {
+      "name": "ensemble_0",
+      "components": [
+        "balanced_linear_C05",
+        "nonlinear_rbf_C1"
+      ],
+      "scales": [
+        0.544330164162096,
+        0.6867536283863375
+      ]
+    },
+    "calibration": {
+      "global": 0.0,
+      "per_word": {
+        "dumpa": 0.004815586737093592,
+        "exportera": 0.46491743461820545,
+        "fru": 0.22896376126144846,
+        "fröken": 0.0,
+        "förort": 0.048512385207352494,
+        "herre": -0.234405988539144,
+        "kvinna": 0.0,
+        "motiv": -0.006284616317556148,
+        "skär": -0.18022735756400626,
+        "suga": -0.26613906226189976
+      },
+      "word_shrinkage": 0.5
+    }
+  },
+  "selection_sha256": "675ad7f72cd2d9c5f3160fab4ff2c8c155801bf14e9fa42d37e11fb4ea5e5cb3"
+}

@@ -115,7 +115,7 @@ def run_threshold_ablation(
         m_naive["predicted_label"] = m_naive["predicted_label"].fillna(0).astype(int)
 
         from .metrics import compute_classification_metrics
-        naive_metrics = compute_classification_metrics(m_naive["relevance"], m_naive["predicted_label"])
+        naive_metrics = compute_classification_metrics(m_naive["relevance"], m_naive["predicted_label"], words=m_naive["query_id"])
         naive_metrics["system"] = sys_name
         naive_metrics["ablation_axis"] = "operating_point"
         naive_metrics["variant"] = "naive_k=50"
@@ -129,7 +129,7 @@ def run_threshold_ablation(
         m_tuned = pd.merge(q_df[["query_id", "doc_id", "relevance"]], tuned_hits, on=["query_id", "doc_id"], how="left")
         m_tuned["predicted_label"] = m_tuned["predicted_label"].fillna(0).astype(int)
 
-        tuned_metrics = compute_classification_metrics(m_tuned["relevance"], m_tuned["predicted_label"])
+        tuned_metrics = compute_classification_metrics(m_tuned["relevance"], m_tuned["predicted_label"], words=m_tuned["query_id"])
         tuned_metrics["system"] = sys_name
         tuned_metrics["ablation_axis"] = "operating_point"
         tuned_metrics["variant"] = f"tuned_k*={best_k}"

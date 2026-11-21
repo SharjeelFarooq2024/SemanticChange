@@ -1,0 +1,166 @@
+{
+  "all_seeds_selected_before_outer_test_scoring": true,
+  "config_sha256": "f34b4aec63edc536980cf5681b39b7f5b212e8e5f012cf228eed9bda770e845c",
+  "selections": {
+    "42": {
+      "seed": 42,
+      "candidate": "mixed_experts_C1",
+      "shrinkage": 0.5,
+      "oof_selection_f1": 0.6555338658105752,
+      "recipe": {
+        "name": "mixed_experts_C1",
+        "components": [
+          "mixed_experts_C1"
+        ],
+        "scales": [
+          1.0
+        ]
+      },
+      "calibration": {
+        "global": -0.3485747921290787,
+        "per_word": {
+          "dumpa": -0.2693416438599715,
+          "exportera": 0.12630521074607554,
+          "fru": 0.062452498399215295,
+          "fröken": -0.4376807948925296,
+          "förort": -0.17907290767146658,
+          "herre": -0.3826530069684868,
+          "kvinna": -0.3485747921290787,
+          "motiv": -0.2538869505443435,
+          "skär": -0.3028433581730689,
+          "suga": -0.35707364049263757
+        },
+        "word_shrinkage": 0.5
+      }
+    },
+    "100": {
+      "seed": 100,
+      "candidate": "ensemble_0",
+      "shrinkage": 0.5,
+      "oof_selection_f1": 0.6611882959331046,
+      "recipe": {
+        "name": "ensemble_0",
+        "components": [
+          "balanced_linear_C05",
+          "nonlinear_rbf_C1"
+        ],
+        "scales": [
+          0.544330164162096,
+          0.6867536283863375
+        ]
+      },
+      "calibration": {
+        "global": 0.0,
+        "per_word": {
+          "dumpa": 0.004815586737093592,
+          "exportera": 0.46491743461820545,
+          "fru": 0.22896376126144846,
+          "fröken": 0.0,
+          "förort": 0.048512385207352494,
+          "herre": -0.234405988539144,
+          "kvinna": 0.0,
+          "motiv": -0.006284616317556148,
+          "skär": -0.18022735756400626,
+          "suga": -0.26613906226189976
+        },
+        "word_shrinkage": 0.5
+      }
+    },
+    "2023": {
+      "seed": 2023,
+      "candidate": "nonlinear_rbf_C10",
+      "shrinkage": 0.5,
+      "oof_selection_f1": 0.6652331726509132,
+      "recipe": {
+        "name": "nonlinear_rbf_C10",
+        "components": [
+          "nonlinear_rbf_C10"
+        ],
+        "scales": [
+          1.0
+        ]
+      },
+      "calibration": {
+        "global": -0.2298111779626456,
+        "per_word": {
+          "dumpa": -0.14612610602058462,
+          "exportera": 0.11187542833686115,
+          "fru": 0.19011129759202583,
+          "fröken": -0.2298111779626456,
+          "förort": -0.06916924813094144,
+          "herre": -0.3413444395245222,
+          "kvinna": -0.18741548724202023,
+          "motiv": -0.2379945845400671,
+          "skär": -0.27530276111532265,
+          "suga": -0.23932692442475867
+        },
+        "word_shrinkage": 0.5
+      }
+    },
+    "2026": {
+      "seed": 2026,
+      "candidate": "nonlinear_rbf_C1",
+      "shrinkage": 0.5,
+      "oof_selection_f1": 0.6838897946937128,
+      "recipe": {
+        "name": "nonlinear_rbf_C1",
+        "components": [
+          "nonlinear_rbf_C1"
+        ],
+        "scales": [
+          1.0
+        ]
+      },
+      "calibration": {
+        "global": -0.06353836235430095,
+        "per_word": {
+          "dumpa": -0.06353836235430095,
+          "exportera": 0.29676512042029324,
+          "fru": -0.049543725252267426,
+          "fröken": -0.26278396650095004,
+          "förort": -0.020566974383060578,
+          "herre": -0.008234538263467914,
+          "kvinna": -0.031769181177150475,
+          "motiv": -0.06353836235430095,
+          "skär": -0.05370239351900592,
+          "suga": -0.18035943376446967
+        },
+        "word_shrinkage": 0.5
+      }
+    },
+    "777": {
+      "seed": 777,
+      "candidate": "boosted_views_leaf15",
+      "shrinkage": 0.5,
+      "oof_selection_f1": 0.6603890399618007,
+      "recipe": {
+        "name": "boosted_views_leaf15",
+        "components": [
+          "boosted_views_leaf15"
+        ],
+        "scales": [
+          1.0
+        ]
+      },
+      "calibration": {
+        "global": -0.8804736575351874,
+        "per_word": {
+          "dumpa": -0.542122974999709,
+          "exportera": -0.8804736575351874,
+          "fru": -0.06872398020819859,
+          "fröken": -0.8804736575351874,
+          "förort": -0.562016413174204,
+          "herre": -1.2608894564637176,
+          "kvinna": -0.8804736575351874,
+          "motiv": -0.757023985337028,
+          "skär": -0.8804736575351874,
+          "suga": -1.1873829958469444
+        },
+        "word_shrinkage": 0.5
+      }
+    }
+  },
+  "warning": "OOF selection scores include hyperparameter/threshold selection and are not final performance estimates.",
+  "training_config_sha256": "c7ef49f8d1f3a42c5dd3b67ed0cbac9fc983b1b905fb9ed3a876cbbd1fbbae54",
+  "post_training_config_cleanup": "Removed only an unused discarded-comparison location; model selection and fitted parameters are unchanged. Original training config digest is retained."
+}

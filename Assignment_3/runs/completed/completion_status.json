@@ -1,0 +1,18 @@
+{
+  "primary_experiments": true,
+  "planned_ablations": true,
+  "official_evaluator_verified_and_used": true,
+  "secondary_metrics": true,
+  "repeated_seed_statistics": true,
+  "saved_predictions": true,
+  "fitted_checkpoints_present_and_replayed": true,
+  "measured_resource_costs": true,
+  "split_definitions_and_grouped_duplicate_control": true,
+  "quantitative_errors_and_examples": true,
+  "comparability_labeled": true,
+  "findings_and_limitations_json": true,
+  "working_checkpoint_demo": true,
+  "saved_demo_fallback": true,
+  "paper_and_detailed_report": "excluded by user",
+  "presentation": "excluded by user"
+}

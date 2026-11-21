@@ -153,17 +153,19 @@ def compute_retrieval_metrics(
 
 
 # --------------------------------------------------------------------------- #
-# Classification Metrics (Subtask 2 Official & Secondary)
+# Classification Metrics (pooled secondary metrics and optional official grouping)
 # --------------------------------------------------------------------------- #
 def compute_classification_metrics(
     y_true: Union[Sequence[int], np.ndarray, pd.Series],
     y_pred: Union[Sequence[int], np.ndarray, pd.Series],
     y_score: Union[Sequence[float], np.ndarray, pd.Series, None] = None,
+    words: Union[Sequence[str], np.ndarray, pd.Series, None] = None,
 ) -> Dict[str, float]:
-    """Compute official and secondary classification metrics for Subtask 2.
+    """Compute secondary metrics; official F1 requires word identities.
 
-    Official metric:
-    - macro_f1: Unweighted average of F1 for class 0 and class 1.
+    ``macro_f1`` retains its historical pooled two-class meaning. The pinned
+    upstream metric averages two-class macro-F1 *within each word*, then across
+    words; it is returned separately as ``official_f1`` when ``words`` is given.
     """
     y_true_arr = np.asarray(y_true, dtype=int)
     y_pred_arr = np.asarray(y_pred, dtype=int)
@@ -176,6 +178,9 @@ def compute_classification_metrics(
         "precision": float(precision_score(y_true_arr, y_pred_arr, pos_label=1, zero_division=0)),
         "recall": float(recall_score(y_true_arr, y_pred_arr, pos_label=1, zero_division=0)),
     }
+    if words is not None:
+        from Assignment_3.src.evaluation import fast_official_f1
+        metrics["official_f1"] = fast_official_f1(words, y_true_arr, y_pred_arr)
 
     if y_score is not None:
         try:

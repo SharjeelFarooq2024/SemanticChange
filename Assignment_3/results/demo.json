@@ -1,0 +1,26 @@
+{
+  "system": "advanced_hybrid",
+  "mode": "fitted_checkpoint_inference",
+  "predictions": [
+    {
+      "word": "kvinna",
+      "sentence_id": "b382a5e9_92_98",
+      "prediction": 0
+    },
+    {
+      "word": "kvinna",
+      "sentence_id": "59ebb00_32_39",
+      "prediction": 0
+    },
+    {
+      "word": "kvinna",
+      "sentence_id": "ce9e075e5_145_152",
+      "prediction": 1
+    },
+    {
+      "word": "kvinna",
+      "sentence_id": "6cdb9472_214_221",
+      "prediction": 1
+    }
+  ]
+}

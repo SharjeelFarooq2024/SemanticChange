@@ -1,0 +1,36 @@
+{
+  "checkpoint_sha256": "b011f87f678fa71a0d757245552071b67f5d0cb224d8628e85dfc065e2311f8c",
+  "checkpoint_replayed": true,
+  "selected": {
+    "seed": 777,
+    "candidate": "boosted_views_leaf15",
+    "shrinkage": 0.5,
+    "oof_selection_f1": 0.6603890399618007,
+    "recipe": {
+      "name": "boosted_views_leaf15",
+      "components": [
+        "boosted_views_leaf15"
+      ],
+      "scales": [
+        1.0
+      ]
+    },
+    "calibration": {
+      "global": -0.8804736575351874,
+      "per_word": {
+        "dumpa": -0.542122974999709,
+        "exportera": -0.8804736575351874,
+        "fru": -0.06872398020819859,
+        "fröken": -0.8804736575351874,
+        "förort": -0.562016413174204,
+        "herre": -1.2608894564637176,
+        "kvinna": -0.8804736575351874,
+        "motiv": -0.757023985337028,
+        "skär": -0.8804736575351874,
+        "suga": -1.1873829958469444
+      },
+      "word_shrinkage": 0.5
+    }
+  },
+  "selection_sha256": "675ad7f72cd2d9c5f3160fab4ff2c8c155801bf14e9fa42d37e11fb4ea5e5cb3"
+}

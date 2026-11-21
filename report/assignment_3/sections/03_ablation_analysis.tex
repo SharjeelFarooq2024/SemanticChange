@@ -1,0 +1,93 @@
+This analysis uses the saved Part 1 predictions for 16 systems and five seeds (42, 100, 2023, 2026, 777). Official F1 below means the unchanged Part 1 scorer: positive-class F1 calculated for each of the ten lemmas, then averaged. Pooled macro-F1 averages the two classes over all test usages. These are local development-split results, not scores from an official hidden-test server.
+
+\subsection{Evidence and interpretation checks}
+All 31,760 saved prediction rows match the released labels and periods. All 80 per-seed files match the consolidated predictions, and each model has the same 397 test identities within each seed. Recomputed primary metric means match Part 1 Table 1; ranking metrics match Table 2. The four RRF smoothing variants are reconstructed from the saved component lists and match the Assignment 2 ablation table. Assignment 2's binary evaluator calls pooled two-class macro-F1 'official', whereas Part 1 uses per-lemma positive-class F1; this report retains the fixed Part 1 convention and names both metrics explicitly.
+
+\subsection{Hypotheses compared with results}
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.180\textwidth}>{\raggedright\arraybackslash}p{0.390\textwidth}>{\raggedright\arraybackslash}p{0.330\textwidth}}
+\caption{Ablation decisions. Full hypotheses and limitations are preserved in table8\_ablation\_hypotheses.csv.}\\
+\toprule
+Axis & Observed result & Conclusion \\
+\midrule
+\endfirsthead
+Axis & Observed result & Conclusion \\
+\midrule
+\endhead
+Candidate scope & BM25 MRR: 0.618 per-word vs 0.207 global & Per-word restriction helps this task \\
+Encoder backbone & E5 retrieval exists; XLM-R retrieval does not & Planned hypothesis remains untested \\
+RRF smoothing & k=30 best MRR/nDCG; k=60 best MAP & Metric-dependent, exploratory \\
+Decision cutoff & Official F1 gains +0.106 to +0.122 & Consistent gains; search-boundary caveat \\
+Word-ID feature & Official F1 +0.119; pooled macro-F1 -0.063 & Feature tradeoff; no text masking \\
+\bottomrule
+\end{longtable}
+}
+
+Candidate scope hypothesis: ranking only usages of the requested lemma reduces irrelevant cross-word matches. Per-word BM25 has MRR 0.6183 and MAP 0.2291, against 0.2074 and 0.0171 globally. The large observed drop supports the restriction for definition matching. However, global retrieval expands the candidate universe, and cross-word pairs without judgments are treated as non-relevant by the evaluator. This is a difference in task difficulty and relevance coverage; it does not establish train/test leakage or prove a particular lexical failure mechanism.
+
+Encoder hypothesis: contrastively trained E5 should outperform generic masked-language-model XLM-R embeddings for definition-to-usage retrieval. This cannot be tested with the saved runs. XLM-R plus logistic regression is a supervised classifier, not an XLM-R retriever with matched pooling, candidate depth and prefixes. Attributing its difference from E5 retrieval to encoder pretraining would confound the encoder with supervision and the prediction rule.
+
+Fusion hypothesis: intermediate smoothing k=30-60 should give the strongest retrieval. At k=10/30/60/100, MRR is 0.6750/0.7083/0.6917/0.6917, MAP is 0.2788/0.2908/0.2926/0.2914, and nDCG@10 is 0.4718/0.4914/0.4902/0.4774. The preferred k depends on the metric; the k=30 versus 60 nDCG difference is only 0.0012. These ten already-inspected development queries provide sensitivity evidence, not independent confirmation of a newly selected k. Keep k=60 for the reported system.
+
+Operating-point hypothesis: choosing K on training labels improves binary F1 relative to K=50. Official F1 increases by 0.1223 for BM25, 0.1210 for dense and 0.1056 for hybrid. All three systems choose K=100 in every seed: the maximum searched cutoff and saved retrieval depth. K* is therefore the best tested value, not an established unconstrained optimum. The objective matters: hybrid pooled macro-F1 changes only from 0.5213 to 0.5245, while accuracy falls from 0.5980 to 0.5355. More predicted positives improve the primary metric without uniformly improving classification quality.
+
+Word-identity hypothesis: removing the explicit lemma feature may reduce dependence on lemma-specific class priors. Official F1 rises from 0.3409 to 0.4598, but pooled macro-F1 falls from 0.8107 to 0.7480 and accuracy from 0.8338 to 0.7662. Code inspection shows that build\_ablated\_preprocessor removes only the categorical word column; the original text, target surface forms, numeric features, POS and period remain. The earlier 'morphological masking' description is inaccurate. These results support a feature/metric tradeoff, not a claim that masking forces contextual semantic learning.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\textwidth]{../../Assignment_3/outputs/figures/06_part2_cutoff_effects.png}
+\caption{Cutoff gains for each split, with mean and sample standard deviation. The primary and secondary objectives yield different conclusions.}
+\end{figure}
+
+\subsection{Variance and significance}
+Differences are paired within a seed. The table reports 10,000-resample percentile bootstrap intervals over five paired split values, win/loss/tie counts and exact two-sided sign-flip p-values over all 32 sign assignments. Holm adjustment covers all 20 classification contrasts defined in this analysis (ten pairs times two metrics). With five nonzero pairs, the smallest possible two-sided exact p-value is 2/32=0.0625, so these seed-level tests cannot reject at 0.05. A bootstrap interval excluding zero can coexist with that discrete test result. The 80/20 splits overlap substantially, and retrieval rankings are fixed across seeds; the standard deviations describe split sensitivity rather than five independent neural-training replications. Intervals and tests do not establish population-level or unseen-lemma generalization.
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.280\textwidth}>{\raggedright\arraybackslash}p{0.085\textwidth}>{\raggedright\arraybackslash}p{0.190\textwidth}>{\raggedright\arraybackslash}p{0.095\textwidth}>{\raggedright\arraybackslash}p{0.105\textwidth}>{\raggedright\arraybackslash}p{0.105\textwidth}}
+\caption{Paired official F1 differences. Confidence intervals describe resampling of split values; W/L/T is descriptive.}\\
+\toprule
+Comparison & Delta & 95\% interval & W/L/T & Exact p & Holm p \\
+\midrule
+\endfirsthead
+Comparison & Delta & 95\% interval & W/L/T & Exact p & Holm p \\
+\midrule
+\endhead
+Hybrid (K*) minus Dense (K*) & -0.030 & [-0.042, -0.015] & 0/5/0 & 0.0625 & 1.0000 \\
+Hybrid (K*) minus BM25 (K*) & +0.060 & [+0.044, +0.080] & 5/0/0 & 0.0625 & 1.0000 \\
+Frozen XLM-R + LR minus Always positive & +0.019 & [-0.001, +0.035] & 4/1/0 & 0.1875 & 1.0000 \\
+Hybrid (K*) minus Always positive & -0.052 & [-0.072, -0.029] & 0/5/0 & 0.0625 & 1.0000 \\
+Hybrid (K*) minus HYBRID K=50 & +0.106 & [+0.072, +0.137] & 5/0/0 & 0.0625 & 1.0000 \\
+EDA + LR without word ID minus EDA + LR & +0.119 & [+0.092, +0.150] & 5/0/0 & 0.0625 & 1.0000 \\
+\bottomrule
+\end{longtable}
+}
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.340\textwidth}>{\raggedright\arraybackslash}p{0.140\textwidth}>{\raggedright\arraybackslash}p{0.140\textwidth}>{\raggedright\arraybackslash}p{0.140\textwidth}>{\raggedright\arraybackslash}p{0.140\textwidth}}
+\caption{Query-level sensitivity: exact sign flips across ten paired lemma queries, with Holm adjustment over 15 ranking contrasts.}\\
+\toprule
+Comparison & Metric & Delta & Exact p & Holm p \\
+\midrule
+\endfirsthead
+Comparison & Metric & Delta & Exact p & Holm p \\
+\midrule
+\endhead
+bm25 minus bm25\_global & map & +0.2120 & 0.0020 & 0.0293 \\
+hybrid minus dense & mrr & +0.0800 & 0.6250 & 1.0000 \\
+hybrid minus dense & map & -0.0303 & 0.5859 & 1.0000 \\
+hybrid minus dense & ndcg@10 & +0.0628 & 0.4180 & 1.0000 \\
+rrf\_30 minus rrf\_60 & ndcg@10 & +0.0012 & 0.9688 & 1.0000 \\
+\bottomrule
+\end{longtable}
+}
+
+The query tests are a separate exploratory family, not additional random-seed runs. The ten queries belong to the same development collection. Per-word versus global BM25 remains distinguishable for MAP and nDCG@10 after this adjustment (Holm p=0.0293), but none of the hybrid-versus-dense ranking contrasts does. Part 1's unadjusted t-tests and its Monte Carlo sign-flip estimates should not be read as definitive evidence of general superiority. The paired vectors, bootstrap settings and all adjusted tests are saved so each claim can be checked.
+
+\subsection{Leakage and artifact limitations}
+Reconstructed splits have zero train/test identity overlap. Across the five splits, 7 test appearances have an exact NFKC-normalized, case-folded text match in their corresponding training partition. These duplicate contexts are a potential leakage channel despite distinct usage IDs; the corresponding pairs are saved. Excluding those test rows changes any one reported split score by at most 0.0026 official F1 across the six focus systems, but that scoring-only sensitivity check cannot remove any influence already present during fitting. This check does not detect near-duplicate documents or shared source articles. All ten lemmas occur in both training and test partitions, and period metadata is available to some classifiers. The protocol measures new usages of known lemmas, not transfer to unseen lemmas or future periods. Full-corpus BM25 indexing and frozen passage encoding include test text without test labels; this is a transductive local setup. Training-only cutoff selection avoids direct test-label tuning but does not undo earlier development-set inspection.
+
+The current checkout contains 0 fitted joblib checkpoints; optimal\_thresholds.json and predictions are present. The claim that 45 fitted pipelines are archived cannot be verified here because joblib files are ignored by Git. Part 1's per-model latency, memory and several cost values are hard-coded in its script rather than measured by a profiler, so they cannot support an efficiency ranking. The saved total wall time is a historical run log, not an end-to-end model-training cost. The new analysis manifest records its own environment, elapsed time and input hashes; no model training is repeated.
+

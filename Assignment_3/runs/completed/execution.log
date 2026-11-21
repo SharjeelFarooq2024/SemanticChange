@@ -1,0 +1,270 @@
+2026-11-21 18:55:56,465 INFO Loading pinned encoder e5_small on CPU
+2026-11-21 18:56:02,840 INFO e5_small: 4/1988 encoded (0.9s)
+2026-11-21 18:56:05,990 INFO e5_small: 132/1988 encoded (4.0s)
+2026-11-21 18:56:09,242 INFO e5_small: 260/1988 encoded (7.3s)
+2026-11-21 18:56:12,444 INFO e5_small: 388/1988 encoded (10.5s)
+2026-11-21 18:56:16,007 INFO e5_small: 516/1988 encoded (14.1s)
+2026-11-21 18:56:19,564 INFO e5_small: 644/1988 encoded (17.6s)
+2026-11-21 18:56:23,327 INFO e5_small: 772/1988 encoded (21.4s)
+2026-11-21 18:56:27,116 INFO e5_small: 900/1988 encoded (25.2s)
+2026-11-21 18:56:31,697 INFO e5_small: 1028/1988 encoded (29.7s)
+2026-11-21 18:56:36,175 INFO e5_small: 1156/1988 encoded (34.2s)
+2026-11-21 18:56:40,674 INFO e5_small: 1284/1988 encoded (38.7s)
+2026-11-21 18:56:46,254 INFO e5_small: 1412/1988 encoded (44.3s)
+2026-11-21 18:56:51,624 INFO e5_small: 1540/1988 encoded (49.7s)
+2026-11-21 18:56:57,229 INFO e5_small: 1668/1988 encoded (55.3s)
+2026-11-21 18:57:03,853 INFO e5_small: 1796/1988 encoded (61.9s)
+2026-11-21 18:57:12,717 INFO e5_small: 1924/1988 encoded (70.8s)
+2026-11-21 18:57:18,343 INFO e5_small: 1988/1988 encoded (76.4s)
+2026-11-21 18:57:20,524 INFO Loading pinned encoder xlmr_base on CPU
+2026-11-21 18:57:27,509 INFO xlmr_base: 4/3252 encoded (3.3s)
+2026-11-21 18:57:34,595 INFO xlmr_base: 132/3252 encoded (10.4s)
+2026-11-21 18:57:42,816 INFO xlmr_base: 260/3252 encoded (18.6s)
+2026-11-21 18:57:51,164 INFO xlmr_base: 388/3252 encoded (27.0s)
+2026-11-21 18:58:01,321 INFO xlmr_base: 516/3252 encoded (37.1s)
+2026-11-21 18:58:10,660 INFO xlmr_base: 644/3252 encoded (46.5s)
+2026-11-21 18:58:21,657 INFO xlmr_base: 772/3252 encoded (57.5s)
+2026-11-21 18:58:32,117 INFO xlmr_base: 900/3252 encoded (67.9s)
+2026-11-21 18:58:42,548 INFO xlmr_base: 1028/3252 encoded (78.3s)
+2026-11-21 18:58:52,622 INFO xlmr_base: 1156/3252 encoded (88.4s)
+2026-11-21 18:59:04,467 INFO xlmr_base: 1284/3252 encoded (100.3s)
+2026-11-21 18:59:16,084 INFO xlmr_base: 1412/3252 encoded (111.9s)
+2026-11-21 18:59:28,064 INFO xlmr_base: 1540/3252 encoded (123.9s)
+2026-11-21 18:59:40,913 INFO xlmr_base: 1668/3252 encoded (136.7s)
+2026-11-21 18:59:54,263 INFO xlmr_base: 1796/3252 encoded (150.1s)
+2026-11-21 19:00:07,927 INFO xlmr_base: 1924/3252 encoded (163.7s)
+2026-11-21 19:00:21,744 INFO xlmr_base: 2052/3252 encoded (177.5s)
+2026-11-21 19:00:37,334 INFO xlmr_base: 2180/3252 encoded (193.1s)
+2026-11-21 19:00:52,094 INFO xlmr_base: 2308/3252 encoded (207.9s)
+2026-11-21 19:01:03,504 INFO xlmr_base: 2436/3252 encoded (219.3s)
+2026-11-21 19:01:10,866 INFO xlmr_base: 2564/3252 encoded (226.7s)
+2026-11-21 19:01:24,018 INFO xlmr_base: 2692/3252 encoded (239.8s)
+2026-11-21 19:01:42,906 INFO xlmr_base: 2820/3252 encoded (258.7s)
+2026-11-21 19:02:02,473 INFO xlmr_base: 2948/3252 encoded (278.3s)
+2026-11-21 19:02:25,713 INFO xlmr_base: 3076/3252 encoded (301.5s)
+2026-11-21 19:02:53,873 INFO xlmr_base: 3204/3252 encoded (329.7s)
+2026-11-21 19:03:09,344 INFO xlmr_base: 3252/3252 encoded (345.1s)
+2026-11-21 19:06:52,643 INFO Validated representation cache: e5_small
+2026-11-21 19:06:52,846 INFO Validated representation cache: xlmr_base
+2026-11-21 19:06:54,501 INFO Fresh rankings and all candidate/encoder/fusion/depth variants saved: 13
+2026-11-21 19:06:55,114 INFO stratified seed=42 majority official=0.3637 pooled=0.3920
+2026-11-21 19:06:57,435 INFO stratified seed=42 tfidf_logistic_regression official=0.6175 pooled=0.7917
+2026-11-21 19:06:59,838 INFO stratified seed=42 tfidf_complement_nb official=0.4648 pooled=0.6171
+2026-11-21 19:07:05,899 INFO stratified seed=42 word_char_tfidf_linear_svm official=0.6119 pooled=0.8205
+2026-11-21 19:07:06,251 INFO stratified seed=42 all_positive official=0.2356 pooled=0.2621
+2026-11-21 19:07:08,899 INFO stratified seed=42 eda_features_logistic_regression official=0.5276 pooled=0.8163
+2026-11-21 19:07:11,797 INFO stratified seed=42 ablated_no_word_id_logistic_regression official=0.5648 pooled=0.7569
+2026-11-21 19:07:14,980 INFO stratified seed=42 eda_features_random_forest official=0.5870 pooled=0.7910
+2026-11-21 19:07:15,578 INFO stratified seed=42 frozen_xlmr_logistic_regression official=0.5796 pooled=0.7242
+2026-11-21 19:07:23,567 INFO stratified seed=42 frozen_xlmr_linear_svm official=0.5632 pooled=0.7145
+2026-11-21 19:07:23,942 INFO stratified seed=42 bm25_naive_k50 official=0.4039 pooled=0.4402
+2026-11-21 19:07:24,260 INFO stratified seed=42 bm25_train_tuned official=0.3967 pooled=0.4278
+2026-11-21 19:07:24,590 INFO stratified seed=42 bm25_full_depth_tuned official=0.3967 pooled=0.4278
+2026-11-21 19:07:24,797 INFO stratified seed=42 dense_naive_k50 official=0.4953 pooled=0.5720
+2026-11-21 19:07:25,126 INFO stratified seed=42 dense_train_tuned official=0.5052 pooled=0.5774
+2026-11-21 19:07:25,512 INFO stratified seed=42 dense_full_depth_tuned official=0.5052 pooled=0.5774
+2026-11-21 19:07:25,708 INFO stratified seed=42 hybrid_naive_k50 official=0.4817 pooled=0.5347
+2026-11-21 19:07:26,029 INFO stratified seed=42 hybrid_train_tuned official=0.4610 pooled=0.5149
+2026-11-21 19:07:26,386 INFO stratified seed=42 hybrid_full_depth_tuned official=0.4593 pooled=0.5320
+2026-11-21 19:07:26,588 INFO stratified seed=42 dense_xlmr_naive_k50 official=0.4847 pooled=0.5274
+2026-11-21 19:07:26,870 INFO stratified seed=42 dense_xlmr_train_tuned official=0.4646 pooled=0.5072
+2026-11-21 19:07:27,150 INFO stratified seed=100 majority official=0.4095 pooled=0.3920
+2026-11-21 19:07:29,714 INFO stratified seed=100 tfidf_logistic_regression official=0.5702 pooled=0.8417
+2026-11-21 19:07:31,985 INFO stratified seed=100 tfidf_complement_nb official=0.5017 pooled=0.5878
+2026-11-21 19:07:38,460 INFO stratified seed=100 word_char_tfidf_linear_svm official=0.6661 pooled=0.8469
+2026-11-21 19:07:38,784 INFO stratified seed=100 all_positive official=0.2701 pooled=0.2621
+2026-11-21 19:07:41,496 INFO stratified seed=100 eda_features_logistic_regression official=0.5972 pooled=0.8434
+2026-11-21 19:07:44,150 INFO stratified seed=100 ablated_no_word_id_logistic_regression official=0.5725 pooled=0.7712
+2026-11-21 19:07:47,467 INFO stratified seed=100 eda_features_random_forest official=0.6202 pooled=0.8279
+2026-11-21 19:07:48,020 INFO stratified seed=100 frozen_xlmr_logistic_regression official=0.5915 pooled=0.7446
+2026-11-21 19:07:58,523 INFO stratified seed=100 frozen_xlmr_linear_svm official=0.5634 pooled=0.7072
+2026-11-21 19:07:58,919 INFO stratified seed=100 bm25_naive_k50 official=0.4206 pooled=0.4780
+2026-11-21 19:07:59,286 INFO stratified seed=100 bm25_train_tuned official=0.4119 pooled=0.4758
+2026-11-21 19:07:59,671 INFO stratified seed=100 bm25_full_depth_tuned official=0.4119 pooled=0.4758
+2026-11-21 19:07:59,810 INFO stratified seed=100 dense_naive_k50 official=0.4650 pooled=0.5268
+2026-11-21 19:08:00,162 INFO stratified seed=100 dense_train_tuned official=0.4431 pooled=0.5173
+2026-11-21 19:08:00,522 INFO stratified seed=100 dense_full_depth_tuned official=0.4431 pooled=0.5173
+2026-11-21 19:08:00,703 INFO stratified seed=100 hybrid_naive_k50 official=0.4475 pooled=0.5201
+2026-11-21 19:08:00,953 INFO stratified seed=100 hybrid_train_tuned official=0.4410 pooled=0.5195
+2026-11-21 19:08:01,404 INFO stratified seed=100 hybrid_full_depth_tuned official=0.4691 pooled=0.5366
+2026-11-21 19:08:01,570 INFO stratified seed=100 dense_xlmr_naive_k50 official=0.4591 pooled=0.5092
+2026-11-21 19:08:01,819 INFO stratified seed=100 dense_xlmr_train_tuned official=0.4406 pooled=0.4742
+2026-11-21 19:08:02,132 INFO stratified seed=2023 majority official=0.3596 pooled=0.3920
+2026-11-21 19:08:04,413 INFO stratified seed=2023 tfidf_logistic_regression official=0.5881 pooled=0.7884
+2026-11-21 19:08:07,005 INFO stratified seed=2023 tfidf_complement_nb official=0.5118 pooled=0.6162
+2026-11-21 19:08:13,454 INFO stratified seed=2023 word_char_tfidf_linear_svm official=0.6085 pooled=0.8048
+2026-11-21 19:08:13,817 INFO stratified seed=2023 all_positive official=0.2360 pooled=0.2621
+2026-11-21 19:08:16,520 INFO stratified seed=2023 eda_features_logistic_regression official=0.5106 pooled=0.8063
+2026-11-21 19:08:19,289 INFO stratified seed=2023 ablated_no_word_id_logistic_regression official=0.5532 pooled=0.7330
+2026-11-21 19:08:22,656 INFO stratified seed=2023 eda_features_random_forest official=0.6009 pooled=0.7981
+2026-11-21 19:08:23,242 INFO stratified seed=2023 frozen_xlmr_logistic_regression official=0.5859 pooled=0.7209
+2026-11-21 19:08:31,181 INFO stratified seed=2023 frozen_xlmr_linear_svm official=0.5745 pooled=0.7154
+2026-11-21 19:08:31,666 INFO stratified seed=2023 bm25_naive_k50 official=0.4368 pooled=0.4984
+2026-11-21 19:08:31,934 INFO stratified seed=2023 bm25_train_tuned official=0.4423 pooled=0.4882
+2026-11-21 19:08:32,260 INFO stratified seed=2023 bm25_full_depth_tuned official=0.4423 pooled=0.4882
+2026-11-21 19:08:32,465 INFO stratified seed=2023 dense_naive_k50 official=0.4930 pooled=0.5497
+2026-11-21 19:08:32,740 INFO stratified seed=2023 dense_train_tuned official=0.5068 pooled=0.5642
+2026-11-21 19:08:33,111 INFO stratified seed=2023 dense_full_depth_tuned official=0.5068 pooled=0.5642
+2026-11-21 19:08:33,338 INFO stratified seed=2023 hybrid_naive_k50 official=0.4647 pooled=0.5153
+2026-11-21 19:08:33,627 INFO stratified seed=2023 hybrid_train_tuned official=0.4429 pooled=0.5025
+2026-11-21 19:08:33,947 INFO stratified seed=2023 hybrid_full_depth_tuned official=0.4423 pooled=0.5056
+2026-11-21 19:08:34,090 INFO stratified seed=2023 dense_xlmr_naive_k50 official=0.4695 pooled=0.5245
+2026-11-21 19:08:34,341 INFO stratified seed=2023 dense_xlmr_train_tuned official=0.4742 pooled=0.5153
+2026-11-21 19:08:34,727 INFO stratified seed=2026 majority official=0.3582 pooled=0.3920
+2026-11-21 19:08:37,161 INFO stratified seed=2026 tfidf_logistic_regression official=0.6124 pooled=0.7860
+2026-11-21 19:08:39,506 INFO stratified seed=2026 tfidf_complement_nb official=0.5188 pooled=0.5878
+2026-11-21 19:08:45,345 INFO stratified seed=2026 word_char_tfidf_linear_svm official=0.6474 pooled=0.7973
+2026-11-21 19:08:45,700 INFO stratified seed=2026 all_positive official=0.2430 pooled=0.2621
+2026-11-21 19:08:48,671 INFO stratified seed=2026 eda_features_logistic_regression official=0.5022 pooled=0.7772
+2026-11-21 19:08:51,749 INFO stratified seed=2026 ablated_no_word_id_logistic_regression official=0.5710 pooled=0.7258
+2026-11-21 19:08:54,939 INFO stratified seed=2026 eda_features_random_forest official=0.4907 pooled=0.7490
+2026-11-21 19:08:55,693 INFO stratified seed=2026 frozen_xlmr_logistic_regression official=0.5553 pooled=0.6772
+2026-11-21 19:09:05,903 INFO stratified seed=2026 frozen_xlmr_linear_svm official=0.5428 pooled=0.6555
+2026-11-21 19:09:06,219 INFO stratified seed=2026 bm25_naive_k50 official=0.3929 pooled=0.4519
+2026-11-21 19:09:06,511 INFO stratified seed=2026 bm25_train_tuned official=0.3869 pooled=0.4463
+2026-11-21 19:09:06,911 INFO stratified seed=2026 bm25_full_depth_tuned official=0.3869 pooled=0.4463
+2026-11-21 19:09:07,079 INFO stratified seed=2026 dense_naive_k50 official=0.4818 pooled=0.5272
+2026-11-21 19:09:07,401 INFO stratified seed=2026 dense_train_tuned official=0.4712 pooled=0.5295
+2026-11-21 19:09:07,673 INFO stratified seed=2026 dense_full_depth_tuned official=0.4712 pooled=0.5295
+2026-11-21 19:09:07,805 INFO stratified seed=2026 hybrid_naive_k50 official=0.4943 pooled=0.5328
+2026-11-21 19:09:08,133 INFO stratified seed=2026 hybrid_train_tuned official=0.4809 pooled=0.5269
+2026-11-21 19:09:08,521 INFO stratified seed=2026 hybrid_full_depth_tuned official=0.4300 pooled=0.5011
+2026-11-21 19:09:08,662 INFO stratified seed=2026 dense_xlmr_naive_k50 official=0.4294 pooled=0.4833
+2026-11-21 19:09:09,025 INFO stratified seed=2026 dense_xlmr_train_tuned official=0.4360 pooled=0.4723
+2026-11-21 19:09:09,423 INFO stratified seed=777 majority official=0.3555 pooled=0.3920
+2026-11-21 19:09:11,721 INFO stratified seed=777 tfidf_logistic_regression official=0.5642 pooled=0.7843
+2026-11-21 19:09:14,146 INFO stratified seed=777 tfidf_complement_nb official=0.4561 pooled=0.5912
+2026-11-21 19:09:20,185 INFO stratified seed=777 word_char_tfidf_linear_svm official=0.5643 pooled=0.7891
+2026-11-21 19:09:20,538 INFO stratified seed=777 all_positive official=0.2407 pooled=0.2621
+2026-11-21 19:09:23,501 INFO stratified seed=777 eda_features_logistic_regression official=0.4922 pooled=0.8105
+2026-11-21 19:09:26,289 INFO stratified seed=777 ablated_no_word_id_logistic_regression official=0.5309 pooled=0.7533
+2026-11-21 19:09:29,781 INFO stratified seed=777 eda_features_random_forest official=0.4714 pooled=0.7801
+2026-11-21 19:09:30,334 INFO stratified seed=777 frozen_xlmr_logistic_regression official=0.5889 pooled=0.7145
+2026-11-21 19:09:41,007 INFO stratified seed=777 frozen_xlmr_linear_svm official=0.5638 pooled=0.6848
+2026-11-21 19:09:41,409 INFO stratified seed=777 bm25_naive_k50 official=0.4406 pooled=0.5116
+2026-11-21 19:09:41,942 INFO stratified seed=777 bm25_train_tuned official=0.4369 pooled=0.5130
+2026-11-21 19:09:42,497 INFO stratified seed=777 bm25_full_depth_tuned official=0.4369 pooled=0.5130
+2026-11-21 19:09:42,701 INFO stratified seed=777 dense_naive_k50 official=0.4592 pooled=0.5114
+2026-11-21 19:09:43,008 INFO stratified seed=777 dense_train_tuned official=0.4805 pooled=0.5361
+2026-11-21 19:09:43,439 INFO stratified seed=777 dense_full_depth_tuned official=0.4805 pooled=0.5361
+2026-11-21 19:09:43,630 INFO stratified seed=777 hybrid_naive_k50 official=0.4619 pooled=0.5038
+2026-11-21 19:09:44,064 INFO stratified seed=777 hybrid_train_tuned official=0.4537 pooled=0.4941
+2026-11-21 19:09:44,531 INFO stratified seed=777 hybrid_full_depth_tuned official=0.4516 pooled=0.5048
+2026-11-21 19:09:44,732 INFO stratified seed=777 dense_xlmr_naive_k50 official=0.4390 pooled=0.5173
+2026-11-21 19:09:45,111 INFO stratified seed=777 dense_xlmr_train_tuned official=0.4176 pooled=0.5074
+2026-11-21 19:09:46,446 INFO grouped_text seed=42 majority official=0.4050 pooled=0.3948
+2026-11-21 19:09:48,960 INFO grouped_text seed=42 tfidf_logistic_regression official=0.6329 pooled=0.7733
+2026-11-21 19:09:51,318 INFO grouped_text seed=42 tfidf_complement_nb official=0.4745 pooled=0.5958
+2026-11-21 19:09:57,766 INFO grouped_text seed=42 word_char_tfidf_linear_svm official=0.6641 pooled=0.7979
+2026-11-21 19:09:58,140 INFO grouped_text seed=42 all_positive official=0.2917 pooled=0.2579
+2026-11-21 19:10:01,035 INFO grouped_text seed=42 eda_features_logistic_regression official=0.6079 pooled=0.7830
+2026-11-21 19:10:03,939 INFO grouped_text seed=42 ablated_no_word_id_logistic_regression official=0.5941 pooled=0.7279
+2026-11-21 19:10:07,254 INFO grouped_text seed=42 eda_features_random_forest official=0.6467 pooled=0.7805
+2026-11-21 19:10:07,868 INFO grouped_text seed=42 frozen_xlmr_logistic_regression official=0.6042 pooled=0.7214
+2026-11-21 19:10:15,804 INFO grouped_text seed=42 frozen_xlmr_linear_svm official=0.5971 pooled=0.7068
+2026-11-21 19:10:16,085 INFO grouped_text seed=42 bm25_naive_k50 official=0.3864 pooled=0.4470
+2026-11-21 19:10:16,334 INFO grouped_text seed=42 bm25_train_tuned official=0.3930 pooled=0.4386
+2026-11-21 19:10:16,650 INFO grouped_text seed=42 bm25_full_depth_tuned official=0.3930 pooled=0.4386
+2026-11-21 19:10:16,855 INFO grouped_text seed=42 dense_naive_k50 official=0.4640 pooled=0.5385
+2026-11-21 19:10:17,233 INFO grouped_text seed=42 dense_train_tuned official=0.4648 pooled=0.5446
+2026-11-21 19:10:17,664 INFO grouped_text seed=42 dense_full_depth_tuned official=0.4648 pooled=0.5446
+2026-11-21 19:10:17,784 INFO grouped_text seed=42 hybrid_naive_k50 official=0.4086 pooled=0.4727
+2026-11-21 19:10:18,049 INFO grouped_text seed=42 hybrid_train_tuned official=0.4136 pooled=0.4786
+2026-11-21 19:10:18,497 INFO grouped_text seed=42 hybrid_full_depth_tuned official=0.4216 pooled=0.4789
+2026-11-21 19:10:18,713 INFO grouped_text seed=42 dense_xlmr_naive_k50 official=0.4419 pooled=0.5103
+2026-11-21 19:10:18,991 INFO grouped_text seed=42 dense_xlmr_train_tuned official=0.4417 pooled=0.4819
+2026-11-21 19:10:19,944 INFO grouped_text seed=100 majority official=0.3630 pooled=0.3985
+2026-11-21 19:10:22,492 INFO grouped_text seed=100 tfidf_logistic_regression official=0.5969 pooled=0.7852
+2026-11-21 19:10:24,977 INFO grouped_text seed=100 tfidf_complement_nb official=0.5216 pooled=0.6320
+2026-11-21 19:10:31,035 INFO grouped_text seed=100 word_char_tfidf_linear_svm official=0.6153 pooled=0.8090
+2026-11-21 19:10:31,406 INFO grouped_text seed=100 all_positive official=0.2278 pooled=0.2524
+2026-11-21 19:10:34,175 INFO grouped_text seed=100 eda_features_logistic_regression official=0.5295 pooled=0.8056
+2026-11-21 19:10:36,861 INFO grouped_text seed=100 ablated_no_word_id_logistic_regression official=0.5204 pooled=0.7160
+2026-11-21 19:10:39,978 INFO grouped_text seed=100 eda_features_random_forest official=0.5449 pooled=0.7979
+2026-11-21 19:10:40,619 INFO grouped_text seed=100 frozen_xlmr_logistic_regression official=0.5686 pooled=0.6908
+2026-11-21 19:10:47,523 INFO grouped_text seed=100 frozen_xlmr_linear_svm official=0.5570 pooled=0.6768
+2026-11-21 19:10:47,941 INFO grouped_text seed=100 bm25_naive_k50 official=0.4174 pooled=0.4888
+2026-11-21 19:10:48,278 INFO grouped_text seed=100 bm25_train_tuned official=0.3974 pooled=0.4748
+2026-11-21 19:10:48,666 INFO grouped_text seed=100 bm25_full_depth_tuned official=0.3974 pooled=0.4748
+2026-11-21 19:10:48,851 INFO grouped_text seed=100 dense_naive_k50 official=0.4687 pooled=0.5212
+2026-11-21 19:10:49,256 INFO grouped_text seed=100 dense_train_tuned official=0.4718 pooled=0.5316
+2026-11-21 19:10:49,597 INFO grouped_text seed=100 dense_full_depth_tuned official=0.4718 pooled=0.5316
+2026-11-21 19:10:49,801 INFO grouped_text seed=100 hybrid_naive_k50 official=0.4710 pooled=0.5478
+2026-11-21 19:10:50,032 INFO grouped_text seed=100 hybrid_train_tuned official=0.4597 pooled=0.5203
+2026-11-21 19:10:50,395 INFO grouped_text seed=100 hybrid_full_depth_tuned official=0.4487 pooled=0.5192
+2026-11-21 19:10:50,591 INFO grouped_text seed=100 dense_xlmr_naive_k50 official=0.4675 pooled=0.5020
+2026-11-21 19:10:50,879 INFO grouped_text seed=100 dense_xlmr_train_tuned official=0.4527 pooled=0.4837
+2026-11-21 19:10:51,918 INFO grouped_text seed=2023 majority official=0.4015 pooled=0.3976
+2026-11-21 19:10:54,271 INFO grouped_text seed=2023 tfidf_logistic_regression official=0.5948 pooled=0.7988
+2026-11-21 19:10:56,601 INFO grouped_text seed=2023 tfidf_complement_nb official=0.5487 pooled=0.5811
+2026-11-21 19:11:02,694 INFO grouped_text seed=2023 word_char_tfidf_linear_svm official=0.6728 pooled=0.8071
+2026-11-21 19:11:03,134 INFO grouped_text seed=2023 all_positive official=0.2893 pooled=0.2538
+2026-11-21 19:11:05,807 INFO grouped_text seed=2023 eda_features_logistic_regression official=0.5840 pooled=0.8013
+2026-11-21 19:11:08,525 INFO grouped_text seed=2023 ablated_no_word_id_logistic_regression official=0.6140 pooled=0.7723
+2026-11-21 19:11:11,884 INFO grouped_text seed=2023 eda_features_random_forest official=0.5646 pooled=0.7699
+2026-11-21 19:11:12,564 INFO grouped_text seed=2023 frozen_xlmr_logistic_regression official=0.5592 pooled=0.7149
+2026-11-21 19:11:17,844 INFO grouped_text seed=2023 frozen_xlmr_linear_svm official=0.5438 pooled=0.6843
+2026-11-21 19:11:18,184 INFO grouped_text seed=2023 bm25_naive_k50 official=0.4093 pooled=0.5098
+2026-11-21 19:11:18,548 INFO grouped_text seed=2023 bm25_train_tuned official=0.4035 pooled=0.4869
+2026-11-21 19:11:18,910 INFO grouped_text seed=2023 bm25_full_depth_tuned official=0.4035 pooled=0.4869
+2026-11-21 19:11:19,040 INFO grouped_text seed=2023 dense_naive_k50 official=0.5007 pooled=0.5637
+2026-11-21 19:11:19,335 INFO grouped_text seed=2023 dense_train_tuned official=0.4892 pooled=0.5620
+2026-11-21 19:11:19,617 INFO grouped_text seed=2023 dense_full_depth_tuned official=0.4892 pooled=0.5620
+2026-11-21 19:11:19,770 INFO grouped_text seed=2023 hybrid_naive_k50 official=0.4709 pooled=0.5620
+2026-11-21 19:11:20,146 INFO grouped_text seed=2023 hybrid_train_tuned official=0.4689 pooled=0.5454
+2026-11-21 19:11:20,494 INFO grouped_text seed=2023 hybrid_full_depth_tuned official=0.4688 pooled=0.5561
+2026-11-21 19:11:20,666 INFO grouped_text seed=2023 dense_xlmr_naive_k50 official=0.4362 pooled=0.5264
+2026-11-21 19:11:20,923 INFO grouped_text seed=2023 dense_xlmr_train_tuned official=0.4238 pooled=0.4987
+2026-11-21 19:11:22,072 INFO grouped_text seed=2026 majority official=0.3710 pooled=0.4081
+2026-11-21 19:11:24,604 INFO grouped_text seed=2026 tfidf_logistic_regression official=0.5866 pooled=0.7927
+2026-11-21 19:11:27,185 INFO grouped_text seed=2026 tfidf_complement_nb official=0.5149 pooled=0.6508
+2026-11-21 19:11:33,299 INFO grouped_text seed=2026 word_char_tfidf_linear_svm official=0.5955 pooled=0.7948
+2026-11-21 19:11:33,627 INFO grouped_text seed=2026 all_positive official=0.2144 pooled=0.2370
+2026-11-21 19:11:36,450 INFO grouped_text seed=2026 eda_features_logistic_regression official=0.4794 pooled=0.7763
+2026-11-21 19:11:39,086 INFO grouped_text seed=2026 ablated_no_word_id_logistic_regression official=0.5166 pooled=0.7111
+2026-11-21 19:11:42,169 INFO grouped_text seed=2026 eda_features_random_forest official=0.5026 pooled=0.7771
+2026-11-21 19:11:42,660 INFO grouped_text seed=2026 frozen_xlmr_logistic_regression official=0.5557 pooled=0.6943
+2026-11-21 19:11:49,778 INFO grouped_text seed=2026 frozen_xlmr_linear_svm official=0.5281 pooled=0.6648
+2026-11-21 19:11:50,118 INFO grouped_text seed=2026 bm25_naive_k50 official=0.4304 pooled=0.5002
+2026-11-21 19:11:50,354 INFO grouped_text seed=2026 bm25_train_tuned official=0.4158 pooled=0.4763
+2026-11-21 19:11:50,643 INFO grouped_text seed=2026 bm25_full_depth_tuned official=0.4158 pooled=0.4763
+2026-11-21 19:11:50,830 INFO grouped_text seed=2026 dense_naive_k50 official=0.4586 pooled=0.5356
+2026-11-21 19:11:51,100 INFO grouped_text seed=2026 dense_train_tuned official=0.4552 pooled=0.5329
+2026-11-21 19:11:51,495 INFO grouped_text seed=2026 dense_full_depth_tuned official=0.4552 pooled=0.5329
+2026-11-21 19:11:51,656 INFO grouped_text seed=2026 hybrid_naive_k50 official=0.4622 pooled=0.5348
+2026-11-21 19:11:51,954 INFO grouped_text seed=2026 hybrid_train_tuned official=0.4401 pooled=0.5038
+2026-11-21 19:11:52,289 INFO grouped_text seed=2026 hybrid_full_depth_tuned official=0.4331 pooled=0.5092
+2026-11-21 19:11:52,428 INFO grouped_text seed=2026 dense_xlmr_naive_k50 official=0.4429 pooled=0.5028
+2026-11-21 19:11:52,741 INFO grouped_text seed=2026 dense_xlmr_train_tuned official=0.4305 pooled=0.4767
+2026-11-21 19:11:54,113 INFO grouped_text seed=777 majority official=0.3613 pooled=0.4048
+2026-11-21 19:11:56,568 INFO grouped_text seed=777 tfidf_logistic_regression official=0.6421 pooled=0.8249
+2026-11-21 19:11:59,055 INFO grouped_text seed=777 tfidf_complement_nb official=0.5115 pooled=0.6665
+2026-11-21 19:12:05,187 INFO grouped_text seed=777 word_char_tfidf_linear_svm official=0.6906 pooled=0.8534
+2026-11-21 19:12:05,604 INFO grouped_text seed=777 all_positive official=0.2291 pooled=0.2424
+2026-11-21 19:12:08,339 INFO grouped_text seed=777 eda_features_logistic_regression official=0.5301 pooled=0.8354
+2026-11-21 19:12:10,836 INFO grouped_text seed=777 ablated_no_word_id_logistic_regression official=0.5879 pooled=0.7872
+2026-11-21 19:12:14,182 INFO grouped_text seed=777 eda_features_random_forest official=0.5292 pooled=0.8286
+2026-11-21 19:12:14,753 INFO grouped_text seed=777 frozen_xlmr_logistic_regression official=0.5955 pooled=0.7395
+2026-11-21 19:12:21,280 INFO grouped_text seed=777 frozen_xlmr_linear_svm official=0.5998 pooled=0.7358
+2026-11-21 19:12:21,590 INFO grouped_text seed=777 bm25_naive_k50 official=0.4215 pooled=0.4921
+2026-11-21 19:12:21,843 INFO grouped_text seed=777 bm25_train_tuned official=0.4137 pooled=0.4833
+2026-11-21 19:12:22,150 INFO grouped_text seed=777 bm25_full_depth_tuned official=0.4137 pooled=0.4833
+2026-11-21 19:12:22,343 INFO grouped_text seed=777 dense_naive_k50 official=0.4860 pooled=0.5579
+2026-11-21 19:12:22,667 INFO grouped_text seed=777 dense_train_tuned official=0.4799 pooled=0.5574
+2026-11-21 19:12:22,946 INFO grouped_text seed=777 dense_full_depth_tuned official=0.4799 pooled=0.5574
+2026-11-21 19:12:23,085 INFO grouped_text seed=777 hybrid_naive_k50 official=0.4702 pooled=0.5354
+2026-11-21 19:12:23,349 INFO grouped_text seed=777 hybrid_train_tuned official=0.4698 pooled=0.5348
+2026-11-21 19:12:23,715 INFO grouped_text seed=777 hybrid_full_depth_tuned official=0.4665 pooled=0.5477
+2026-11-21 19:12:23,877 INFO grouped_text seed=777 dense_xlmr_naive_k50 official=0.4283 pooled=0.5123
+2026-11-21 19:12:24,220 INFO grouped_text seed=777 dense_xlmr_train_tuned official=0.4559 pooled=0.5138
+2026-11-21 19:12:24,759 INFO All 210 primary/classifier/ablation seed configurations executed and checkpoint-replayed
+2026-11-21 19:13:23,767 INFO Analysis tables, figures, error examples and JSON findings generated; no paper/report output
+2026-11-21 19:13:32,812 INFO Creating reproducibility ZIP with 911 files and all fitted checkpoints
+2026-11-21 19:13:38,137 INFO ZIP verified: 77.5 MB
+2026-11-21 19:13:38,143 INFO Complete. Artifacts: C:\Users\Sharj\Downloads\5th\Projects\RL_Project\SemanticChange\Assignment_3\runs\completed
+2026-11-21 19:19:02,066 INFO Analysis tables, figures, error examples and JSON findings generated; no paper/report output
+2026-11-21 19:19:05,971 INFO Creating reproducibility ZIP with 911 files and all fitted checkpoints
+2026-11-21 19:19:11,570 INFO ZIP verified: 77.5 MB
+2026-11-21 19:19:11,575 INFO Complete. Artifacts: C:\Users\Sharj\Downloads\5th\Projects\RL_Project\SemanticChange\Assignment_3\runs\completed
+2026-11-21 21:58:15,592 INFO Baseline/ablation audit complete; use finalize_results.py to export the final package
+2026-11-21 22:01:11,118 INFO Baseline/ablation audit complete; use finalize_results.py to export the final package

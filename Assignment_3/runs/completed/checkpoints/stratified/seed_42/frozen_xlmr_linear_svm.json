@@ -1,0 +1,48 @@
+{
+  "system": "frozen_xlmr_linear_svm",
+  "protocol": "stratified",
+  "seed": 42,
+  "input_kind": "frozen_xlmr_context",
+  "models": {
+    "e5_small": {
+      "model_name": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: "
+    },
+    "xlmr_base": {
+      "model_name": "FacebookAI/xlm-roberta-base",
+      "revision": "e73636d4f797dec63c3081bb6ed5c7b0bb3f2089",
+      "query_prefix": "",
+      "passage_prefix": ""
+    }
+  },
+  "max_length": 512,
+  "checkpoint_sha256": "cc0a8beae8603a1734c50c7856f4d7a6d10dc088866cc5d5f8686cb380da6ace",
+  "checkpoint_replayed": true,
+  "fit_rows": 1586,
+  "test_rows": 397,
+  "pipeline_parameters": {
+    "memory": "None",
+    "steps": "[('scale', StandardScaler()), ('model', LinearSVC(class_weight='balanced', max_iter=20000, random_state=42))]",
+    "transform_input": "None",
+    "verbose": "False",
+    "scale": "StandardScaler()",
+    "model": "LinearSVC(class_weight='balanced', max_iter=20000, random_state=42)",
+    "scale__copy": "True",
+    "scale__with_mean": "True",
+    "scale__with_std": "True",
+    "model__C": "1.0",
+    "model__class_weight": "balanced",
+    "model__dual": "auto",
+    "model__fit_intercept": "True",
+    "model__intercept_scaling": "1",
+    "model__loss": "squared_hinge",
+    "model__max_iter": "20000",
+    "model__multi_class": "ovr",
+    "model__penalty": "l2",
+    "model__random_state": "42",
+    "model__tol": "0.0001",
+    "model__verbose": "0"
+  }
+}

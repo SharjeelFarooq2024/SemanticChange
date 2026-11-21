@@ -1,0 +1,39 @@
+{
+  "reference_run": "Assignment_3/runs/completed",
+  "output_dir": "Assignment_3/runs/advanced_hybrid",
+  "protocol": "grouped_text",
+  "seeds": [42, 100, 2023, 2026, 777],
+  "inner_folds": 3,
+  "svd_dimensions": 64,
+  "word_threshold_shrinkage": [0.0, 0.5],
+  "threshold_quantiles": 19,
+  "statistics_seed": 161803,
+  "bootstrap_samples": 10000,
+  "text_features": {"word_ngram_range": [1, 2], "char_ngram_range": [3, 5], "max_features_per_view": 50000, "min_df": 1, "sublinear_tf": true},
+  "candidates": [
+    {"name": "balanced_linear_C05", "kind": "linear", "C": 0.5},
+    {"name": "balanced_linear_C2", "kind": "linear", "C": 2.0},
+    {"name": "lemma_experts_C01", "kind": "experts", "C": 0.1, "global_mix": 0.0},
+    {"name": "lemma_experts_C1", "kind": "experts", "C": 1.0, "global_mix": 0.0},
+    {"name": "mixed_experts_C01", "kind": "experts", "C": 0.1, "global_mix": 0.5},
+    {"name": "mixed_experts_C1", "kind": "experts", "C": 1.0, "global_mix": 0.5},
+    {"name": "nonlinear_rbf_C1", "kind": "rbf", "C": 1.0},
+    {"name": "nonlinear_rbf_C10", "kind": "rbf", "C": 10.0},
+    {"name": "boosted_views_leaf7", "kind": "boosting", "max_leaf_nodes": 7},
+    {"name": "boosted_views_leaf15", "kind": "boosting", "max_leaf_nodes": 15}
+  ],
+  "ensemble_components": [
+    ["balanced_linear_C05", "nonlinear_rbf_C1"],
+    ["mixed_experts_C1", "nonlinear_rbf_C10"],
+    ["balanced_linear_C05", "mixed_experts_C1", "nonlinear_rbf_C1"]
+  ],
+  "notes": [
+    "Fixed candidate grid declared before this run's outer-test scoring. All choices and thresholds use grouped inner OOF predictions from outer training rows only.",
+    "All five seeds' choices are frozen before any new test score is computed. The outer development splits have already been inspected in previous experiments; this is not an untouched final evaluation.",
+    "No requirement or assertion forces the score to reach 0.8. Accuracy, pooled macro-F1 and official within-word macro-F1 remain separately named.",
+    "Training-only vocabulary, SVD, scaling, classifiers and calibration; no new pretrained model or encoder fine-tuning.",
+    "Metadata includes target word, POS and historical period, which were permitted baseline inputs. These may exploit domain priors; future-period and unseen-lemma generalization are not established.",
+    "Word-class sample weighting aligns the training loss more closely to the official equal-word objective, with clipped weights to limit rare-label influence.",
+    "Ensemble weights are fixed, component margin scales are fitted from training OOF outputs, and calibration uses training OOF labels only."
+  ]
+}

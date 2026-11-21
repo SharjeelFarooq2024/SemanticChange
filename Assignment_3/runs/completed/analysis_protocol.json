@@ -1,0 +1,42 @@
+{
+  "taxonomy": [
+    {
+      "category": "FN fusion loss",
+      "gold": 1,
+      "hybrid": 0,
+      "dense": 1
+    },
+    {
+      "category": "FN shared miss",
+      "gold": 1,
+      "hybrid": 0,
+      "dense": 0
+    },
+    {
+      "category": "FP fusion addition",
+      "gold": 0,
+      "hybrid": 1,
+      "dense": 0
+    },
+    {
+      "category": "FP shared false match",
+      "gold": 0,
+      "hybrid": 1,
+      "dense": 1
+    }
+  ],
+  "example_selection": "Fixed seed 42; different lemmas preferred, then distance from 180 context characters, then sentence ID.",
+  "diagnostics": {
+    "historical_before_1950": "year<1950",
+    "zero_definition_overlap": "Exact NFKC/casefold alphabetic token overlap, length>=3, fixed stopword list, no stemming",
+    "surface_noise_proxy": "Replacement character, angle bracket, or mixed digit/letter token; not verified OCR damage"
+  },
+  "statistics": {
+    "bootstrap_samples": 10000,
+    "seed": 314159,
+    "seed_tests_family": "all listed two-metric contrasts within each split protocol",
+    "query_tests_family": "15 exploratory contrasts",
+    "multiple_testing": "Holm"
+  },
+  "error_count_unit": "Test appearances; unique usage coverage saved separately. Different seed appearances are not independent observations."
+}

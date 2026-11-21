@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "output_dir": "Assignment_3/runs/completed",
+  "seeds": [42, 100, 2023, 2026, 777],
+  "split_protocols": ["stratified", "grouped_text"],
+  "test_fraction": 0.2,
+  "official_metric": "mean_over_words_of_sklearn_macro_f1_observed_classes",
+  "official_evaluator_commit": "0e69238bf8b69b4ea0933627ed14e6ca2769d670",
+  "cutoff_grid": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100],
+  "extended_cutoff_grid": [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 125, 150, 175, 200, 250, 300],
+  "retrieval_depth": 100,
+  "extended_retrieval_depth": 300,
+  "rrf_k": 60,
+  "rrf_k_grid": [10, 30, 60, 100],
+  "bootstrap_samples": 10000,
+  "statistics_seed": 314159,
+  "encoder_batch_size": 4,
+  "torch_threads": 2,
+  "max_length": 512,
+  "sample_memory_interval_s": 0.1,
+  "models": {
+    "e5_small": {"model_name": "intfloat/multilingual-e5-small", "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3", "query_prefix": "query: ", "passage_prefix": "passage: "},
+    "xlmr_base": {"model_name": "FacebookAI/xlm-roberta-base", "revision": "e73636d4f797dec63c3081bb6ed5c7b0bb3f2089", "query_prefix": "", "passage_prefix": ""}
+  },
+  "error_taxonomy": [
+    {"category": "FN fusion loss", "gold": 1, "hybrid": 0, "dense": 1},
+    {"category": "FN shared miss", "gold": 1, "hybrid": 0, "dense": 0},
+    {"category": "FP fusion addition", "gold": 0, "hybrid": 1, "dense": 0},
+    {"category": "FP shared false match", "gold": 0, "hybrid": 1, "dense": 1}
+  ],
+  "example_seed": 42,
+  "examples_per_category": 2,
+  "primary_protocol_for_findings": "grouped_text",
+  "protocol_deviations": [
+    "Official upstream evaluator uses two-class macro-F1 within each word, not the legacy positive-class F1; all final scores and training-only cutoff choices are regenerated.",
+    "The original 80/20 label-stratified protocol is retained. A second approximately stratified 80/20 protocol groups exact NFKC/case-folded duplicate contexts to prevent their train/test overlap.",
+    "Frozen encoders run once without labels and are shared across seeds; repeated retrieval scores reflect split and calibration variation, not independent neural training.",
+    "Batch size is reduced to 4 and CPU threads to 2 for local memory constraints; max sequence length, pooling and model revisions are recorded.",
+    "Canonical rank depth and K grid remain 100; full-depth ranking and extended cutoff tuning are explicitly separate ablations.",
+    "The historical word-ID ablation removes a categorical feature and does not mask surface forms.",
+    "Resource costs are measured wall/CPU seconds, sampled resident memory and artifact bytes. Monetary and energy costs are unavailable, not estimated.",
+    "All evaluations use the released Swedish development data, not a hidden-test submission. Source-document and near-duplicate leakage are not ruled out by exact-text grouping."
+  ]
+}

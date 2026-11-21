@@ -95,11 +95,22 @@ def evaluate_binary_run(
     binary_df["doc_id"] = binary_df["doc_id"].astype(str)
     binary_df["label"] = binary_df["label"].astype(int)
 
+    keys = ["query_id", "doc_id"]
+    if binary_df.duplicated(keys).any() or qrels_df.duplicated(keys).any():
+        raise ValueError("Duplicate evaluation identity")
+    expected = pd.MultiIndex.from_frame(qrels_df[keys])
+    actual = pd.MultiIndex.from_frame(binary_df[keys])
+    if len(expected.difference(actual)) or len(actual.difference(expected)):
+        raise ValueError("Predictions must cover exactly the supplied gold identities")
+    if not binary_df["label"].isin([0, 1]).all():
+        raise ValueError("Predictions must be binary")
+
     merged = pd.merge(
         qrels_df,
         binary_df[["query_id", "doc_id", "label"] + (["score"] if "score" in binary_df.columns else [])],
         on=["query_id", "doc_id"],
         how="inner",
+        validate="one_to_one",
     )
 
     if len(merged) == 0:
@@ -110,6 +121,7 @@ def evaluate_binary_run(
         y_true=merged["relevance"],
         y_pred=merged["label"],
         y_score=y_score,
+        words=merged["query_id"],
     )
 
 
@@ -122,7 +134,7 @@ def tune_operating_point(
 
     Returns:
     - best_k: optimal rank cutoff
-    - best_macro_f1: maximum Macro-F1 achieved
+    - best_macro_f1: maximum official within-word Macro-F1 achieved
     - tuned_binary_df: DataFrame of binary predictions with label = 1 iff rank <= best_k
     - sweep_results_df: DataFrame showing (k, macro_f1, binary_f1, accuracy, precision, recall)
     """
@@ -155,12 +167,13 @@ def tune_operating_point(
         metrics = compute_classification_metrics(
             y_true=merged["relevance"],
             y_pred=merged["predicted_label"],
+            words=merged["query_id"],
         )
         metrics["k"] = k
         records.append(metrics)
 
-        if metrics["macro_f1"] > best_macro_f1:
-            best_macro_f1 = metrics["macro_f1"]
+        if metrics["official_f1"] > best_macro_f1:
+            best_macro_f1 = metrics["official_f1"]
             best_k = k
 
     sweep_df = pd.DataFrame(records).sort_values("k")

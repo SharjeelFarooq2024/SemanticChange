@@ -1,0 +1,52 @@
+{
+  "mode": "saved_rankings",
+  "system": "hybrid",
+  "word": "motiv",
+  "definition": "Ämne för konstnärlig fram­ställning in­om bild­konst och skönlitteratur",
+  "cutoff": 55,
+  "cutoff_source": "grouped_text training labels, seed 42",
+  "prediction_rule": "rank<=cutoff",
+  "gold_display_scope": "Released development annotations; illustrative, not independent demo evaluation",
+  "hits": [
+    {
+      "sentence_id": "b0c25b9e_128_133",
+      "text": "bortlottas en konstnärlig borduppsats af silfver , bestående af fullständig Kaffeservis för Zh personer , utförd i fornnordiska motiv efter , Acharius “ F.jolners saga4 * .",
+      "rank": 1,
+      "score": 0.0303657694962042,
+      "prediction": 1,
+      "label_value": 0
+    },
+    {
+      "sentence_id": "ad8d7363_26_33",
+      "text": "Några närmare detaljer om motiven därtill och ett och annat utöfver hvad förut meddelats om själfva tilldragelsen åro nu kända .",
+      "rank": 2,
+      "score": 0.0284848484848484,
+      "prediction": 1,
+      "label_value": 0
+    },
+    {
+      "sentence_id": "eb08a7c0_144_149",
+      "text": "Om någon tid — fram på sensommaren — utkommer från Albert Bonniers förlag ett nytt arbete af August Strindberg , kalladt » I hafsbandet » , med motiv från det yttre af Stockholms skärgård .",
+      "rank": 3,
+      "score": 0.0263888888888888,
+      "prediction": 1,
+      "label_value": 1
+    },
+    {
+      "sentence_id": "91a6dcfd_60_65",
+      "text": "Linjernas betydelse är ett omtvistat ämne – olika religiösa motiv , eller möjligen kommunikation med utomjordingar , har framlagts som möjliga förklaringar .",
+      "rank": 4,
+      "score": 0.0249253731343283,
+      "prediction": 1,
+      "label_value": 0
+    },
+    {
+      "sentence_id": "8cead82f_35_42",
+      "text": "med en utvikande mening , utveckla motiven därtill och tå dem ; r I kollförda utan att behöfva riskera att bliua stämplad som fullkomligt okunnig och bliua utvisad Skulle •o advokat ej r.gi en n«H«in rätt ,",
+      "rank": 5,
+      "score": 0.0241524807216644,
+      "prediction": 1,
+      "label_value": 0
+    }
+  ]
+}

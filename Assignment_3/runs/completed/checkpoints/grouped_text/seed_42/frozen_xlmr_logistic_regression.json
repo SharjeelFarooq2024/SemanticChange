@@ -1,0 +1,51 @@
+{
+  "system": "frozen_xlmr_logistic_regression",
+  "protocol": "grouped_text",
+  "seed": 42,
+  "input_kind": "frozen_xlmr_context",
+  "models": {
+    "e5_small": {
+      "model_name": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: "
+    },
+    "xlmr_base": {
+      "model_name": "FacebookAI/xlm-roberta-base",
+      "revision": "e73636d4f797dec63c3081bb6ed5c7b0bb3f2089",
+      "query_prefix": "",
+      "passage_prefix": ""
+    }
+  },
+  "max_length": 512,
+  "checkpoint_sha256": "55fc25861f38afe415d00336e9b29413920cd01628a9bcc2e127bf537d003eef",
+  "checkpoint_replayed": true,
+  "fit_rows": 1586,
+  "test_rows": 397,
+  "pipeline_parameters": {
+    "memory": "None",
+    "steps": "[('scale', StandardScaler()), ('model', LogisticRegression(class_weight='balanced', max_iter=2000, random_state=42))]",
+    "transform_input": "None",
+    "verbose": "False",
+    "scale": "StandardScaler()",
+    "model": "LogisticRegression(class_weight='balanced', max_iter=2000, random_state=42)",
+    "scale__copy": "True",
+    "scale__with_mean": "True",
+    "scale__with_std": "True",
+    "model__C": "1.0",
+    "model__class_weight": "balanced",
+    "model__dual": "False",
+    "model__fit_intercept": "True",
+    "model__intercept_scaling": "1",
+    "model__l1_ratio": "None",
+    "model__max_iter": "2000",
+    "model__multi_class": "deprecated",
+    "model__n_jobs": "None",
+    "model__penalty": "l2",
+    "model__random_state": "42",
+    "model__solver": "lbfgs",
+    "model__tol": "0.0001",
+    "model__verbose": "0",
+    "model__warm_start": "False"
+  }
+}

@@ -15,3 +15,16 @@ Assignment_2/logs/
 *.npz
 *.faiss
 
+# Local optional dependencies and public pretrained model downloads.
+Assignment_3/.deps/
+Assignment_3/model_cache/
+
+# Generated experiment bundles stay local; commit their small JSON manifests.
+/Assignment_3/*_package.zip
+
+# Neural weights and training checkpoints.
+*.safetensors
+*.pt
+*.pth
+*.ckpt
+

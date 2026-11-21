@@ -1,0 +1,230 @@
+\subsection{Categories and counting protocol}
+Define a positive label as a usage expressing the supplied target definition; a negative label is another sense or usage. The following operational taxonomy is declared in configs/part2\_analysis.json before aggregation. It partitions hybrid errors using the dense decision on the same instance. The categories are exhaustive and mutually exclusive, and describe observable decisions rather than guessed linguistic causes.
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.220\textwidth}>{\raggedright\arraybackslash}p{0.240\textwidth}>{\raggedright\arraybackslash}p{0.440\textwidth}}
+\caption{Error definitions, fixed before counting.}\\
+\toprule
+Category & Rule & Meaning \\
+\midrule
+\endfirsthead
+Category & Rule & Meaning \\
+\midrule
+\endhead
+FN fusion loss & gold=1, hybrid=0, dense=1 & A positive selected by dense retrieval is excluded by hybrid fusion at the saved operating points. \\
+FN shared miss & gold=1, hybrid=0, dense=0 & Both systems reject a gold positive; ranks distinguish cutoff rejection from absence in the saved top-100 lists. \\
+FP fusion addition & gold=0, hybrid=1, dense=0 & Hybrid fusion introduces a false positive relative to the dense decision. \\
+FP shared false match & gold=0, hybrid=1, dense=1 & Both systems accept a usage outside the annotated target sense. \\
+\bottomrule
+\end{longtable}
+}
+
+Seed 42 is the preselected illustration split, with 397 usages and 186 hybrid errors. Across five splits there are 1,985 test appearances per system but only 1,345 unique usages. Hybrid makes 922 erroneous appearances involving 631 distinct usages. Repeated appearances of a usage are not independent cases. The following mean and sample standard deviation summarize counts per split; percentages average each split's fraction of hybrid errors, rather than treating all appearances as an independent sample.
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.280\textwidth}>{\raggedright\arraybackslash}p{0.220\textwidth}>{\raggedright\arraybackslash}p{0.240\textwidth}>{\raggedright\arraybackslash}p{0.160\textwidth}}
+\caption{Hybrid error counts and proportions.}\\
+\toprule
+Category & Mean +/- std count & Mean share of errors & Seed 42 count \\
+\midrule
+\endfirsthead
+Category & Mean +/- std count & Mean share of errors & Seed 42 count \\
+\midrule
+\endhead
+FN fusion loss & 15.0 $\pm$ 5.1 & 8.2\% & 8 \\
+FN shared miss & 49.6 $\pm$ 4.0 & 26.9\% & 51 \\
+FP fusion addition & 28.8 $\pm$ 5.4 & 15.7\% & 37 \\
+FP shared false match & 91.0 $\pm$ 11.8 & 49.2\% & 90 \\
+\bottomrule
+\end{longtable}
+}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\textwidth]{../../Assignment_3/outputs/figures/07_part2_error_taxonomy.png}
+\caption{Hybrid errors separated into shared failures and differences introduced by fusion. These are decision categories, not human linguistic annotations.}
+\end{figure}
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.270\textwidth}>{\raggedright\arraybackslash}p{0.120\textwidth}>{\raggedright\arraybackslash}p{0.120\textwidth}>{\raggedright\arraybackslash}p{0.120\textwidth}>{\raggedright\arraybackslash}p{0.120\textwidth}>{\raggedright\arraybackslash}p{0.150\textwidth}}
+\caption{Confusion counts averaged across five 397-usage test splits. FP and FN use the positive target sense.}\\
+\toprule
+System & Mean TP & Mean TN & Mean FP & Mean FN & Error rate \\
+\midrule
+\endfirsthead
+System & Mean TP & Mean TN & Mean FP & Mean FN & Error rate \\
+\midrule
+\endhead
+BM25 (K*) & 69.4 & 125.6 & 130.4 & 71.6 & 50.9\% \\
+Dense (K*) & 82.0 & 142.2 & 113.8 & 59.0 & 43.5\% \\
+Hybrid (K*) & 76.4 & 136.2 & 119.8 & 64.6 & 46.4\% \\
+Frozen XLM-R + LR & 92.0 & 200.4 & 55.6 & 49.0 & 26.3\% \\
+Word + character SVM & 94.0 & 237.8 & 18.2 & 47.0 & 16.4\% \\
+Always positive & 141.0 & 0.0 & 256.0 & 0.0 & 64.5\% \\
+\bottomrule
+\end{longtable}
+}
+
+Hybrid averages 119.8 false positives and 64.6 false negatives, versus 113.8 and 59.0 for dense. The fusion-loss and fusion-addition categories identify exactly where replacing the dense decision with hybrid harms a gold label. At the saved K*=100, every hybrid false negative is absent from its saved top-100 list; it is not merely below the binary cutoff inside that list. The unsaved tail is unknown, so 'absent' does not mean absent from the corpus or prove the encoder never retrieved the usage. A larger candidate depth or reranking may address these cases, but that is a future experiment.
+
+Fusion also repairs some dense errors: per split it recovers 9.4 false negatives and removes 22.8 false positives. Those 32.2 repairs are outweighed by 43.8 newly introduced errors (15.0 false negatives and 28.8 false positives), a net 11.6 additional errors per split. The saved transition table verifies this accounting against the confusion totals; it explains the overall error-rate change without assigning speculative linguistic causes.
+
+\subsection{Representative errors}
+Examples use the fixed seed and selection rule in the configuration: prefer different lemmas and contexts nearest 180 characters, then break ties by sentence ID. Two examples are selected from each category. The original Swedish definition and full usage are preserved without normalization or translation. Gold labels are copied from the dataset; these examples do not establish annotation errors. Rank absence always refers to the saved list.
+
+Example 1: FN fusion loss; lemma exportera; sentence 917b2d5\_112\_122; period 2006-2007.
+
+Target definition: Föra ut en produkt ur ett land (till ett annat land)
+
+Usage: Branschexperter bedömer att omkring fem procent av den råolja som produceras i landet blir stulen för att sedan exporteras av stora syndikat som har kontakter inom militären och regeringen .
+
+Gold target-sense label: 1; hybrid prediction: 0; dense prediction: 1; XLM-R + LR prediction: 1.
+
+Explanation: A positive selected by dense retrieval is excluded by hybrid fusion at the saved operating points. bm25 absent from saved top-100; dense rank 99; hybrid absent from saved top-100. Gold follows the released annotation; no annotation error or linguistic cause is assumed.
+
+Illustrative reading: The usage describes crude oil being exported from a country, consistent with the product-export definition. Dense selects it only at rank 99; its absence from the BM25 top-100 leaves it with one component's support before fusion truncation.
+
+Example 2: FN fusion loss; lemma kvinna; sentence 20a081f7\_112\_121; period 1904-1907.
+
+Target definition: Generell beteckning för kvinnokönet eller samtliga kvinnor i ett land / samfund (ofta i singularis bestämd form, "kvinnan")
+
+Usage: Det var en tid , som Sveriges folk värkligen kunde betecknas som försupet Men därvid fanns ett stort undantag : kvinnorna söpo ej .
+
+Gold target-sense label: 1; hybrid prediction: 0; dense prediction: 1; XLM-R + LR prediction: 0.
+
+Explanation: A positive selected by dense retrieval is excluded by hybrid fusion at the saved operating points. bm25 absent from saved top-100; dense rank 91; hybrid absent from saved top-100. Gold follows the released annotation; no annotation error or linguistic cause is assumed.
+
+Illustrative reading: The clause 'kvinnorna söpo ej' refers collectively to women, consistent with the definition of women as a group. Dense places it at rank 91; the hybrid output excludes it. XLM-R also misses this example.
+
+Example 3: FN shared miss; lemma fru; sentence 8fe95502\_139\_142; period 1888-1891.
+
+Target definition: Maka, hustru (oavsett klass)
+
+Usage: Ryske ministern i Stockholm Zinoviev afreste i Lördags kl. 11,45 e. m . med ångfartyget Vasa till Finland för att möta och hit åtfölja sin fru , då hon nu gör sin flyttning till Stockholm ,
+
+Gold target-sense label: 1; hybrid prediction: 0; dense prediction: 0; XLM-R + LR prediction: 1.
+
+Explanation: Both systems reject a gold positive; ranks distinguish cutoff rejection from absence in the saved top-100 lists. bm25 absent from saved top-100; dense absent from saved top-100; hybrid absent from saved top-100. Gold follows the released annotation; no annotation error or linguistic cause is assumed.
+
+Illustrative reading: The phrase 'sin fru' refers to the minister's wife, matching the spouse definition. All three saved retrieval lists omit the usage, while the XLM-R classifier predicts the positive label.
+
+Example 4: FN shared miss; lemma herre; sentence 3dcdcb9d\_0\_6; period 1880-1883.
+
+Target definition: Manlig överklassperson med betoning på privilegier, högre samhällsstånd; förnäm och mäktig man, högt uppsatt person, potentat, magnat, aristokrat; ståndsperson, herreman
+
+Usage: Herrar Ledamöter behagade sammanträda i Stockholms stads Brandförsäkringskontor , JW 4 Myntlorget , 2 tr. upp , torsdagen den 31 mars kl. 6 e. m . Förvaltningsutskottet en half timme tidigare .
+
+Gold target-sense label: 1; hybrid prediction: 0; dense prediction: 0; XLM-R + LR prediction: 1.
+
+Explanation: Both systems reject a gold positive; ranks distinguish cutoff rejection from absence in the saved top-100 lists. bm25 absent from saved top-100; dense absent from saved top-100; hybrid absent from saved top-100. Gold follows the released annotation; no annotation error or linguistic cause is assumed.
+
+Illustrative reading: The usage addresses members at a formal meeting rather than explicitly naming wealth or social rank. Its positive label illustrates a context-dependent annotation that both retrievers miss; XLM-R predicts the gold label. This reading does not independently verify the addressees' social status.
+
+Example 5: FP fusion addition; lemma motiv; sentence 32f1ee76\_100\_105; period 2014-2015.
+
+Target definition: Ämne för konstnärlig fram\-ställning in\-om bild\-konst och skönlitteratur
+
+Usage: Bara för ett par dagar sedan inträffade skoldramat i Trollhättan när en maskerad man med rasistiska motiv målmedvetet stegade in i skolan och högg ner människor med annan hudfärg .
+
+Gold target-sense label: 0; hybrid prediction: 1; dense prediction: 0; XLM-R + LR prediction: 0.
+
+Explanation: Hybrid fusion introduces a false positive relative to the dense decision. bm25 rank 14; dense absent from saved top-100; hybrid rank 53. Gold follows the released annotation; no annotation error or linguistic cause is assumed.
+
+Illustrative reading: The phrase 'rasistiska motiv' expresses a reason or motive, whereas the target definition concerns a subject represented in art or literature. The negative gold label is consistent with that distinction. BM25 places it at rank 14 and fusion retains it despite dense excluding it.
+
+Example 6: FP fusion addition; lemma fröken; sentence fa5c2767\_154\_160; period 1896-1899.
+
+Target definition: Gift eller ogift yrkesutövande kvinna, företrädesvis i skola, butik, postkontor, och bank
+
+Usage: Jag träffade S:t Auban och de Brissac vid mottagningen i Louvre på förmiddagen , och de frågade mig strax , om jag nu var betänkt på att göra min kur för fröken de Grandeourt .
+
+Gold target-sense label: 0; hybrid prediction: 1; dense prediction: 0; XLM-R + LR prediction: 1.
+
+Explanation: Hybrid fusion introduces a false positive relative to the dense decision. bm25 rank 34; dense absent from saved top-100; hybrid rank 87. Gold follows the released annotation; no annotation error or linguistic cause is assumed.
+
+Illustrative reading: Here 'fröken de Grandeourt' is a social title in a courtship context. The supplied target instead concerns an employed woman, especially in teaching or service occupations. BM25 and hybrid accept it; dense rejects it, while XLM-R also predicts a false positive.
+
+Example 7: FP shared false match; lemma dumpa; sentence e07f4b5\_67\_74; period 2006-2007.
+
+Target definition: Låta något falla; lägga eller sänka ner
+
+Usage: En strandäng i reservatet har enligt kommunen förstörts då Bro Hof dumpade muddermassor över den känsliga floran med älgört , tuvtåtel och bladvass , vilket ej går att återställa .
+
+Gold target-sense label: 0; hybrid prediction: 1; dense prediction: 1; XLM-R + LR prediction: 0.
+
+Explanation: Both systems accept a usage outside the annotated target sense. bm25 absent from saved top-100; dense rank 44; hybrid rank 92. Gold follows the released annotation; no annotation error or linguistic cause is assumed.
+
+Illustrative reading: The usage concerns dumping dredged material onto a meadow. Its physical-action overlap with the broad 'let fall; lay or lower' definition makes this an instructive sense-boundary case, but the released label is negative. Dense and hybrid accept it; XLM-R rejects it. No relabeling is justified by this example alone.
+
+Example 8: FP shared false match; lemma suga; sentence d699d193\_79\_83; period 2018-2019.
+
+Target definition: Dra in vätska eller gas i munnen genom åstadkommande av undertryck i munhålan eller kraftig inandning; alternativt stoppa någon fast kropp i munnen och genom kraftigt undertryck så småningom smälta och förtära den
+
+Usage: Om magasinen inte fylls på nu av vårregn innan växtligheten slår ut och börjar suga upp vatten kommer flera kommuner runt om i landet att få problem med vattenförsörjningen framöver .
+
+Gold target-sense label: 0; hybrid prediction: 1; dense prediction: 1; XLM-R + LR prediction: 0.
+
+Explanation: Both systems accept a usage outside the annotated target sense. bm25 rank 45; dense rank 90; hybrid rank 58. Gold follows the released annotation; no annotation error or linguistic cause is assumed.
+
+Illustrative reading: Vegetation taking up water shares the idea of suction with the definition but lacks the specified action of a mouth ingesting liquid, gas or a solid object. This is consistent with the negative gold label. All retrievers include it, while XLM-R predicts the negative label.
+
+\subsection{Lemmas and context slices}
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.180\textwidth}>{\raggedright\arraybackslash}p{0.220\textwidth}>{\raggedright\arraybackslash}p{0.160\textwidth}>{\raggedright\arraybackslash}p{0.160\textwidth}>{\raggedright\arraybackslash}p{0.180\textwidth}}
+\caption{Per-lemma primary F1 averaged within seed, then across seeds. Positive prevalence uses observed test appearances.}\\
+\toprule
+Lemma & Gold positive rate & Hybrid & Dense & XLM-R + LR \\
+\midrule
+\endfirsthead
+Lemma & Gold positive rate & Hybrid & Dense & XLM-R + LR \\
+\midrule
+\endhead
+dumpa & 33.6\% & 0.455 & 0.391 & 0.492 \\
+exportera & 93.1\% & 0.762 & 0.788 & 0.910 \\
+fru & 91.1\% & 0.452 & 0.475 & 0.812 \\
+fröken & 4.8\% & 0.132 & 0.157 & 0.138 \\
+förort & 49.4\% & 0.595 & 0.696 & 0.617 \\
+herre & 6.6\% & 0.146 & 0.158 & 0.135 \\
+kvinna & 21.2\% & 0.408 & 0.463 & 0.365 \\
+motiv & 17.6\% & 0.448 & 0.555 & 0.439 \\
+skär & 27.6\% & 0.431 & 0.431 & 0.555 \\
+suga & 21.1\% & 0.352 & 0.368 & 0.430 \\
+\bottomrule
+\end{longtable}
+}
+
+The lemma table exposes heterogeneity hidden by the overall score. Dense exceeds hybrid most clearly on motiv and förort, while hybrid exceeds dense on dumpa. Both have low positive-class F1 on fröken and herre. For skär the pool contains 98 usages, so K=100 selects the entire pool for both retrievers: their identical F1 is an all-positive operating-point effect, not evidence that their rankings or sense representations are identical.
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.250\textwidth}>{\raggedright\arraybackslash}p{0.100\textwidth}>{\raggedright\arraybackslash}p{0.120\textwidth}>{\raggedright\arraybackslash}p{0.140\textwidth}>{\raggedright\arraybackslash}p{0.140\textwidth}>{\raggedright\arraybackslash}p{0.150\textwidth}}
+\caption{Context diagnostics: mean counts and error rates across splits. Each diagnostic is a separate overlapping slice.}\\
+\toprule
+Diagnostic & Present & Mean n & Positive rate & Hybrid error & Dense error \\
+\midrule
+\endfirsthead
+Diagnostic & Present & Mean n & Positive rate & Hybrid error & Dense error \\
+\midrule
+\endhead
+Before 1950 & yes & 154.6 & 31.7\% & 51.2\% & 51.3\% \\
+Before 1950 & no & 242.4 & 38.0\% & 43.3\% & 38.6\% \\
+Zero definition overlap & yes & 349.2 & 37.2\% & 46.0\% & 44.5\% \\
+Zero definition overlap & no & 47.8 & 23.5\% & 49.2\% & 36.6\% \\
+Surface noise marker & yes & 7.2 & 28.3\% & 44.5\% & 37.4\% \\
+Surface noise marker & no & 389.8 & 35.6\% & 46.5\% & 43.7\% \\
+\bottomrule
+\end{longtable}
+}
+
+Historical means year<1950 and is a descriptive slice rather than a chronological holdout. Zero definition overlap means no shared exact alphabetic token of length at least three after NFKC normalization, lowercasing and removal of the fixed small Swedish function-word list in the script; no stemming is applied. The surface-noise flag detects a replacement character, angle bracket, or mixed letter/digit token. It is a narrow proxy, not an annotation of OCR quality. Different class prevalence and lemma composition confound these slices; none establishes that date, lexical mismatch or OCR causes an error. Manual categories such as metaphor, historical spelling and genuine sense ambiguity require a blinded linguistic annotation protocol and are not assigned fabricated counts.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\textwidth]{../../Assignment_3/outputs/figures/08_part2_word_and_era_errors.png}
+\caption{Per-lemma F1 and error rates before/after 1950. Error bars show sample standard deviation across overlapping splits; era class mixtures differ.}
+\end{figure}
+

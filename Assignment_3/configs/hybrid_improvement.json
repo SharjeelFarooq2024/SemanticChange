@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "reference_run": "Assignment_3/runs/completed",
+  "output_dir": "Assignment_3/runs/improved_hybrid",
+  "protocol": "grouped_text",
+  "seeds": [42, 100, 2023, 2026, 777],
+  "inner_folds": 3,
+  "threshold_quantiles": 19,
+  "word_threshold_shrinkage": [0.0, 0.5],
+  "candidates": [
+    {"family": "improved_hybrid", "C": 0.5, "context_weight": 1.0, "retrieval_weight": 0.25, "embedding_weight": 0.0},
+    {"family": "improved_hybrid", "C": 1.0, "context_weight": 1.0, "retrieval_weight": 0.25, "embedding_weight": 0.0},
+    {"family": "improved_hybrid", "C": 0.5, "context_weight": 1.0, "retrieval_weight": 0.25, "embedding_weight": 0.5},
+    {"family": "improved_hybrid", "C": 1.0, "context_weight": 1.0, "retrieval_weight": 0.25, "embedding_weight": 0.5},
+    {"family": "context_only_control", "C": 0.5, "context_weight": 1.0, "retrieval_weight": 0.0, "embedding_weight": 0.0},
+    {"family": "context_only_control", "C": 1.0, "context_weight": 1.0, "retrieval_weight": 0.0, "embedding_weight": 0.0},
+    {"family": "retrieval_only_control", "C": 0.1, "context_weight": 0.0, "retrieval_weight": 1.0, "embedding_weight": 0.0},
+    {"family": "retrieval_only_control", "C": 1.0, "context_weight": 0.0, "retrieval_weight": 1.0, "embedding_weight": 0.0}
+  ],
+  "text_features": {"word_ngram_range": [1, 2], "char_ngram_range": [3, 5], "max_features_per_view": 50000, "min_df": 1, "sublinear_tf": true},
+  "class_weight": "balanced",
+  "max_iter": 20000,
+  "statistics_seed": 271828,
+  "bootstrap_samples": 10000,
+  "notes": [
+    "All model/hyperparameter/threshold choices use only grouped inner out-of-fold predictions from the corresponding outer training data.",
+    "Selection for all five seeds is saved and frozen before any new outer-test score is computed.",
+    "OOF scores are optimized model-selection scores, not unbiased final performance estimates.",
+    "Outer development splits were previously inspected; this is a paired development comparison, not a fresh hidden test.",
+    "The new hybrid adds a supervised head and sentence-context features. It is an extension of the original frozen rank-fusion system and uses additional label-driven fitting.",
+    "The context-only and retrieval-only controls receive the same nested selection and threshold-calibration procedure.",
+    "Full candidate scores replace the top-100 truncation during classification. Frozen encoders and the reference BM25 corpus remain unchanged.",
+    "Exact-text grouping blocks exact duplicate leakage; source/near-duplicate and future-language generalization are not established."
+  ]
+}

@@ -9,3 +9,8 @@ pyyaml
 tqdm
 reportlab
 umap-learn
+scipy
+joblib
+psutil
+rank-bm25
+bcubed==1.5

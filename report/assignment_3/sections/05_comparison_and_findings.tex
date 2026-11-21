@@ -1,0 +1,102 @@
+\subsection{Direct comparisons with the baselines}
+A direct comparison uses identical usage IDs, seed splits and metric definitions. All current Part 1 reruns meet those conditions. Supervised baselines train on 1,586 labeled usages per seed; frozen retrieval uses training labels to choose K but does not train its encoder locally. The table compares outcomes under this shared protocol without treating their label budgets as identical.
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.300\textwidth}>{\raggedright\arraybackslash}p{0.260\textwidth}>{\raggedright\arraybackslash}p{0.190\textwidth}>{\raggedright\arraybackslash}p{0.150\textwidth}}
+\caption{Direct local comparison. Uncertainty is sample standard deviation across five splits.}\\
+\toprule
+System & Official F1 mean +/- std & Pooled macro-F1 & Accuracy \\
+\midrule
+\endfirsthead
+System & Official F1 mean +/- std & Pooled macro-F1 & Accuracy \\
+\midrule
+\endhead
+Frozen XLM-R + LR & 0.489 $\pm$ 0.022 & 0.715 & 0.737 \\
+Always positive & 0.470 $\pm$ 0.018 & 0.262 & 0.355 \\
+Word + character SVM & 0.450 $\pm$ 0.049 & 0.811 & 0.836 \\
+Dense (K*) & 0.448 $\pm$ 0.016 & 0.554 & 0.565 \\
+Hybrid (K*) & 0.418 $\pm$ 0.029 & 0.525 & 0.536 \\
+BM25 (K*) & 0.358 $\pm$ 0.016 & 0.481 & 0.491 \\
+\bottomrule
+\end{longtable}
+}
+
+The strongest observed primary result is frozen XLM-R + LR at 0.489 $\pm$ 0.022. The always-positive baseline reaches 0.470 $\pm$ 0.018; XLM-R's mean advantage is only +0.019, with no exact seed-level rejection at 0.05. Hybrid (0.418) and dense (0.448) both trail this trivial baseline on the primary metric, while giving better pooled macro-F1. The high always-positive score is consistent with a positive-class metric and is not itself evidence of a scoring bug. Reporting only accuracy or only the primary F1 would conceal this tradeoff.
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.180\textwidth}>{\raggedright\arraybackslash}p{0.180\textwidth}>{\raggedright\arraybackslash}p{0.180\textwidth}>{\raggedright\arraybackslash}p{0.180\textwidth}>{\raggedright\arraybackslash}p{0.180\textwidth}}
+\caption{Retrieval comparison on the same ten definition queries. MAP and MRR are evaluated on saved lists truncated at 100.}\\
+\toprule
+System & MRR & MAP & nDCG@10 & Recall@50 \\
+\midrule
+\endfirsthead
+System & MRR & MAP & nDCG@10 & Recall@50 \\
+\midrule
+\endhead
+BM25 & 0.618 & 0.229 & 0.383 & 0.285 \\
+DENSE & 0.612 & 0.323 & 0.427 & 0.389 \\
+HYBRID & 0.692 & 0.293 & 0.490 & 0.381 \\
+\bottomrule
+\end{longtable}
+}
+
+Hybrid improves early ranking over dense (MRR 0.6917 versus 0.6117; nDCG@10 0.4902 versus 0.4274), but dense has higher MAP (0.3229 versus 0.2926) and binary official F1 (0.4484 versus 0.4182). MRR rewards the first relevant usage and nDCG@10 the leading ranks; they do not guarantee better coverage of all positives or a better thresholded classifier. The actual macro Recall@50 values are BM25 0.2847, dense 0.3889 and hybrid 0.3812, correcting the larger values stated in the earlier prose. Each remains a local development ranking result; no hidden-test ranking outcome is available.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.96\textwidth]{../../Assignment_3/outputs/figures/09_part2_metric_tradeoffs.png}
+\caption{Different metrics favor different systems: early ranking favors hybrid, while MAP and binary F1 favor dense; the strongest primary classifier is XLM-R + LR.}
+\end{figure}
+
+\subsection{Published work and comparability}
+Direct means matching data, split and metric; approximate means partial protocol alignment that prevents a strict improvement claim; non-comparable means that the task, evaluation unit, relevance judgments or metric differs enough to rule out a numerical performance comparison. Archived Assignment 1 aggregate scores are approximate to the current multi-seed summary: they use one seed and foreground pooled macro-F1. The current reruns, rather than those old aggregates, supply the direct baseline comparisons.
+
+{\small
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{>{\raggedright\arraybackslash}p{0.230\textwidth}>{\raggedright\arraybackslash}p{0.170\textwidth}>{\raggedright\arraybackslash}p{0.500\textwidth}}
+\caption{Published comparisons. No directly matched published test result is available in these sources.}\\
+\toprule
+Published work & Label & Reason \\
+\midrule
+\endfirsthead
+Published work & Label & Reason \\
+\midrule
+\endhead
+Cormack et al. 2009 & non-comparable & Different corpora, queries, relevance judgments and ranking depths. Shared fusion formula permits a methodological comparison only; published MAP cannot be subtracted from local MAP. Fusion is not guaranteed to improve every metric. \\
+Wang et al. 2024 & non-comparable & MIRACL passage retrieval has different languages, supervision, query formulation and candidate pools from historical Swedish definition matching. The paper supports the encoder choice, not a numerical improvement claim here. \\
+Conneau et al. 2020 & non-comparable & Different tasks, datasets, training and metrics. A frozen sentence representation with a local classifier is not the paper's benchmark setup; it also does not supply the missing XLM-R retrieval ablation. \\
+Schlechtweg et al. 2020 & non-comparable & The Swedish language and diachronic setting are related, but prediction units, labels, data partitions and metrics differ. The 2020 task cannot serve as a directly comparable 2027 leaderboard. \\
+\bottomrule
+\end{longtable}
+}
+
+\href{https://cormack.uwaterloo.ca/cormack/cormacksigir09-rrf.pdf}{Cormack et al. 2009: Reciprocal rank fusion outperforms Condorcet and individual rank learning methods}. TREC Robust MAP: RRF 0.3686; best individual 0.3586 (Table 2). RRF MAP 0.2926 versus dense 0.3229; RRF MRR and nDCG@10 are higher locally. These scores are not subtracted across benchmarks.
+
+\href{https://arxiv.org/html/2402.05672v1}{Wang et al. 2024: Multilingual E5 Text Embeddings: A Technical Report}. MIRACL development, average over 16 languages: mE5-small nDCG@10 60.8 and R@100 92.4, on a 0-100 scale (Table 4). E5-small nDCG@10 0.4274 on ten Swedish definition queries. These scores are not subtracted across benchmarks.
+
+\href{https://aclanthology.org/2020.acl-main.747/}{Conneau et al. 2020: Unsupervised Cross-lingual Representation Learning at Scale}. Cross-lingual classification, question answering and named entity recognition benchmarks. Frozen XLM-R plus supervised logistic regression: local official F1 0.4892. These scores are not subtracted across benchmarks.
+
+\href{https://aclanthology.org/2020.semeval-1.1/}{Schlechtweg et al. 2020: SemEval-2020 Task 1: Unsupervised Lexical Semantic Change Detection}. Word-level change classification uses accuracy; graded change ranking uses Spearman correlation (Section 5.1). Usage-level binary definition matching, averaged positive-class F1 over lemmas. These scores are not subtracted across benchmarks.
+
+The comparisons support three methodological connections: rank fusion can improve leading hits without improving all metrics; retrieval-oriented multilingual embeddings motivate E5, but do not establish superiority on this historical corpus; and word-level change detection in SemEval-2020 has a different prediction target from usage-level definition matching. The component methods are established techniques; the local contribution is their application and evaluation, not the invention of BM25, multilingual encoding or RRF. Sources and table locations are recorded in configs/published\_comparisons.json (checked 21 November 2026).
+
+\subsection{Findings limitations and next steps}
+Strongest finding: the best observed local primary score belongs to the frozen XLM-R supervised classifier; the proposed hybrid offers a narrower benefit in early retrieval. Negative result: hybrid does not beat dense on MAP or binary F1, and neither retriever beats always-positive on official F1. Unexpected result: removing explicit word ID helps official F1 but hurts pooled F1 and accuracy. The intermediate RRF smoothing hypothesis is metric-dependent, and the backbone hypothesis remains untested.
+
+The evidence is limited to 1,983 Swedish development usages, ten lemmas, ten definitions and five overlapping random splits. There is no held-out language, source-document split, future-period test or unseen-lemma evaluation. Development-set reuse, the fixed top-100 tail, small-sample significance resolution, missing fitted checkpoints and unmeasured per-model cost limit broader claims. Automatic operational categories are reproducible but do not replace expert sense/error annotation.
+
+1. Separate model selection from final assessment: reserve an untouched set, group near-duplicate/source documents where provenance permits, and add lemma-held-out and chronological evaluations. Fit vocabularies and any inductive corpus statistics using training data only.
+
+2. Complete the matched E5 versus XLM-R retrieval ablation with identical definitions, pooling, candidate scope and depth. Report different pretraining, dimensions and task prefixes explicitly rather than attributing every difference to contrastive learning alone.
+
+3. Regenerate deeper component rankings and tune cutoffs or score thresholds on validation data beyond the present K=100 boundary. Compare against always-positive, optimize the declared primary objective and retain secondary metrics to expose tradeoffs.
+
+4. Test whether fusion-loss cases improve with validation-selected weighting, deeper candidates or reranking. Evaluate the final frozen choice once on untouched data; do not select a new k using the reported evaluation queries.
+
+5. Blindly double-annotate a stratified sample for historical spelling/OCR, metaphor, sense ambiguity and definition mismatch; report agreement and prevalence before making causal linguistic claims. Archive fitted models and measure encoding, indexing, inference time, peak memory and resource cost separately.
+
+\subsection{Reproducible outputs}
+Run python Assignment\_3/scripts/run\_part2\_analysis.py from the repository root. The run validates saved predictions, reconstructs splits and RRF variants, produces tables 8-12 and supporting CSVs, writes annotated\_test\_usages.csv, saves four figures as PNG and PDF, and regenerates this report, the findings summary and LaTeX Sections 3-5. The analysis manifest records input SHA-256 hashes, configuration, environment, verification checks and analysis elapsed time. Models and the fixed evaluation functions are unchanged.
+

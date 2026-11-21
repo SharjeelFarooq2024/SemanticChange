@@ -1,0 +1,30 @@
+{
+  "system": "majority",
+  "protocol": "grouped_text",
+  "seed": 2026,
+  "input_kind": "text",
+  "models": {
+    "e5_small": {
+      "model_name": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: "
+    },
+    "xlmr_base": {
+      "model_name": "FacebookAI/xlm-roberta-base",
+      "revision": "e73636d4f797dec63c3081bb6ed5c7b0bb3f2089",
+      "query_prefix": "",
+      "passage_prefix": ""
+    }
+  },
+  "max_length": 512,
+  "checkpoint_sha256": "2885d1b4ec0494add23dabaf46e94523c3e4391f198add01b7b7c9c3dd7fbe2c",
+  "checkpoint_replayed": true,
+  "fit_rows": 1587,
+  "test_rows": 396,
+  "pipeline_parameters": {
+    "constant": "None",
+    "random_state": "None",
+    "strategy": "most_frequent"
+  }
+}

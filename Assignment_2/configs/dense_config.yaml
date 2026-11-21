@@ -8,7 +8,7 @@ encoder:
   models:
     e5_small:
       # Primary encoder. Contrastive query<->passage retrieval training,
-      # multilingual (incl. Swedish), 512-dim, CPU friendly.
+      # multilingual (incl. Swedish), 384 dimensions; max input length 512.
       model_name: intfloat/multilingual-e5-small
       max_length: 512
       batch_size: 64

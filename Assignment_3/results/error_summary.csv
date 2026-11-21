@@ -1,0 +1,6 @@
+error_category,mean,std
+FN model-only miss,3.4,2.5099800796022267
+FN shared miss,19.8,6.058052492344383
+FP model-only match,27.2,6.685805860178712
+FP shared match,11.4,2.1908902300206643
+correct,335.0,2.7386127875258306

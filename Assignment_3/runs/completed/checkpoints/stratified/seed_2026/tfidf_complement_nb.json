@@ -1,0 +1,59 @@
+{
+  "system": "tfidf_complement_nb",
+  "protocol": "stratified",
+  "seed": 2026,
+  "input_kind": "text",
+  "models": {
+    "e5_small": {
+      "model_name": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: "
+    },
+    "xlmr_base": {
+      "model_name": "FacebookAI/xlm-roberta-base",
+      "revision": "e73636d4f797dec63c3081bb6ed5c7b0bb3f2089",
+      "query_prefix": "",
+      "passage_prefix": ""
+    }
+  },
+  "max_length": 512,
+  "checkpoint_sha256": "2ba353e0c58928b1a6abc3eb2977b1a8773dc30fd8ec250e9683833098084772",
+  "checkpoint_replayed": true,
+  "fit_rows": 1586,
+  "test_rows": 397,
+  "pipeline_parameters": {
+    "memory": "None",
+    "steps": "[('tfidf', TfidfVectorizer(max_features=50000, ngram_range=(1, 2), sublinear_tf=True)), ('model', ComplementNB(norm=True))]",
+    "transform_input": "None",
+    "verbose": "False",
+    "tfidf": "TfidfVectorizer(max_features=50000, ngram_range=(1, 2), sublinear_tf=True)",
+    "model": "ComplementNB(norm=True)",
+    "tfidf__analyzer": "word",
+    "tfidf__binary": "False",
+    "tfidf__decode_error": "strict",
+    "tfidf__dtype": "<class 'numpy.float64'>",
+    "tfidf__encoding": "utf-8",
+    "tfidf__input": "content",
+    "tfidf__lowercase": "True",
+    "tfidf__max_df": "1.0",
+    "tfidf__max_features": "50000",
+    "tfidf__min_df": "1",
+    "tfidf__ngram_range": "(1, 2)",
+    "tfidf__norm": "l2",
+    "tfidf__preprocessor": "None",
+    "tfidf__smooth_idf": "True",
+    "tfidf__stop_words": "None",
+    "tfidf__strip_accents": "None",
+    "tfidf__sublinear_tf": "True",
+    "tfidf__token_pattern": "(?u)\\b\\w\\w+\\b",
+    "tfidf__tokenizer": "None",
+    "tfidf__use_idf": "True",
+    "tfidf__vocabulary": "None",
+    "model__alpha": "1.0",
+    "model__class_prior": "None",
+    "model__fit_prior": "True",
+    "model__force_alpha": "True",
+    "model__norm": "True"
+  }
+}

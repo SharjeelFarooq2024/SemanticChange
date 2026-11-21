@@ -1,0 +1,30 @@
+{
+  "system": "majority",
+  "protocol": "stratified",
+  "seed": 2026,
+  "input_kind": "text",
+  "models": {
+    "e5_small": {
+      "model_name": "intfloat/multilingual-e5-small",
+      "revision": "614241f622f53c4eeff9890bdc4f31cfecc418b3",
+      "query_prefix": "query: ",
+      "passage_prefix": "passage: "
+    },
+    "xlmr_base": {
+      "model_name": "FacebookAI/xlm-roberta-base",
+      "revision": "e73636d4f797dec63c3081bb6ed5c7b0bb3f2089",
+      "query_prefix": "",
+      "passage_prefix": ""
+    }
+  },
+  "max_length": 512,
+  "checkpoint_sha256": "5e454864683ec3468cfe243a4743e96d0b9006f16c33fe64818e548f8cc02a8a",
+  "checkpoint_replayed": true,
+  "fit_rows": 1586,
+  "test_rows": 397,
+  "pipeline_parameters": {
+    "constant": "None",
+    "random_state": "None",
+    "strategy": "most_frequent"
+  }
+}

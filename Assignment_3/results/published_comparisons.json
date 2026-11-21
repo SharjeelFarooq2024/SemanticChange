@@ -1,0 +1,45 @@
+{
+  "scope": "Methodological comparisons only; published work does not report this fitted final model on these splits.",
+  "comparisons": [
+    {
+      "work": "Cormack et al. 2009",
+      "title": "Reciprocal rank fusion outperforms Condorcet and individual rank learning methods",
+      "url": "https://cormack.uwaterloo.ca/cormack/cormacksigir09-rrf.pdf",
+      "comparison_type": "non-comparable",
+      "published_result": "TREC Robust MAP: RRF 0.3686; best individual 0.3586 (Table 2).",
+      "local_result": "RRF MAP 0.2926 versus dense 0.3229; RRF MRR and nDCG@10 are higher locally.",
+      "reason": "Different corpora, queries, relevance judgments and ranking depths. Shared fusion formula permits a methodological comparison only; published MAP cannot be subtracted from local MAP. Fusion is not guaranteed to improve every metric.",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "work": "Wang et al. 2024",
+      "title": "Multilingual E5 Text Embeddings: A Technical Report",
+      "url": "https://arxiv.org/html/2402.05672v1",
+      "comparison_type": "non-comparable",
+      "published_result": "MIRACL development, average over 16 languages: mE5-small nDCG@10 60.8 and R@100 92.4, on a 0-100 scale (Table 4).",
+      "local_result": "E5-small nDCG@10 0.4274 on ten Swedish definition queries.",
+      "reason": "MIRACL passage retrieval has different languages, supervision, query formulation and candidate pools from historical Swedish definition matching. The paper supports the encoder choice, not a numerical improvement claim here.",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "work": "Conneau et al. 2020",
+      "title": "Unsupervised Cross-lingual Representation Learning at Scale",
+      "url": "https://aclanthology.org/2020.acl-main.747/",
+      "comparison_type": "non-comparable",
+      "published_result": "Cross-lingual classification, question answering and named entity recognition benchmarks.",
+      "local_result": "Frozen XLM-R plus supervised logistic regression: local official F1 0.4892.",
+      "reason": "Different tasks, datasets, training and metrics. A frozen sentence representation with a local classifier is not the paper's benchmark setup; it also does not supply the missing XLM-R retrieval ablation.",
+      "verified_on": "2026-11-21"
+    },
+    {
+      "work": "Schlechtweg et al. 2020",
+      "title": "SemEval-2020 Task 1: Unsupervised Lexical Semantic Change Detection",
+      "url": "https://aclanthology.org/2020.semeval-1.1/",
+      "comparison_type": "non-comparable",
+      "published_result": "Word-level change classification uses accuracy; graded change ranking uses Spearman correlation (Section 5.1).",
+      "local_result": "Usage-level binary definition matching, averaged positive-class F1 over lemmas.",
+      "reason": "The Swedish language and diachronic setting are related, but prediction units, labels, data partitions and metrics differ. The 2020 task cannot serve as a directly comparable 2027 leaderboard.",
+      "verified_on": "2026-11-21"
+    }
+  ]
+}

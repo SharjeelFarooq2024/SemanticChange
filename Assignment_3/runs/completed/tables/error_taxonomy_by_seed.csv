@@ -1,0 +1,41 @@
+protocol,seed,category,count,test_n,error_n,error_share
+grouped_text,42,FN fusion loss,25,397,179,0.13966480446927373
+grouped_text,42,FN shared miss,77,397,179,0.4301675977653631
+grouped_text,42,FP fusion addition,32,397,179,0.1787709497206704
+grouped_text,42,FP shared false match,45,397,179,0.25139664804469275
+grouped_text,100,FN fusion loss,25,397,153,0.16339869281045752
+grouped_text,100,FN shared miss,75,397,153,0.49019607843137253
+grouped_text,100,FP fusion addition,19,397,153,0.12418300653594772
+grouped_text,100,FP shared false match,34,397,153,0.2222222222222222
+grouped_text,777,FN fusion loss,13,397,152,0.08552631578947369
+grouped_text,777,FN shared miss,75,397,152,0.4934210526315789
+grouped_text,777,FP fusion addition,31,397,152,0.20394736842105263
+grouped_text,777,FP shared false match,33,397,152,0.21710526315789475
+grouped_text,2023,FN fusion loss,23,397,145,0.15862068965517243
+grouped_text,2023,FN shared miss,74,397,145,0.5103448275862069
+grouped_text,2023,FP fusion addition,12,397,145,0.08275862068965517
+grouped_text,2023,FP shared false match,36,397,145,0.2482758620689655
+grouped_text,2026,FN fusion loss,17,396,174,0.09770114942528736
+grouped_text,2026,FN shared miss,62,396,174,0.3563218390804598
+grouped_text,2026,FP fusion addition,37,396,174,0.21264367816091953
+grouped_text,2026,FP shared false match,58,396,174,0.3333333333333333
+stratified,42,FN fusion loss,28,397,156,0.1794871794871795
+stratified,42,FN shared miss,79,397,156,0.5064102564102564
+stratified,42,FP fusion addition,16,397,156,0.10256410256410256
+stratified,42,FP shared false match,33,397,156,0.21153846153846154
+stratified,100,FN fusion loss,20,397,159,0.12578616352201258
+stratified,100,FN shared miss,83,397,159,0.5220125786163522
+stratified,100,FP fusion addition,19,397,159,0.11949685534591195
+stratified,100,FP shared false match,37,397,159,0.23270440251572327
+stratified,777,FN fusion loss,24,397,160,0.15
+stratified,777,FN shared miss,88,397,160,0.55
+stratified,777,FP fusion addition,19,397,160,0.11875
+stratified,777,FP shared false match,29,397,160,0.18125
+stratified,2023,FN fusion loss,27,397,160,0.16875
+stratified,2023,FN shared miss,82,397,160,0.5125
+stratified,2023,FP fusion addition,18,397,160,0.1125
+stratified,2023,FP shared false match,33,397,160,0.20625
+stratified,2026,FN fusion loss,18,397,168,0.10714285714285714
+stratified,2026,FN shared miss,73,397,168,0.43452380952380953
+stratified,2026,FP fusion addition,25,397,168,0.1488095238095238
+stratified,2026,FP shared false match,52,397,168,0.30952380952380953

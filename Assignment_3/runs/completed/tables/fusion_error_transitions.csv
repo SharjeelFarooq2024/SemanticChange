@@ -1,0 +1,11 @@
+protocol,seed,new_errors,repaired_errors,net_extra_errors,note
+grouped_text,42,57,35,22,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+grouped_text,100,44,46,-2,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+grouped_text,777,44,32,12,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+grouped_text,2023,35,41,-6,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+grouped_text,2026,54,34,20,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+stratified,42,44,34,10,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+stratified,100,39,45,-6,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+stratified,777,43,38,5,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+stratified,2023,45,33,12,Includes different training-selected cutoffs; fixed-K contrast is separately tested.
+stratified,2026,43,45,-2,Includes different training-selected cutoffs; fixed-K contrast is separately tested.

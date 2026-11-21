@@ -1,0 +1,37 @@
+{
+  "selected_system": "advanced_hybrid",
+  "checkpoint": "Assignment_3/runs/advanced_hybrid/checkpoints/seed_42.joblib",
+  "protocol": "grouped_text",
+  "seeds": [
+    42,
+    100,
+    2023,
+    2026,
+    777
+  ],
+  "official_f1_mean": 0.6663394402633173,
+  "official_f1_std": 0.021436988602025253,
+  "pooled_macro_f1_mean": 0.8288443535166035,
+  "accuracy_mean": 0.8442548914841106,
+  "target_official_f1": 0.8,
+  "target_reached": false,
+  "error_categories": [
+    "FN model-only miss",
+    "FN shared miss",
+    "FP model-only match",
+    "FP shared match"
+  ],
+  "error_count_unit": "Test appearances across overlapping splits, not independent usages.",
+  "baseline_and_ablation_evidence": "Assignment_3/runs/completed",
+  "limitations": [
+    "Development splits were inspected during earlier model development; this is not an untouched hidden test.",
+    "Five overlapping splits describe split sensitivity; paired tests do not prove superiority over the lexical SVM.",
+    "Exact duplicates are grouped, while source and near-duplicate leakage are not ruled out.",
+    "Rare word-class combinations, domain metadata priors and unseen-lemma generalization remain limitations."
+  ],
+  "next_steps": [
+    "Evaluate the frozen system on untouched task test data.",
+    "Audit minority-sense errors and collect additional independently labeled examples."
+  ],
+  "reports_generated": false
+}

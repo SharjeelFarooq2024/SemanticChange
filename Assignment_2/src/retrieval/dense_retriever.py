@@ -33,8 +33,8 @@ class DenseIndexError(RuntimeError):
 class _NumpyIndexFlatIP:
     """Pure-NumPy exact inner product search used as a robust fallback.
 
-    Produces bit-for-bit identical cosine scores to FAISS IndexFlatIP
-    without requiring external C/C++ SWIG DLLs.
+    Computes the same inner-product objective as FAISS IndexFlatIP without
+    external SWIG DLLs. Float rounding and tie ordering may differ by backend.
     """
 
     def __init__(self, dimension: int, vectors: Optional[np.ndarray] = None) -> None:

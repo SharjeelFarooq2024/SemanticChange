@@ -1,0 +1,36 @@
+{
+  "mode": "live_model_inference",
+  "system": "hybrid",
+  "word": "motiv",
+  "definition": "Ämne för konstnärlig fram­ställning in­om bild­konst och skönlitteratur",
+  "cutoff": 55,
+  "cutoff_source": "grouped_text training labels, seed 42",
+  "prediction_rule": "rank<=cutoff",
+  "gold_display_scope": "Released development annotations; illustrative, not independent demo evaluation",
+  "hits": [
+    {
+      "sentence_id": "b0c25b9e_128_133",
+      "text": "bortlottas en konstnärlig borduppsats af silfver , bestående af fullständig Kaffeservis för Zh personer , utförd i fornnordiska motiv efter , Acharius “ F.jolners saga4 * .",
+      "rank": 1,
+      "score": 0.03036576949620428,
+      "prediction": 1,
+      "label_value": 0
+    },
+    {
+      "sentence_id": "ad8d7363_26_33",
+      "text": "Några närmare detaljer om motiven därtill och ett och annat utöfver hvad förut meddelats om själfva tilldragelsen åro nu kända .",
+      "rank": 2,
+      "score": 0.028484848484848488,
+      "prediction": 1,
+      "label_value": 0
+    },
+    {
+      "sentence_id": "eb08a7c0_144_149",
+      "text": "Om någon tid — fram på sensommaren — utkommer från Albert Bonniers förlag ett nytt arbete af August Strindberg , kalladt » I hafsbandet » , med motiv från det yttre af Stockholms skärgård .",
+      "rank": 3,
+      "score": 0.02638888888888889,
+      "prediction": 1,
+      "label_value": 1
+    }
+  ]
+}

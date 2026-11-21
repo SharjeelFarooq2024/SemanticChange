@@ -1,0 +1,14 @@
+{
+  "pytest_command": "python -B -m pytest tests Assignment_2/tests Assignment_3/tests -q -rs",
+  "environment": {
+    "A2_RUN_SLOW": "1",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1"
+  },
+  "passed": 111,
+  "failed": 0,
+  "warnings": 1,
+  "warning": "joblib used logical core count because physical-core detection command was unavailable",
+  "advanced_checkpoint_replay_count": 5,
+  "new_text_cli_smoke_rows": 2
+}

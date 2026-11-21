@@ -4,13 +4,14 @@
 \usepackage{amsmath,amssymb}
 \usepackage{graphicx}
 \usepackage{booktabs}
+\usepackage{array,longtable}
 \usepackage{hyperref}
 \usepackage{geometry}
 \usepackage{float}
 
 \geometry{margin=1in}
 
-\title{\textbf{Assignment 3: Completed Experiments, Statistical Analysis, and Ablations}\\
+\title{\textbf{Assignment 3: Experiments, Error Analysis, and Comparison}\\
 \large SemEval-2027 Task 3: Diachronic Semantic Change in Swedish (Subtask 2)}
 \author{SemEval-2027 Task 3 Challenge Team}
 \date{November 2026}
@@ -20,7 +21,7 @@
 \maketitle
 
 \begin{abstract}
-This research report presents the full empirical execution, rigorous statistical verification, controlled ablation studies, and resource profiling for Part 1 (Sections 1 and 2) of Assignment 3 for the SemEval-2027 Task 3 Shared Task on Diachronic Semantic Change in Swedish (Subtask 2). We evaluate a comprehensive suite of 16 comparison systems—spanning simple heuristics, classical machine learning, frozen multilingual language models (\texttt{XLM-RoBERTa-base}), and proposed information retrieval systems (BM25, Dense \texttt{multilingual-e5-small}, and Hybrid Reciprocal Rank Fusion)—across 5 independent random seeds ($n_{\text{train}}=1,586, n_{\text{test}}=397$). To ensure zero data leakage, operating cutoffs ($K^*$) are calibrated strictly on training partitions. Our findings demonstrate that frozen XLM-R with logistic regression achieves the highest Official Subtask 2 metric ($F_{1,\text{official}} = 0.489 \pm 0.022$), while Dense retrieval attains $0.448 \pm 0.016$, significantly outperforming BM25 ($0.358 \pm 0.016, p = 0.0001$). Hybrid fusion achieves superior ranking quality ($\text{MRR} = 0.692, \text{nDCG@10} = 0.490$). Paired significance testing (paired $t$-tests and permutation tests) confirms that training-based operating point tuning provides statistically significant gains across all retrieval systems ($\Delta > +0.10, p < 0.005$). All predictions, checkpoints, and computational profiles are fully preserved.
+We analyze 16 systems on 1,983 Swedish development usages using five overlapping stratified splits ($n_{\text{train}}=1,586$, $n_{\text{test}}=397$). Frozen XLM-R with logistic regression achieves the highest observed per-lemma positive-class F1 ($0.489\pm0.022$), compared with $0.470\pm0.018$ for always-positive. Hybrid reciprocal rank fusion leads on MRR ($0.692$) and nDCG@10 ($0.490$), while dense retrieval has higher MAP ($0.323$ versus $0.293$) and binary F1 ($0.448$ versus $0.418$). Sections 3--5 add hypothesis-led ablation interpretation, four reproducible error categories, eight examples, published comparisons, and limitations. The audit identifies duplicate-context overlap, an unexecuted encoder retrieval ablation, and inaccurate earlier masking and cost descriptions. Exact two-sided tests on five paired splits cannot attain $p<0.05$; these local results do not establish hidden-test superiority. Predictions, derived tables, figures and analysis provenance are available; fitted checkpoints are absent from this checkout.
 \end{abstract}
 
 \section{Completed Experiments}
@@ -29,6 +30,16 @@ This research report presents the full empirical execution, rigorous statistical
 \section{Results and Statistical Analysis}
 \input{sections/02_results_and_statistical_analysis}
 
+\section{Ablation Analysis and Reliability}
+\input{sections/03_ablation_analysis}
+
+\section{Error Analysis}
+\input{sections/04_error_analysis}
+
+\section{Comparison, Findings, and Next Steps}
+\input{sections/05_comparison_and_findings}
+
+\nocite{cormack2009reciprocal,wang2024multilingual,conneau2019unsupervised,schlechtweg2020semeval}
 \bibliographystyle{plain}
 \bibliography{references}
 

@@ -33,8 +33,8 @@ Table~\ref{tab:subtask2_benchmark} presents the multi-seed benchmark performance
 
 The empirical results reveal several critical findings:
 \begin{itemize}
-    \item \textbf{Pretrained Embeddings Dominance}: \texttt{Frozen XLM-R + LR} achieves the top official score ($F_{1,\text{official}} = 0.489 \pm 0.022$, 95\% CI: $[0.473, 0.507]$), followed closely by \texttt{Frozen XLM-R + Linear SVM} ($0.459 \pm 0.023$).
-    \item \textbf{Dense Retriever Performance}: \texttt{Dense Retriever (Tuned $K^*$)} achieves an Official $F_1$ of $0.448 \pm 0.016$ (95\% CI: $[0.434, 0.459]$), demonstrating tight variance across partitions and outperforming all classical baselines except for the ablated model.
+    \item \textbf{Highest Observed Primary Score}: \texttt{Frozen XLM-R + LR} achieves $F_{1,\text{official}} = 0.489 \pm 0.022$ (95\% split-bootstrap CI: $[0.473, 0.507]$). Always-positive reaches $0.470\pm0.018$; the paired comparison and its limitations are reported in Section 3.
+    \item \textbf{Dense Retriever Performance}: The tuned dense retriever achieves $0.448 \pm 0.016$ (95\% CI: $[0.434, 0.459]$), ahead of BM25 and hybrid on this metric but below TF-IDF + LR, word+character SVM and the word-ID ablation in mean score.
     \item \textbf{Metric Disconnect (Official vs Pooled $F_1$)}: While \texttt{Word+Char SVM} and \texttt{TF-IDF + LR} attain high pooled macro-$F_1$ ($\approx 0.81$) and accuracy ($\approx 0.83$), their Official $F_1$ scores remain lower ($0.450$ and $0.455$) due to conservative positive-class recall. Conversely, the trivial \texttt{Always 1} baseline scores $0.470$ on Official $F_1$ because it avoids false negatives entirely, despite attaining a dismal pooled macro-$F_1$ of $0.262$ and accuracy of $0.355$.
 \end{itemize}
 
@@ -50,29 +50,29 @@ Table~\ref{tab:retrieval_metrics} summarizes query-level ranking effectiveness a
 \label{fig:rrf_sensitivity}
 \end{figure}
 
-Hybrid fusion via RRF ($k=60$) produces the highest overall ranking quality ($\text{MRR} = 0.692$, $\text{nDCG@10} = 0.490$), significantly improving upon standalone BM25 ($\text{nDCG@10} = 0.383$). Dense retrieval provides substantial depth gains, achieving $\text{Recall@50} = 0.697$ compared to BM25's $0.539$.
+Hybrid RRF ($k=60$) has the highest observed MRR ($0.692$) and nDCG@10 ($0.490$). Dense has higher MAP ($0.323$ versus hybrid's $0.293$). Macro Recall@50 is $0.389$ for dense, $0.285$ for BM25 and $0.381$ for hybrid. Section 3 reports paired query tests rather than inferring ranking significance from classification tests.
 
 \subsection{Statistical Significance and Hypothesis Testing}
-To determine whether observed empirical advantages are statistically significant rather than numerical noise, we report paired Student's $t$-tests and 10,000-resample paired permutation tests across the 5 evaluation seeds in Table~\ref{tab:paired_significance}.
+Table~\ref{tab:paired_significance} preserves the initial Part 1 unadjusted paired $t$-tests and Monte Carlo sign-flip tests. Sections 3--5 interpret the results using exact paired tests, multiplicity adjustment and the limitations of overlapping splits. The table's legacy significance flags do not establish general superiority.
 
 \input{tables/table3_significance}
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\textwidth]{figures/05_paired_differences_forest_plot.png}
-\caption{Forest plot of paired system differences ($\Delta = M_A - M_B$) in Official Subtask 2 $F_1$ with 95\% bootstrap confidence intervals. Green indicates statistically significant improvement ($\text{CI} > 0$).}
+\caption{Paired system differences ($\Delta = M_A - M_B$) with split-bootstrap confidence intervals. Color indicates whether the interval crosses zero, not the outcome of the exact paired test in Section 3.}
 \label{fig:paired_differences}
 \end{figure}
 
-Key significance findings:
+Descriptive paired findings:
 \begin{enumerate}
-    \item \textbf{Cutoff Calibration Significance}: Tuning $K^*$ on the training partition yields a massive, statistically significant improvement over naive $K=50$ for all retrieval systems: $+0.121$ for Dense ($p = 0.0007$), $+0.122$ for BM25 ($p = 0.0008$), and $+0.106$ for Hybrid ($p = 0.0044$). In all cases, 95\% confidence intervals strictly exclude zero.
-    \item \textbf{Dense vs BM25}: Dense retrieval outperforms BM25 by a statistically significant margin of $\Delta = +0.090$ in Official $F_1$ ($p = 0.0001$, 95\% CI: $[+0.076, +0.104]$).
-    \item \textbf{Hybrid vs Dense}: Although Hybrid RRF achieves higher ranking nDCG@10 and MRR, its downstream binary Official $F_1$ ($0.418$) is slightly lower than Dense ($0.448$, $\Delta = -0.030$, $p = 0.0673$). The difference is not statistically significant at $\alpha = 0.05$.
+    \item \textbf{Cutoff Calibration}: Mean official F1 increases by $0.121$ for dense, $0.122$ for BM25 and $0.106$ for hybrid. All select the search-boundary value $K=100$.
+    \item \textbf{Dense vs BM25}: The mean official F1 difference is $+0.090$, positive in each split.
+    \item \textbf{Hybrid vs Dense}: Hybrid has lower binary official F1 by $0.030$ despite stronger MRR and nDCG@10. Five-pair exact two-sided tests have a minimum possible $p=0.0625$; see Section 3 for intervals and test details.
 \end{enumerate}
 
 \subsection{Controlled Ablation Studies}
-Table~\ref{tab:ablation_summary} summarizes the results of the four controlled ablation experiments.
+Table~\ref{tab:ablation_summary} summarizes the available ablations. The planned encoder retrieval comparison is missing and the word-ID feature comparison is an additional axis; Section 3 distinguishes them explicitly.
 
 \input{tables/table4_ablations}
 
@@ -85,7 +85,7 @@ Table~\ref{tab:ablation_summary} summarizes the results of the four controlled a
 
 \begin{itemize}
     \item \textbf{Candidate Scope Ablation}: Restricting BM25 candidate pools to documents containing the target word lemma is foundational. Removing this constraint and querying across the unconstrained global corpus collapses MRR from $0.618$ to $0.207$ and MAP from $0.229$ to $0.017$.
-    \item \textbf{Target Word Identity Masking}: Masking all morphological surface forms of the target lemma with \texttt{[TARGET]} forces the classifier to attend to distributed semantic context rather than memorizing lemma priors. This increases positive-class sensitivity, boosting Official $F_1$ from $0.341$ to $0.460$.
+    \item \textbf{Categorical Word Identity}: Removing the explicit word feature raises official F1 from $0.341$ to $0.460$ while lowering pooled macro-F1 and accuracy. The original text is retained, so this is not evidence of morphological masking or purely contextual learning.
 \end{itemize}
 
 \subsection{Subgroup Robustness Analysis}
@@ -94,13 +94,13 @@ Figure~\ref{fig:per_word_heatmap} illustrates the performance breakdown across i
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.88\textwidth]{figures/03_per_word_f1_heatmap.png}
-\caption{Heatmap of per-word Official $F_1$ across target lemmas. Lemmas with sharp semantic shifts (\textit{handikapp}, \textit{dumpa}) exhibit high retrieval accuracy, whereas polysemous words (\textit{ledning}, \textit{process}) present greater ambiguity.}
+\caption{Per-word official F1 across the ten observed target lemmas. Sections 4--5 quantify the differences without inferring a linguistic cause solely from this heatmap.}
 \label{fig:per_word_heatmap}
 \end{figure}
 
 \subsection{Computational Efficiency and Hardware Profiling}
-Table~\ref{tab:hardware_compute} documents the computational resources, indexing latencies, inference latency, and memory footprints measured on an 8-core Intel CPU platform.
+Table~\ref{tab:hardware_compute} preserves the initial resource estimates for a platform with eight logical CPUs. Most per-model latency and memory values are constants in the Part 1 script, not profiler measurements.
 
 \input{tables/table7_hardware}
 
-The profiling confirms that BM25 indexing is exceptionally fast ($0.65$s), while Dense retrieval through pre-computed embeddings and NumPy inner product search requires only $0.82$ ms per query. Hybrid RRF fusion introduces minimal computational overhead ($2.25$ ms total latency) while fitting comfortably within modest consumer hardware constraints ($< 250$ MB RAM).
+These estimates cannot establish an efficiency ranking or measured peak memory. Section 3 distinguishes the historical wall-time log from unmeasured per-model costs and records the missing checkpoint limitation.

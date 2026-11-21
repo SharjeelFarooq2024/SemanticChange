@@ -1,0 +1,8 @@
+{
+  "command": "run_complete_experiments.py",
+  "wall_seconds_this_invocation": 51.540627599999425,
+  "wall_time_scope": "this invocation before packaging; encoder preparation may be a separately logged invocation",
+  "analysis_only": true,
+  "reports_generated": false,
+  "presentation_generated": false
+}

@@ -1,0 +1,36 @@
+{
+  "checkpoint_sha256": "e55b22810cf7e367bad4c3d2a4911f55acf016a14b4b16777e1d14c4ecbd6c33",
+  "checkpoint_replayed": true,
+  "selected": {
+    "seed": 42,
+    "candidate": "mixed_experts_C1",
+    "shrinkage": 0.5,
+    "oof_selection_f1": 0.6555338658105752,
+    "recipe": {
+      "name": "mixed_experts_C1",
+      "components": [
+        "mixed_experts_C1"
+      ],
+      "scales": [
+        1.0
+      ]
+    },
+    "calibration": {
+      "global": -0.3485747921290787,
+      "per_word": {
+        "dumpa": -0.2693416438599715,
+        "exportera": 0.12630521074607554,
+        "fru": 0.062452498399215295,
+        "fröken": -0.4376807948925296,
+        "förort": -0.17907290767146658,
+        "herre": -0.3826530069684868,
+        "kvinna": -0.3485747921290787,
+        "motiv": -0.2538869505443435,
+        "skär": -0.3028433581730689,
+        "suga": -0.35707364049263757
+      },
+      "word_shrinkage": 0.5
+    }
+  },
+  "selection_sha256": "675ad7f72cd2d9c5f3160fab4ff2c8c155801bf14e9fa42d37e11fb4ea5e5cb3"
+}

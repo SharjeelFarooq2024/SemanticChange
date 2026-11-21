@@ -1,0 +1,17 @@
+{
+  "advanced_official_f1_mean": 0.6663394402633173,
+  "advanced_official_f1_std": 0.021436988602025253,
+  "target_official_f1": 0.8,
+  "target_reached": false,
+  "metric_unchanged": true,
+  "claims": "Five reused, overlapping development splits; no hidden-test or statistically confirmed superiority claim.",
+  "protocol_notes": [
+    "Fixed candidate grid declared before this run's outer-test scoring. All choices and thresholds use grouped inner OOF predictions from outer training rows only.",
+    "All five seeds' choices are frozen before any new test score is computed. The outer development splits have already been inspected in previous experiments; this is not an untouched final evaluation.",
+    "No requirement or assertion forces the score to reach 0.8. Accuracy, pooled macro-F1 and official within-word macro-F1 remain separately named.",
+    "Training-only vocabulary, SVD, scaling, classifiers and calibration; no new pretrained model or encoder fine-tuning.",
+    "Metadata includes target word, POS and historical period, which were permitted baseline inputs. These may exploit domain priors; future-period and unseen-lemma generalization are not established.",
+    "Word-class sample weighting aligns the training loss more closely to the official equal-word objective, with clipped weights to limit rare-label influence.",
+    "Ensemble weights are fixed, component margin scales are fitted from training OOF outputs, and calibration uses training OOF labels only."
+  ]
+}

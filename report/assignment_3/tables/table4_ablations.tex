@@ -5,7 +5,7 @@
 \toprule
 \textbf{Ablation Axis} & \textbf{Variant} & \textbf{Official $F_1$} & \textbf{MRR} & \textbf{MAP} & \textbf{nDCG@10} \\
 \midrule
-Candidate Scope & BM25 (per_word) & -- & 0.618 & 0.229 & 0.383 \\
+Candidate Scope & BM25 (per-word) & -- & 0.618 & 0.229 & 0.383 \\
 Candidate Scope & BM25 (global) & -- & 0.207 & 0.017 & 0.087 \\
 RRF Smoothing k & Hybrid (RRF k=10) & -- & 0.675 & 0.279 & 0.472 \\
 RRF Smoothing k & Hybrid (RRF k=30) & -- & 0.708 & 0.291 & 0.491 \\
@@ -18,7 +18,7 @@ Decision Cutoff & DENSE (Tuned K*) & 0.448 & -- & -- & -- \\
 Decision Cutoff & HYBRID (Naive K=50) & 0.313 & -- & -- & -- \\
 Decision Cutoff & HYBRID (Tuned K*) & 0.418 & -- & -- & -- \\
 Target Word Identity & Full Interpretable LR (with word ID) & 0.341 & -- & -- & -- \\
-Target Word Identity & Ablated LR (morphologically masked) & 0.460 & -- & -- & -- \\
+Target Word Identity & Ablated LR (without word ID) & 0.460 & -- & -- & -- \\
 \bottomrule
 \end{tabular}
 \caption{Controlled ablation studies isolating candidate scoping, RRF smoothing parameter $k$, operating cutoff tuning, and target word identity.}
