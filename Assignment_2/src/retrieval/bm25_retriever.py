@@ -12,7 +12,7 @@ import pickle
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence
 
-from rank_bm25 import BM25Okapi
+# rank_bm25 is imported lazily inside build_index
 
 from ..preprocessing.tokenizer import Tokenizer
 from ..utils.paths import ensure_dir
@@ -31,7 +31,7 @@ class BM25Retriever:
         self.k1 = float(self.config.get("k1", 1.5))
         self.b = float(self.config.get("b", 0.75))
         self.tokenizer = Tokenizer(self.config.get("tokenizer"))
-        self._index: Optional[BM25Okapi] = None
+        self._index: Optional[Any] = None
         self._doc_ids: List[str] = []
         self._doc_id_set: set[str] = set()
 
@@ -51,6 +51,7 @@ class BM25Retriever:
         if not tokenized_corpus:
             raise BM25IndexError("Cannot build a BM25 index over an empty collection")
 
+        from rank_bm25 import BM25Okapi
         self._index = BM25Okapi(tokenized_corpus, k1=self.k1, b=self.b)
         self._doc_ids = doc_ids
         self._doc_id_set = set(doc_ids)
@@ -63,7 +64,7 @@ class BM25Retriever:
     def doc_ids(self) -> List[str]:
         return list(self._doc_ids)
 
-    def _require_index(self) -> BM25Okapi:
+    def _require_index(self) -> Any:
         if self._index is None:
             raise BM25IndexError(
                 "BM25 index is not built. Call build_index() or load() first."

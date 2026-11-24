@@ -1,0 +1,12 @@
+{
+  "mean_a": 0.6357715395221296,
+  "mean_b": 0.6135755371907916,
+  "point_diff": 0.022196002331338005,
+  "ci95_lo": 0.010045602830569376,
+  "ci95_hi": 0.0348157063077261,
+  "p_a_not_better": 0.0002,
+  "adopted": true,
+  "n_bootstrap": 10000,
+  "system": "baseline_svm_cal_shrink_0.5",
+  "baseline": "baseline_svm_uncalibrated"
+}

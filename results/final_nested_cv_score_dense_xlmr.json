@@ -1,0 +1,29 @@
+{
+  "final_unbiased_official_f1": 0.687341393284888,
+  "pooled_macro_f1": 0.8346202904238618,
+  "accuracy": 0.8456883509833586,
+  "outer_folds": [
+    {
+      "fold": 0,
+      "official_f1": 0.7127969053760049
+    },
+    {
+      "fold": 1,
+      "official_f1": 0.6053250623901387
+    },
+    {
+      "fold": 2,
+      "official_f1": 0.6830365356326833
+    },
+    {
+      "fold": 3,
+      "official_f1": 0.7557185979228187
+    },
+    {
+      "fold": 4,
+      "official_f1": 0.6516224386089922
+    }
+  ],
+  "pipeline": "DenseDefinitionInteraction(XLM-R: |u-d|, u*d, cos(u,d)) + LogisticRegression(class_weight='balanced', C=0.1) + InnerOOF_best_threshold(shrinkage=0.5)",
+  "protocol": "5-fold StratifiedGroupKFold on near_dup_groups"
+}

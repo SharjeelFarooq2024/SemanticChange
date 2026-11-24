@@ -1,0 +1,29 @@
+{
+  "final_unbiased_official_f1": 0.6267516609586069,
+  "pooled_macro_f1": 0.802347674287645,
+  "accuracy": 0.8214826021180031,
+  "outer_folds": [
+    {
+      "fold": 0,
+      "official_f1": 0.5921142531259119
+    },
+    {
+      "fold": 1,
+      "official_f1": 0.5746187343088668
+    },
+    {
+      "fold": 2,
+      "official_f1": 0.6435402453783732
+    },
+    {
+      "fold": 3,
+      "official_f1": 0.6165539261505526
+    },
+    {
+      "fold": 4,
+      "official_f1": 0.633105750828722
+    }
+  ],
+  "pipeline": "FeatureUnion(word_1_2, char_3_5) + LinearSVC(class_weight='balanced') + InnerOOF_best_threshold(shrinkage=0.5)",
+  "protocol": "5-fold StratifiedGroupKFold on near_dup_groups"
+}

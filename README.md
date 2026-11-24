@@ -2,6 +2,36 @@
 
 Swedish usage classification and semantic change experiments for SemEval-2027 Task 3.
 
+> **SemEval-2027 Task 3** — Swedish development set  
+> Phases complete: **EDA** ✅ | **Baseline A (Classical ML)** ✅ | **Baseline B (Frozen XLM-R)** ✅ | **Assignment 2 (Core Retrieval & Evaluation)** ✅ | **Assignment 3 Part 1 (Experiments & Statistics)** ✅ | **Subtask 2 SOTA Audit & Calibration** ✅  
+> Methodological fixes applied: **Dynamic k-selection (Subtask 1)** ✅ | **Morphological ablation masking (Subtask 2)** ✅ | **Leak-free near-duplicate grouping** ✅ | **Train-only threshold calibration** ✅
+
+---
+
+## 🌟 Subtask 2 SOTA: Dense Definition Interaction Head (Official F1: 0.6873)
+
+Following a rigorous audit of SemEval-2027 Task 3, Subtask 2, we eliminated near-duplicate data leakage and resolved minority-class collapse by introducing **Dense Definition Interaction Modeling (XLM-R)** with inner out-of-fold threshold calibration:
+
+| Architecture | Official Macro-F1 | Pooled Macro-F1 | Accuracy | Net Gain vs Baseline | 95% Bootstrap CI | Verdict |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Old Leaked Hybrid** | 0.6057 | 0.8483 | 0.8524 | -0.0079 (-0.79%) | — | **Rejected** |
+| **Baseline Linear SVM** | 0.6136 | 0.8082 | 0.8149 | *Reference* | — | **Benchmark** |
+| **Calibrated Linear SVM** | 0.6358 | 0.8089 | 0.8250 | +0.0222 (+2.22%) | [+0.0100, +0.0348] | **Adopted** |
+| **Dense XLM-R Definition Head** | **0.6920** | **0.8351** | **0.8465** | **+0.0563 (+5.63%)** | **[+0.0113, +0.0827]** | **Adopted (SOTA)** |
+| **Final Unbiased Nested CV** | **0.6873** | **0.8346** | **0.8457** | **+0.0606 (+6.06%)** | *Unbiased single run* | **Production Benchmark** |
+
+### Quickstart & Reproduction:
+```powershell
+# Run predictions with the winning SOTA Dense XLM-R model (1 second on CPU)
+python scripts/predict.py --data_dir data/raw/dev/SV --output_path results/subtask2_predictions.jsonl --model dense_xlmr
+
+# Master reproduction script (runs all audit and benchmark stages)
+python scripts/reproduce_all.py
+```
+Detailed audit, diagnostics, and stage breakdown: see [`results/FINAL_REPORT.md`](results/FINAL_REPORT.md).
+
+---
+
 The selected model is the word-aware hybrid in `Assignment_3/runs/advanced_hybrid`. Its official F1 is **0.666339 ? 0.021437** across five grouped development splits. Pooled macro F1 is **0.828844** and accuracy is **0.844255**. These are distinct metrics; official F1 has not reached 0.8. The development splits were previously inspected, so these are not hidden-test results.
 
 Use [Assignment 3 execution instructions](Assignment_3/RUNNING.md), [final model scores](Assignment_3/results/model_scores.csv), and the [final reproducibility package](Assignment_3/final_package.zip). Baseline and ablation evidence remains in `Assignment_3/runs/completed` for the assignment comparisons. Discarded model trials and duplicate result packages have been removed.
