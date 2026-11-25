@@ -8,27 +8,29 @@ Swedish usage classification and semantic change experiments for SemEval-2027 Ta
 
 ---
 
-## 🌟 Subtask 2 SOTA: Dense Definition Interaction Head (Official F1: 0.6873)
+## 🌟 Subtask 2 SOTA: Dense Definition Interaction Head (Nested CV F1: 0.6873 | 5×5 Strict CV: 0.6809)
 
-Following a rigorous audit of SemEval-2027 Task 3, Subtask 2, we eliminated near-duplicate data leakage and resolved minority-class collapse by introducing **Dense Definition Interaction Modeling (XLM-R)** with inner out-of-fold threshold calibration:
+Following a rigorous audit of SemEval-2027 Task 3, Subtask 2 (across all **10 historical periods**, `1880-1883` to `2022-2023`), we eliminated near-duplicate data leakage, enforced strict 3-fold inner out-of-fold threshold calibration, and added temporal/lemma generalization tracking via **Dense Definition Interaction Modeling (XLM-R)**:
 
-| Architecture | Official Macro-F1 | Pooled Macro-F1 | Accuracy | Net Gain vs Baseline | 95% Bootstrap CI | Verdict |
+| Architecture | 5×5 Strict CV F1 | Nested CV F1 | Cross-Period LOPO | Net Gain vs Reference | 95% Bootstrap CI | Verdict |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Old Leaked Hybrid** | 0.6057 | 0.8483 | 0.8524 | -0.0079 (-0.79%) | — | **Rejected** |
-| **Baseline Linear SVM** | 0.6136 | 0.8082 | 0.8149 | *Reference* | — | **Benchmark** |
-| **Calibrated Linear SVM** | 0.6358 | 0.8089 | 0.8250 | +0.0222 (+2.22%) | [+0.0100, +0.0348] | **Adopted** |
-| **Dense XLM-R Definition Head** | **0.6920** | **0.8351** | **0.8465** | **+0.0563 (+5.63%)** | **[+0.0113, +0.0827]** | **Adopted (SOTA)** |
-| **Final Unbiased Nested CV** | **0.6873** | **0.8346** | **0.8457** | **+0.0606 (+6.06%)** | *Unbiased single run* | **Production Benchmark** |
+| **Old Leaked Hybrid** | — | 0.6057 | — | -0.0079 (-0.79%) | — | **Rejected** |
+| **Baseline Linear SVM** | — | 0.6136 | 0.6219 | *Reference* | — | **Benchmark** |
+| **Calibrated Linear SVM** | 0.6358 | — | — | +0.0222 vs Baseline | [+0.0100, +0.0348] | **Adopted** |
+| **Dense XLM-R Definition Head** | **0.6809** | **0.6873** | 0.6743 | **+0.0451 vs Cal. SVM** | **[+0.0085, +0.0800]** | **Adopted (SOTA)** |
+| **Exploratory Blend (Dual-Ctx + LemmaSVM)** | — | **0.7006** | **0.7168** | +0.0133 vs Dense XLM-R | [-0.0220, +0.0455] | **Exploratory** |
+
+> **Unbiased Nested CV (`Dense_XLM-R`, Docs C=0.1)**: Official Macro-F1 **0.6873** | Pooled Macro-F1 **0.8346** | Accuracy **0.8457** | LOLO **0.3990**.
 
 ### Quickstart & Reproduction:
 ```powershell
-# Run predictions with the winning SOTA Dense XLM-R model (1 second on CPU)
-python scripts/predict.py --data_dir data/raw/dev/SV --output_path results/subtask2_predictions.jsonl --model dense_xlmr
+# Run predictions on dev or unlabeled test data (gracefully falls back to Calibrated SVM if dense cache is absent)
+python scripts/predict.py --data_dir data/raw/dev/SV --train_dir data/raw/dev/SV --output_path results/subtask2_predictions.jsonl --model auto
 
 # Master reproduction script (runs all audit and benchmark stages)
 python scripts/reproduce_all.py
 ```
-Detailed audit, diagnostics, and stage breakdown: see [`results/FINAL_REPORT.md`](results/FINAL_REPORT.md).
+Detailed audit, generalization analysis, shuffled-definition ablation findings, and stage breakdown: see [`results/FINAL_REPORT.md`](results/FINAL_REPORT.md).
 
 ---
 

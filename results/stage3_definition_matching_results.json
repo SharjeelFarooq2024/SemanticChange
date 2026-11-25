@@ -2,41 +2,45 @@
   "Dense_XLM-R": {
     "uncalibrated_mean_f1": 0.6713378178752422,
     "uncalibrated_std_f1": 0.009111919215043403,
-    "calibrated_mean_f1": 0.6920260122962721,
-    "point_diff": 0.04849788246159725,
-    "ci95_lo": 0.011274791113972752,
-    "ci95_hi": 0.08274618455566284,
-    "p_a_not_better": 0.0062,
+    "calibrated_mean_f1": 0.680890098337148,
+    "calibrated_std_f1": 0.004810867366409734,
+    "point_diff_vs_cal_svm": 0.04511855881501836,
+    "ci95_lo": 0.008450069092900104,
+    "ci95_hi": 0.07998103274929033,
+    "p_a_not_better": 0.0082,
+    "adopted": true
+  },
+  "Dense_XLM-R_ShuffledDef_Ablation": {
+    "uncalibrated_mean_f1": 0.6922731333145619,
+    "uncalibrated_std_f1": 0.002982733156922289,
+    "calibrated_mean_f1": 0.6967597185020972,
+    "calibrated_std_f1": 0.009283738102855146,
+    "point_diff_vs_cal_svm": 0.060988178979967556,
+    "ci95_lo": 0.025608690914114583,
+    "ci95_hi": 0.09461930280333133,
+    "p_a_not_better": 0.0003,
     "adopted": true
   },
   "Dense_E5": {
     "uncalibrated_mean_f1": 0.6273466981889946,
     "uncalibrated_std_f1": 0.010703413754981366,
-    "calibrated_mean_f1": 0.6351417362248623,
-    "point_diff": -0.008386393609812637,
-    "ci95_lo": -0.04421673701227278,
-    "ci95_hi": 0.02589104496817214,
-    "p_a_not_better": 0.6762,
-    "adopted": false
-  },
-  "Early_Fusion_E5": {
-    "uncalibrated_mean_f1": 0.6044925009268489,
-    "uncalibrated_std_f1": 0.009505237829964052,
-    "calibrated_mean_f1": 0.6149151114164593,
-    "point_diff": -0.02861301841821562,
-    "ci95_lo": -0.06250017214531624,
-    "ci95_hi": 0.004596668027099425,
-    "p_a_not_better": 0.9529,
+    "calibrated_mean_f1": 0.6266088533312333,
+    "calibrated_std_f1": 0.009673633234505643,
+    "point_diff_vs_cal_svm": -0.00916268619089633,
+    "ci95_lo": -0.042375403447699064,
+    "ci95_hi": 0.02373527634823486,
+    "p_a_not_better": 0.6933,
     "adopted": false
   },
   "Lemma_Balanced_SVM": {
     "uncalibrated_mean_f1": 0.6321238737696049,
     "uncalibrated_std_f1": 0.009797971022529906,
-    "calibrated_mean_f1": 0.6539680455727319,
-    "point_diff": 0.010439915738057026,
-    "ci95_lo": 0.0020275943393977254,
-    "ci95_hi": 0.021019210198528926,
-    "p_a_not_better": 0.0048,
-    "adopted": true
+    "calibrated_mean_f1": 0.6416681603929411,
+    "calibrated_std_f1": 0.006104657284671924,
+    "point_diff_vs_cal_svm": 0.005896620870811442,
+    "ci95_lo": -0.002142012752225375,
+    "ci95_hi": 0.01481520315488079,
+    "p_a_not_better": 0.0794,
+    "adopted": false
   }
 }

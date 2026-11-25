@@ -20,13 +20,13 @@ from eval_harness import (
     diagnostics,
 )
 from scripts.stage1_measure import load_data
-from scripts.stage3_definition_matching import build_definition_features, DenseDefinitionModel
+from scripts.stage3_definition_matching import DenseFeatureStore, DenseDefinitionModel
 
 def main():
     results_dir = ROOT / "results"
     data = load_data().reset_index(drop=True)
     data["group"] = data["near_dup"]
-    dense_xlmr = build_definition_features(data, encoder="xlmr")
+    store_xlmr = DenseFeatureStore(encoder="xlmr", mode="docs")
 
     n_samples = len(data)
     labels = data["label"].to_numpy().astype(int)
@@ -55,7 +55,7 @@ def main():
             inner_fit = train_fold.iloc[inner_fit_idx].copy()
             inner_val = train_fold.iloc[inner_val_idx].copy()
 
-            inner_model = DenseDefinitionModel(dense_xlmr, seed=42 + fold * 10 + 1)
+            inner_model = DenseDefinitionModel(store_xlmr, seed=42 + fold * 10 + 1)
             inner_model.fit(inner_fit)
             inner_oof_probs[inner_val_idx] = inner_model.predict_proba(inner_val)
 
@@ -68,7 +68,7 @@ def main():
         )
 
         # Fit model on outer train fold
-        model = DenseDefinitionModel(dense_xlmr, seed=42 + fold)
+        model = DenseDefinitionModel(store_xlmr, seed=42 + fold)
         model.fit(train_fold)
 
         test_probs = model.predict_proba(test_fold)
